@@ -33,6 +33,7 @@ public class TasksFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_tasks, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_projects);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         list = new ArrayList<>();

@@ -38,6 +38,79 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        android:src="@mipmap/ic_add"/>
+
+    <LinearLayout
+        android:id="@+id/layout_fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom|end"
+        android:clipToPadding="false"
+        android:padding="@dimen/standard_12"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_project"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:fabSize="mini" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom|end"
+        android:clipToPadding="false"
+        android:padding="@dimen/standard_12"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_note"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:fabSize="mini" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom|end"
+        android:clipToPadding="false"
+        android:padding="@dimen/standard_12"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_task"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:fabSize="mini" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
