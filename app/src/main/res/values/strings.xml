@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Tidy</string>
     <string name="projects_title">Projects</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="other_time">Other Time</string>
+    <string name="finished_tasks">Finished Tasks</string>
 </resources>
