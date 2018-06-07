@@ -2,10 +2,12 @@
 <resources>
     <dimen name="card_width">280dp</dimen>
     <dimen name="card_height">50dp</dimen>
+    <dimen name="card_margin_start">50dp</dimen>
+    <dimen name="card_margin_end">8dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="standard_12">12dp</dimen>
+    <dimen name="standard_12">6dp</dimen>
     <dimen name="standard_23">23dp</dimen>
     <dimen name="standard_55">55dp</dimen>
     <dimen name="standard_100">100dp</dimen>
