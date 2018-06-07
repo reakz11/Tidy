@@ -16,6 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".createActivities.CreateTaskActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".createActivities.CreateNoteActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".createActivities.CreateProjectActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

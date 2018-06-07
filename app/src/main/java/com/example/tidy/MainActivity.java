@@ -1,6 +1,7 @@
 package com.example.tidy;
 
 import android.animation.Animator;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import com.example.tidy.adapters.ViewPagerAdapter;
+import com.example.tidy.createActivities.CreateNoteActivity;
+import com.example.tidy.createActivities.CreateProjectActivity;
+import com.example.tidy.createActivities.CreateTaskActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    FloatingActionButton fab, fab2, fab3, fab4;
-    LinearLayout layoutFab2, layoutFab3, layoutFab4;
+    FloatingActionButton fabMain, fabProject, fabNote, fabTask;
+    LinearLayout layoutFabProject, layoutFabNote, layoutFabTask;
 
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
 
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        // Getting fragments
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(TasksFragment.getInstance(), "Tasks");
@@ -45,49 +51,80 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
-        fab4 = (FloatingActionButton) findViewById(R.id.fab4);
-        layoutFab2 = (LinearLayout) findViewById(R.id.layout_fab2);
-        layoutFab3 = (LinearLayout) findViewById(R.id.layout_fab3);
-        layoutFab4 = (LinearLayout) findViewById(R.id.layout_fab4);
+        fabMain = (FloatingActionButton) findViewById(R.id.fab_main);
+        fabProject = (FloatingActionButton) findViewById(R.id.fab_project);
+        fabNote = (FloatingActionButton) findViewById(R.id.fab_note);
+        fabTask = (FloatingActionButton) findViewById(R.id.fab_task);
+        layoutFabProject = (LinearLayout) findViewById(R.id.layout_fab_project);
+        layoutFabNote = (LinearLayout) findViewById(R.id.layout_fab_note);
+        layoutFabTask = (LinearLayout) findViewById(R.id.layout_fab_task);
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        // Sets up click listener on main FAB and attaches opening/closing animations
+        fabMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!isFABOpen){
                     showFABMenu();
-                    fab.startAnimation(rotate_forward);
+                    fabMain.startAnimation(rotate_forward);
                 }else{
                     closeFABMenu();
-                    fab.startAnimation(rotate_backward);
+                    fabMain.startAnimation(rotate_backward);
                 }
+            }
+        });
+
+        // Sets up click listeners on "menu" FABs
+        // Click opens new activity and closes FAB menu
+        fabTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeFABMenu();
+                startActivity(new Intent(MainActivity.this, CreateTaskActivity.class));
+            }
+        });
+
+        fabNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeFABMenu();
+                startActivity(new Intent(MainActivity.this, CreateNoteActivity.class));
+            }
+        });
+
+        fabProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeFABMenu();
+                startActivity(new Intent(MainActivity.this, CreateProjectActivity.class));
             }
         });
     }
 
+    // Sets isFABOpen to TRUE, views to visible and creates opening animation
     private void showFABMenu(){
         isFABOpen=true;
 
-        layoutFab2.setVisibility(View.VISIBLE);
-        layoutFab3.setVisibility(View.VISIBLE);
-        layoutFab4.setVisibility(View.VISIBLE);
+        layoutFabProject.setVisibility(View.VISIBLE);
+        layoutFabNote.setVisibility(View.VISIBLE);
+        layoutFabTask.setVisibility(View.VISIBLE);
 
-        layoutFab2.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-        layoutFab3.animate().translationY(-getResources().getDimension(R.dimen.standard_100));
-        layoutFab4.animate().translationY(-getResources().getDimension(R.dimen.standard_145));
+        layoutFabProject.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+        layoutFabNote.animate().translationY(-getResources().getDimension(R.dimen.standard_100));
+        layoutFabTask.animate().translationY(-getResources().getDimension(R.dimen.standard_145));
     }
 
+    // Sets isFABOpen to FALSE and creates closing animations
+    // After last animation is finished, sets visibility of views to GONE
     private void closeFABMenu(){
         isFABOpen=false;
 
-        layoutFab2.animate().translationY(0);
-        layoutFab3.animate().translationY(0);
-        layoutFab4.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+        layoutFabProject.animate().translationY(0);
+        layoutFabNote.animate().translationY(0);
+        layoutFabTask.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -96,9 +133,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animator) {
                 if (!isFABOpen) {
-                    layoutFab2.setVisibility(View.GONE);
-                    layoutFab3.setVisibility(View.GONE);
-                    layoutFab4.setVisibility(View.GONE);
+                    layoutFabProject.setVisibility(View.GONE);
+                    layoutFabNote.setVisibility(View.GONE);
+                    layoutFabTask.setVisibility(View.GONE);
                 }
             }
 
