@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         fabTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMain.startAnimation(rotate_backward);
                 closeFABMenu();
                 startActivity(new Intent(MainActivity.this, CreateTaskActivity.class));
             }
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         fabNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMain.startAnimation(rotate_backward);
                 closeFABMenu();
                 startActivity(new Intent(MainActivity.this, CreateNoteActivity.class));
             }
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         fabProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMain.startAnimation(rotate_backward);
                 closeFABMenu();
                 startActivity(new Intent(MainActivity.this, CreateProjectActivity.class));
             }
