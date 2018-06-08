@@ -10,17 +10,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.tidy.R;
+import com.example.tidy.objects.Project;
 
 import java.util.List;
 
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectsViewHolder> {
 
     Context context;
-    List<String> list;
+    List<Project> list;
 
-    public ProjectsAdapter(Context context, List<String> list) {
+    final private ProjectClickListener mOnClickListener;
+
+    public interface ProjectClickListener {
+        void onProjectClick (String projectTitle);
+    }
+
+    public ProjectsAdapter(Context context, List<Project> list, ProjectClickListener listener) {
         this.list = list;
         this.context = context;
+        mOnClickListener = listener;
     }
 
 
@@ -34,7 +42,8 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
 
     @Override
     public void onBindViewHolder (@NonNull ProjectsViewHolder holder,int position){
-        holder.textView.setText(list.get(position));
+        Project object = list.get(position);
+        holder.projectTitle.setText(object.getTitle());
     }
 
     @Override
@@ -42,13 +51,21 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
         return list.size();
     }
 
-    class ProjectsViewHolder extends RecyclerView.ViewHolder {
+    class ProjectsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView textView;
+        TextView projectTitle;
 
         public ProjectsViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.project_name);
+            projectTitle = (TextView) itemView.findViewById(R.id.project_name);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            String projectTitle = list.get(adapterPosition).getTitle();
+            mOnClickListener.onProjectClick(projectTitle);
         }
     }
 }

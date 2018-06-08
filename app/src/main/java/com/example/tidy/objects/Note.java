@@ -1,4 +1,4 @@
-package com.example.tidy;
+package com.example.tidy.objects;
 
 public class Note {
 
