@@ -3,10 +3,14 @@ package com.example.tidy.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tidy.objects.Note;
 import com.example.tidy.R;
@@ -41,10 +45,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
     @Override
-    public void onBindViewHolder (@NonNull NotesAdapter.NotesViewHolder holder, int position){
+    public void onBindViewHolder (@NonNull NotesAdapter.NotesViewHolder holder,int position){
         Note object = list.get(position);
         holder.noteTitle.setText(object.getTitle());
         holder.noteContent.setText(object.getContent());
+
     }
 
     @Override
@@ -56,12 +61,24 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         TextView noteTitle;
         TextView noteContent;
+        ImageButton deleteNote;
 
         public NotesViewHolder(View itemView) {
             super(itemView);
             noteTitle = (TextView) itemView.findViewById(R.id.note_name);
             noteContent = (TextView) itemView.findViewById(R.id.note_content);
             itemView.setOnClickListener(this);
+
+            deleteNote = itemView.findViewById(R.id.icon_delete_note);
+            deleteNote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.v("DELETE_NOTE_EVENT", "Clicked on delete note:" + getAdapterPosition());
+                    Note noteToRemove = list.get(getAdapterPosition());
+                    list.remove(noteToRemove);
+                    notifyItemRemoved(getAdapterPosition());
+                }
+            });
         }
 
         @Override
