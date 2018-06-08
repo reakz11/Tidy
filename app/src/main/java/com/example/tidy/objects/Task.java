@@ -7,10 +7,10 @@ public class Task {
 
     private String mTitle;
     private String mContent;
-    private Date mDueDate;
+    private String mDueDate;
     private int mStatus = 0;
 
-    public Task(String title, Date date, int status) {
+    public Task(String title, String date, int status) {
         this.mTitle = title;
         this.mDueDate = date;
         this.mStatus = status;
@@ -24,7 +24,7 @@ public class Task {
         return mContent;
     }
 
-    public Date getDueDate() {
+    public String getDueDate() {
         return mDueDate;
     }
 

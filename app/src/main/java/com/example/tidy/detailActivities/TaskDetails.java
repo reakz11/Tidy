@@ -36,13 +36,8 @@ public class TaskDetails extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Task Details");
 
-        Intent intent = getIntent();
-
-        if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
-            getSupportActionBar().setTitle(supportActionBarTitle);
-        }
 
         fabMain = (FloatingActionButton) findViewById(R.id.fab_main);
         fabProject = (FloatingActionButton) findViewById(R.id.fab_project);

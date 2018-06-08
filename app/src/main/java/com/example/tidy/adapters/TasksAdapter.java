@@ -48,7 +48,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHol
     public void onBindViewHolder (@NonNull TasksAdapter.TasksViewHolder holder,int position){
         Task object = list.get(position);
         holder.taskTitle.setText(object.getTitle());
-        holder.dueDate.setText(object.getContent());
+        holder.dueDate.setText(object.getDueDate());
     }
 
     @Override
@@ -75,9 +75,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHol
             int adapterPosition = getAdapterPosition();
             String taskTitle = list.get(adapterPosition).getTitle();
 
-            Date date = list.get(adapterPosition).getDueDate();
-            DateFormat dateFormat = DateFormat.getDateInstance();
-            String normalDate = dateFormat.format(date);
+//            Date date = list.get(adapterPosition).getDueDate();
+//            DateFormat dateFormat = DateFormat.getDateInstance();
+//            String normalDate = dateFormat.format(date);
+            String normalDate = list.get(adapterPosition).getDueDate();
 
             int taskStatus = list.get(adapterPosition).getStatus();
 

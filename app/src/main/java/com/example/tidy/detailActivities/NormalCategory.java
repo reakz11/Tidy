@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -17,10 +19,17 @@ import com.example.tidy.adapters.TasksAdapter;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
+import com.example.tidy.objects.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NormalCategory extends AppCompatActivity implements TasksAdapter.TaskClickListener {
 
     private Toolbar toolbar;
+
+    List<Task> list;
+    TasksAdapter adapter;
 
     FloatingActionButton fabMain, fabProject, fabNote, fabTask;
     LinearLayout layoutFabProject, layoutFabNote, layoutFabTask;
@@ -45,6 +54,17 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
             String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_tasks);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        list = new ArrayList<>();
+        list.add(new Task("Very important task","08-06-2018", 0));
+        list.add(new Task("Another very important task","08-06-2018", 0));
+        list.add(new Task("Less important task","08-06-2018", 0));
+
+        adapter = new TasksAdapter(getApplicationContext(),list,this);
+        recyclerView.setAdapter(adapter);
 
         fabMain = (FloatingActionButton) findViewById(R.id.fab_main);
         fabProject = (FloatingActionButton) findViewById(R.id.fab_project);
