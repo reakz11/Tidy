@@ -28,7 +28,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        android:src="@mipmap/ic_add"/>
+        android:src="@mipmap/baseline_add_black_36dp"/>
 
     <LinearLayout
         android:id="@+id/layout_fab_project"
