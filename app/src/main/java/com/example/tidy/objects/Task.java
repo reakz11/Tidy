@@ -1,17 +1,17 @@
 package com.example.tidy.objects;
 
 import java.text.DateFormat;
+import java.util.Date;
 
 public class Task {
 
     private String mTitle;
     private String mContent;
-    private DateFormat mDueDate;
+    private Date mDueDate;
     private int mStatus = 0;
 
-    public Task(String title, String content, DateFormat date, int status) {
+    public Task(String title, Date date, int status) {
         this.mTitle = title;
-        this.mContent = content;
         this.mDueDate = date;
         this.mStatus = status;
     }
@@ -24,7 +24,7 @@ public class Task {
         return mContent;
     }
 
-    public DateFormat getDueDate() {
+    public Date getDueDate() {
         return mDueDate;
     }
 

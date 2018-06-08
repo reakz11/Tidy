@@ -6,19 +6,17 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import com.example.tidy.R;
-import com.example.tidy.adapters.TasksAdapter;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
 
-public class NormalCategory extends AppCompatActivity implements TasksAdapter.TaskClickListener {
+public class TaskDetails extends AppCompatActivity {
 
     private Toolbar toolbar;
 
@@ -31,7 +29,7 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.normal_category);
+        setContentView(R.layout.task_details);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -147,14 +145,6 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
 
             }
         });
-    }
-
-    @Override
-    public void onTaskClick(String taskTitle, String date, int status) {
-        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
-        intent.putExtra(Intent.EXTRA_TEXT, taskTitle);
-        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
-        startActivity(intent);
     }
 
 }
