@@ -65,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            android:scaleType="centerCrop"
             android:src="@mipmap/baseline_ballot_black_18dp"
             app:fabSize="mini" />
     </LinearLayout>
