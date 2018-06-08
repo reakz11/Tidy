@@ -23,6 +23,14 @@
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".createActivities.CreateProjectActivity"
             android:parentActivityName=".MainActivity"/>
+        <activity android:name=".detailActivities.NoteDetails"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".detailActivities.NormalCategory"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".detailActivities.FinishedTasksCategory"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".detailActivities.ProjectDetails"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

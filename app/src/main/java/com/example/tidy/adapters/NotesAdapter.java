@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.tidy.Note;
+import com.example.tidy.objects.Note;
 import com.example.tidy.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
@@ -18,9 +19,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     Context context;
     List<Note> list;
 
-    public NotesAdapter(Context context, List<Note> list) {
+    final private NoteClickListener mOnClickListener;
+
+    public interface NoteClickListener {
+        void onNoteClick(String noteTitle, String noteContent);
+    }
+
+    public NotesAdapter(Context context, List<Note> list, NoteClickListener listener) {
         this.list = list;
         this.context = context;
+        mOnClickListener = listener;
     }
 
 
@@ -44,7 +52,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         return list.size();
     }
 
-    class NotesViewHolder extends RecyclerView.ViewHolder {
+    class NotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView noteTitle;
         TextView noteContent;
@@ -53,6 +61,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             super(itemView);
             noteTitle = (TextView) itemView.findViewById(R.id.note_name);
             noteContent = (TextView) itemView.findViewById(R.id.note_content);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            String noteTitle = list.get(adapterPosition).getTitle();
+            String noteContent = list.get(adapterPosition).getContent();
+            mOnClickListener.onNoteClick(noteTitle, noteContent);
         }
     }
 

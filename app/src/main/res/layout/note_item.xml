@@ -8,14 +8,20 @@
 
     <TextView
         android:id="@+id/note_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/note_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"/>
+
+    <View
+        android:background="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>
