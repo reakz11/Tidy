@@ -18,14 +18,22 @@ import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.tabs) TabLayout tabLayout;
+    @BindView(R.id.viewpager) ViewPager viewPager;
 
-    FloatingActionButton fabMain, fabProject, fabNote, fabTask;
-    LinearLayout layoutFabProject, layoutFabNote, layoutFabTask;
+    @BindView(R.id.fab_main) FloatingActionButton fabMain;
+    @BindView(R.id.fab_project) FloatingActionButton fabProject;
+    @BindView(R.id.fab_note) FloatingActionButton fabNote;
+    @BindView(R.id.fab_task) FloatingActionButton fabTask;
+    @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
+    @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
+    @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -36,28 +44,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
-
-        // Getting fragments
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        // Setting up fragments
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(TasksFragment.getInstance(), "Tasks");
         adapter.addFragment(NotesFragment.getInstance(), "Notes");
 
         viewPager.setAdapter(adapter);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        fabMain = (FloatingActionButton) findViewById(R.id.fab_main);
-        fabProject = (FloatingActionButton) findViewById(R.id.fab_project);
-        fabNote = (FloatingActionButton) findViewById(R.id.fab_note);
-        fabTask = (FloatingActionButton) findViewById(R.id.fab_task);
-        layoutFabProject = (LinearLayout) findViewById(R.id.layout_fab_project);
-        layoutFabNote = (LinearLayout) findViewById(R.id.layout_fab_note);
-        layoutFabTask = (LinearLayout) findViewById(R.id.layout_fab_task);
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);

@@ -21,10 +21,15 @@ import com.example.tidy.objects.Note;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NotesFragment extends Fragment implements NotesAdapter.NoteClickListener {
 
 
     public NotesFragment() {}
+
+    @BindView(R.id.rv_notes) RecyclerView recyclerView;
 
     List<Note> list;
     NotesAdapter adapter;
@@ -38,7 +43,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NoteClickLis
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_notes, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_notes);
+        ButterKnife.bind(this,rootView);
+
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 

@@ -24,15 +24,23 @@ import com.example.tidy.objects.Task;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NormalCategory extends AppCompatActivity implements TasksAdapter.TaskClickListener {
 
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.fab_main) FloatingActionButton fabMain;
+    @BindView(R.id.fab_project) FloatingActionButton fabProject;
+    @BindView(R.id.fab_note) FloatingActionButton fabNote;
+    @BindView(R.id.fab_task) FloatingActionButton fabTask;
+    @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
+    @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
+    @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
+    @BindView(R.id.rv_tasks) RecyclerView recyclerView;
 
     List<Task> list;
     TasksAdapter adapter;
-
-    FloatingActionButton fabMain, fabProject, fabNote, fabTask;
-    LinearLayout layoutFabProject, layoutFabNote, layoutFabTask;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -42,7 +50,8 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_category);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,7 +64,6 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_tasks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         list = new ArrayList<>();
@@ -65,14 +73,6 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
 
         adapter = new TasksAdapter(getApplicationContext(),list,this);
         recyclerView.setAdapter(adapter);
-
-        fabMain = (FloatingActionButton) findViewById(R.id.fab_main);
-        fabProject = (FloatingActionButton) findViewById(R.id.fab_project);
-        fabNote = (FloatingActionButton) findViewById(R.id.fab_note);
-        fabTask = (FloatingActionButton) findViewById(R.id.fab_task);
-        layoutFabProject = (LinearLayout) findViewById(R.id.layout_fab_project);
-        layoutFabNote = (LinearLayout) findViewById(R.id.layout_fab_note);
-        layoutFabTask = (LinearLayout) findViewById(R.id.layout_fab_task);
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);

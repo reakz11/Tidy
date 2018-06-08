@@ -17,18 +17,24 @@ import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NoteDetails extends AppCompatActivity {
 
-    private TextView mNoteTitleTextView;
-    private TextView mNoteContentTextView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.fab_main) FloatingActionButton fabMain;
+    @BindView(R.id.fab_project) FloatingActionButton fabProject;
+    @BindView(R.id.fab_note) FloatingActionButton fabNote;
+    @BindView(R.id.fab_task) FloatingActionButton fabTask;
+    @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
+    @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
+    @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
+    @BindView(R.id.note_details_title) TextView mNoteTitleTextView;
+    @BindView(R.id.note_details_content) TextView mNoteContentTextView;
 
     private String mNoteTitle = "note_title";
     private String mNoteContent = "note_content";
-
-    private Toolbar toolbar;
-
-    FloatingActionButton fabMain, fabProject, fabNote, fabTask;
-    LinearLayout layoutFabProject, layoutFabNote, layoutFabTask;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -38,15 +44,13 @@ public class NoteDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.note_details);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Note Details");
-
-        mNoteTitleTextView = (TextView) findViewById(R.id.note_details_title);
-        mNoteContentTextView = (TextView) findViewById(R.id.note_details_content);
 
         Intent intent = getIntent();
 
@@ -60,14 +64,6 @@ public class NoteDetails extends AppCompatActivity {
             String noteContent = intent.getStringExtra(mNoteContent);
             mNoteContentTextView.setText(noteContent);
         }
-
-        fabMain = (FloatingActionButton) findViewById(R.id.fab_main);
-        fabProject = (FloatingActionButton) findViewById(R.id.fab_project);
-        fabNote = (FloatingActionButton) findViewById(R.id.fab_note);
-        fabTask = (FloatingActionButton) findViewById(R.id.fab_task);
-        layoutFabProject = (LinearLayout) findViewById(R.id.layout_fab_project);
-        layoutFabNote = (LinearLayout) findViewById(R.id.layout_fab_note);
-        layoutFabTask = (LinearLayout) findViewById(R.id.layout_fab_task);
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);

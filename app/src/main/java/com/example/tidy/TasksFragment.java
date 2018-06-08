@@ -23,14 +23,21 @@ import com.example.tidy.objects.Project;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectClickListener {
 
     public TasksFragment() {}
 
     List<Project> list;
+    @BindView(R.id.rv_projects) RecyclerView recyclerView;
+    @BindView(R.id.card_today) CardView todayCard;
+    @BindView(R.id.card_tomorrow) CardView tomorrowCard;
+    @BindView(R.id.card_other_time) CardView otherTimeCard;
+    @BindView(R.id.card_finished_tasks) CardView finishedTasksCard;
 
     ProjectsAdapter adapter;
-    CardView todayCard, tomorrowCard, otherTimeCard, finishedTasksCard;
 
     public static Fragment getInstance() {
         return new TasksFragment();
@@ -38,10 +45,10 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView =  inflater.inflate(R.layout.fragment_tasks, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_projects);
+        ButterKnife.bind(this,rootView);
+
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -58,26 +65,18 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
         list.add(new Project("Project 10"));
         list.add(new Project("Project 11"));
 
-
         adapter = new ProjectsAdapter(getContext(), list, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setFocusable(false);
 
         return rootView;
-
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        todayCard = (CardView) view.findViewById(R.id.card_today);
-        tomorrowCard = (CardView) view.findViewById(R.id.card_tomorrow);
-        otherTimeCard = (CardView) view.findViewById(R.id.card_other_time);
-        finishedTasksCard = (CardView) view.findViewById(R.id.card_finished_tasks);
-
         // Sets onClickListener on CardViews
-
         todayCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,5 +119,4 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
         intent.putExtra(Intent.EXTRA_TEXT, projectTitle);
         startActivity(intent);
     }
-
 }

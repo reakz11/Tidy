@@ -13,11 +13,14 @@ import com.example.tidy.R;
 
 import java.util.Calendar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
-    private Button pickDate;
-    TextView dueDate;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.due_date_tv) TextView dueDate;
+    @BindView(R.id.pick_date_button) Button pickDate;
 
     private int mYear, mMonth, mDay;
 
@@ -26,11 +29,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        dueDate = (TextView) findViewById(R.id.due_date_tv);
-        pickDate = (Button) findViewById(R.id.pick_date_button);
+        setSupportActionBar(toolbar);
+        
         pickDate.setOnClickListener(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
