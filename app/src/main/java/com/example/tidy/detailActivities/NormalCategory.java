@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,11 +16,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import com.example.tidy.R;
+import com.example.tidy.TestTaskAdapter;
 import com.example.tidy.adapters.TasksAdapter;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +33,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NormalCategory extends AppCompatActivity implements TasksAdapter.TaskClickListener {
+import static com.example.tidy.Utils.getDatabase;
+
+public class NormalCategory extends AppCompatActivity implements TestTaskAdapter.TestTaskClickListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
@@ -39,8 +47,11 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
     @BindView(R.id.rv_tasks) RecyclerView recyclerView;
 
-    List<Task> list;
-    TasksAdapter adapter;
+//    List<Task> list;
+//    TasksAdapter adapter;
+
+    TestTaskAdapter adapter;
+    ArrayList<Task> taskList;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -49,6 +60,8 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_category);
+
+        getDatabase();
 
         ButterKnife.bind(this);
 
@@ -64,15 +77,15 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        taskList = new ArrayList<>();
 
-        list = new ArrayList<>();
-        list.add(new Task("Very important task","08-06-2018", 0));
-        list.add(new Task("Another very important task","08-06-2018", 0));
-        list.add(new Task("Less important task","08-06-2018", 0));
-
-        adapter = new TasksAdapter(getApplicationContext(),list,this);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+        adapter = new TestTaskAdapter(getApplicationContext(),taskList, this);
         recyclerView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
+
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
@@ -117,6 +130,33 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
                 fabMain.startAnimation(rotate_backward);
                 closeFABMenu();
                 startActivity(new Intent(getApplicationContext(), CreateProjectActivity.class));
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        database.getReference("taskList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                taskList.clear();
+
+                Log.w("TodoApp", "getUser:onCancelled " + dataSnapshot.toString());
+                Log.w("TodoApp", "count = " + String.valueOf(dataSnapshot.getChildrenCount())
+                        + " values " + dataSnapshot.getKey());
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Task task = data.getValue(Task.class);
+                    taskList.add(task);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
             }
         });
     }
@@ -170,11 +210,12 @@ public class NormalCategory extends AppCompatActivity implements TasksAdapter.Ta
     }
 
     @Override
-    public void onTaskClick(String taskTitle, String date, int status) {
+    public void onTaskClick(String taskTitle, String taskContent, String taskDate) {
         Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
-        intent.putExtra(Intent.EXTRA_TEXT, taskTitle);
+        intent.putExtra("title", taskTitle);
+        intent.putExtra("content", taskContent);
+        intent.putExtra("date", taskDate);
         Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
         startActivity(intent);
     }
-
 }

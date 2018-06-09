@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "648717629683",
+    "firebase_url": "https://tidy-d77a9.firebaseio.com",
+    "project_id": "tidy-d77a9",
+    "storage_bucket": "tidy-d77a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648717629683:android:872337531080c06e",
+        "android_client_info": {
+          "package_name": "com.example.tidy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "648717629683-s7q1tlfn12ml0hrto5e6jcjij654r61g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tidy",
+            "certificate_hash": "fbfcd8593a6bd8aecf97bc54b266701dfa65f390"
+          }
+        },
+        {
+          "client_id": "648717629683-39p32p472o7nahtq8nh6htlpqs2oj9qv.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "648717629683-39p32p472o7nahtq8nh6htlpqs2oj9qv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZdqtPQSXjOr-tucNsiQ65pYkOoEPXOEg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "648717629683-39p32p472o7nahtq8nh6htlpqs2oj9qv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

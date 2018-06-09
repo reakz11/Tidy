@@ -3,19 +3,15 @@ package com.example.tidy.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.tidy.R;
 import com.example.tidy.objects.Task;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHolder> {
@@ -26,7 +22,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHol
     final private TaskClickListener mOnClickListener;
 
     public interface TaskClickListener {
-        void onTaskClick(String taskTitle, String date, int status);
+        void onTaskClick(String taskTitle, String date);
     }
 
     public TasksAdapter(Context context, List<Task> list, TaskClickListener listener) {
@@ -48,7 +44,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHol
     public void onBindViewHolder (@NonNull TasksAdapter.TasksViewHolder holder,int position){
         Task object = list.get(position);
         holder.taskTitle.setText(object.getTitle());
-        holder.dueDate.setText(object.getDueDate());
+        holder.dueDate.setText(object.getDate());
     }
 
     @Override
@@ -60,13 +56,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHol
 
         TextView taskTitle;
         TextView dueDate;
+        TextView content;
         CheckBox checkBox;
 
         public TasksViewHolder(View itemView) {
             super(itemView);
             taskTitle = (TextView) itemView.findViewById(R.id.task_name);
             dueDate = (TextView) itemView.findViewById(R.id.task_due_date);
-            checkBox = (CheckBox) itemView.findViewById(R.id.task_check_box);
             itemView.setOnClickListener(this);
         }
 
@@ -75,15 +71,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TasksViewHol
             int adapterPosition = getAdapterPosition();
             String taskTitle = list.get(adapterPosition).getTitle();
 
-//            Date date = list.get(adapterPosition).getDueDate();
+//            Date date = list.get(adapterPosition).getDate();
 //            DateFormat dateFormat = DateFormat.getDateInstance();
 //            String normalDate = dateFormat.format(date);
-            String normalDate = list.get(adapterPosition).getDueDate();
+            String normalDate = list.get(adapterPosition).getDate();
 
-            int taskStatus = list.get(adapterPosition).getStatus();
-
-            mOnClickListener.onTaskClick(taskTitle, normalDate, taskStatus);
+            mOnClickListener.onTaskClick(taskTitle, normalDate);
         }
     }
-
 }

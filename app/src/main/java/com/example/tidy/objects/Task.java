@@ -1,35 +1,49 @@
 package com.example.tidy.objects;
 
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.HashMap;
 
 public class Task {
 
-    private String mTitle;
-    private String mContent;
-    private String mDueDate;
-    private int mStatus = 0;
+    private String title;
+    private String content;
+    private String date;
 
-    public Task(String title, String date, int status) {
-        this.mTitle = title;
-        this.mDueDate = date;
-        this.mStatus = status;
+    public Task() {
+
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
-        return mContent;
+        return content;
     }
 
-    public String getDueDate() {
-        return mDueDate;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public int getStatus() {
-        return mStatus;
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
+    public HashMap<String,String> toFirebaseObject() {
+        HashMap<String,String> todo =  new HashMap<String,String>();
+        todo.put("title", title);
+        todo.put("content", content);
+        todo.put("date", date);
+
+        return todo;
     }
 
 }
