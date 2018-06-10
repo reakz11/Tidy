@@ -32,7 +32,7 @@
         <activity android:name=".detailActivities.ProjectDetails"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".detailActivities.TaskDetails"
-            android:parentActivityName=".detailActivities.NormalCategory"/>
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

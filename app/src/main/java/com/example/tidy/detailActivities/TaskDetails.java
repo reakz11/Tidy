@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.tidy.R;
 import com.example.tidy.createActivities.CreateNoteActivity;
@@ -29,10 +30,17 @@ public class TaskDetails extends AppCompatActivity {
     @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
+    @BindView(R.id.task_title_tv) TextView taskTitleTextView;
+    @BindView(R.id.task_content_tv) TextView taskContentTextView;
+    @BindView(R.id.task_date) TextView taskDateTextView;
 
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
+
+    private String mTaskTitle = "title";
+    private String mTaskContent = "content";
+    private String mTaskDate = "date";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +53,27 @@ public class TaskDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Task Details");
+
+        // Getting data from intent list and displaying them
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(mTaskTitle)) {
+            String taskTitle = intent.getStringExtra(mTaskTitle);
+
+            taskTitleTextView.setText(taskTitle);
+        }
+
+        if (intent.hasExtra(mTaskContent)) {
+            String taskContent = intent.getStringExtra(mTaskContent);
+
+            taskContentTextView.setText(taskContent);
+        }
+
+        if (intent.hasExtra(mTaskDate)) {
+            String taskDate = intent.getStringExtra(mTaskDate);
+
+            taskDateTextView.setText(taskDate);
+        }
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);

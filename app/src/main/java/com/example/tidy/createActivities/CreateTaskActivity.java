@@ -24,6 +24,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.getDatabase;
+
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.toolbar)
@@ -45,6 +47,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task);
+
+        getDatabase();
 
         ButterKnife.bind(this);
 

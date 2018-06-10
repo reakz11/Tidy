@@ -21,6 +21,8 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.getDatabase;
+
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        getDatabase();
 
         setSupportActionBar(toolbar);
 

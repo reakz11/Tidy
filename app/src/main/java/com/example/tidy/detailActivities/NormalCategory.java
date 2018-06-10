@@ -3,39 +3,40 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.tidy.R;
 import com.example.tidy.TestTaskAdapter;
-import com.example.tidy.adapters.TasksAdapter;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
 
-public class NormalCategory extends AppCompatActivity implements TestTaskAdapter.TestTaskClickListener {
+public class NormalCategory extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
@@ -47,13 +48,10 @@ public class NormalCategory extends AppCompatActivity implements TestTaskAdapter
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
     @BindView(R.id.rv_tasks) RecyclerView recyclerView;
 
-//    List<Task> list;
-//    TasksAdapter adapter;
-
-    TestTaskAdapter adapter;
-    ArrayList<Task> taskList;
 
     private Animation rotate_forward,rotate_backward;
+
+    private FirebaseRecyclerAdapter<Task, NormalCategory.TaskHolder> mAdapter;
 
     boolean isFABOpen=false;
 
@@ -77,14 +75,39 @@ public class NormalCategory extends AppCompatActivity implements TestTaskAdapter
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
-        taskList = new ArrayList<>();
+        mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @Override
+            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.task_item, parent, false);
+
+                return new TaskHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(TaskHolder holder, final int position, Task task) {
+                final TaskHolder viewHolder = (TaskHolder) holder;
+                viewHolder.taskTitle.setText(task.getTitle());
+                viewHolder.taskContent.setText(task.getContent());
+                viewHolder.taskDate.setText(task.getDate());
+
+                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                            mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                    }
+                });
+
+            }
+        };
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
-        adapter = new TestTaskAdapter(getApplicationContext(),taskList, this);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAdapter);
 
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
@@ -134,31 +157,45 @@ public class NormalCategory extends AppCompatActivity implements TestTaskAdapter
         });
     }
 
+    public static class TaskHolder extends RecyclerView.ViewHolder {
+
+        TextView taskTitle;
+        TextView taskContent;
+        TextView taskDate;
+
+        Button deleteButton;
+
+        public TaskHolder(View itemView) {
+            super(itemView);
+
+            taskTitle = (TextView) itemView.findViewById(R.id.task_name);
+            taskContent = (TextView) itemView.findViewById(R.id.task_content);
+            taskDate = (TextView) itemView.findViewById(R.id.task_due_date);
+
+            deleteButton = (Button) itemView.findViewById(R.id.delete_btn);
+        }
+    }
+
+    Query query = FirebaseDatabase.getInstance()
+            .getReference()
+            .child("taskList")
+            .limitToLast(10);
+
+    FirebaseRecyclerOptions<Task> options =
+            new FirebaseRecyclerOptions.Builder<Task>()
+                    .setQuery(query, Task.class)
+                    .build();
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+    protected void onStart() {
+        super.onStart();
+        mAdapter.startListening();
+    }
 
-        database.getReference("taskList").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                taskList.clear();
-
-                Log.w("TodoApp", "getUser:onCancelled " + dataSnapshot.toString());
-                Log.w("TodoApp", "count = " + String.valueOf(dataSnapshot.getChildrenCount())
-                        + " values " + dataSnapshot.getKey());
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Task task = data.getValue(Task.class);
-                    taskList.add(task);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
-            }
-        });
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation
@@ -209,13 +246,13 @@ public class NormalCategory extends AppCompatActivity implements TestTaskAdapter
         });
     }
 
-    @Override
-    public void onTaskClick(String taskTitle, String taskContent, String taskDate) {
-        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
-        intent.putExtra("title", taskTitle);
-        intent.putExtra("content", taskContent);
-        intent.putExtra("date", taskDate);
-        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
-        startActivity(intent);
-    }
+//    @Override
+//    public void onTaskClick(String taskTitle, String taskContent, String taskDate) {
+//        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
+//        intent.putExtra("title", taskTitle);
+//        intent.putExtra("content", taskContent);
+//        intent.putExtra("date", taskDate);
+//        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
+//        startActivity(intent);
+//    }
 }
