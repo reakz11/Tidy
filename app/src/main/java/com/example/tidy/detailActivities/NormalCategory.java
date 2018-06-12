@@ -26,6 +26,8 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -35,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.getUserId;
 
 public class NormalCategory extends AppCompatActivity {
 
@@ -178,7 +181,9 @@ public class NormalCategory extends AppCompatActivity {
 
     Query query = FirebaseDatabase.getInstance()
             .getReference()
-            .child("taskList")
+            .child("users")
+            .child(getUserId())
+            .child("tasks")
             .limitToLast(10);
 
     FirebaseRecyclerOptions<Task> options =

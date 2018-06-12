@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.example.tidy.R;
 import com.example.tidy.objects.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,6 +44,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     EditText taskDetailsEditText;
 
     private int mYear, mMonth, mDay;
+
+    FirebaseDatabase rootRef = FirebaseDatabase.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +97,15 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     }
 
     void saveTodo() {
+
+// Assuming the user is already logged in.
+//        DatabaseReference userRef = rootRef.getReference("users").;
+//        userRef.child("message1").setValue("Hello World");
+
         // first section
         // get the data to save in our firebase db
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String id = user.getUid();
 
         String dateString = dueDate.getText().toString();
         //make the modal object and convert it into hasmap
@@ -111,7 +122,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());
-        database.getReference("taskList").updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+        database.getReference("users").child(id).child("tasks").updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
