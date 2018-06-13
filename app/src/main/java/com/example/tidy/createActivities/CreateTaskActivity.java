@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -19,8 +20,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -85,9 +89,18 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                             String selectedDate = dayOfMonth +"."+ (monthOfYear + 1) + "." + year ;
 
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(Calendar.YEAR, year);
+                            cal.set(Calendar.MONTH, monthOfYear);
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            Date dateRepresentation = cal.getTime();
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                            String dateDb = sdf.format(dateRepresentation);
+
+                            Log.v("DATE", "FORMATTED DATE IS: " + dateDb);
 
                             dueDate.setText(selectedDate);
-
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();

@@ -90,11 +90,23 @@ public class NormalCategory extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(TaskHolder holder, final int position, Task task) {
+            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
                 final TaskHolder viewHolder = (TaskHolder) holder;
                 viewHolder.taskTitle.setText(task.getTitle());
                 viewHolder.taskContent.setText(task.getContent());
                 viewHolder.taskDate.setText(task.getDate());
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
+                        intent.putExtra("title", task.getTitle());
+                        intent.putExtra("content", task.getContent());
+                        intent.putExtra("date", task.getDate());
+                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
+                        startActivity(intent);
+                    }
+                });
 
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -249,14 +261,4 @@ public class NormalCategory extends AppCompatActivity {
             }
         });
     }
-
-//    @Override
-//    public void onTaskClick(String taskTitle, String taskContent, String taskDate) {
-//        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
-//        intent.putExtra("title", taskTitle);
-//        intent.putExtra("content", taskContent);
-//        intent.putExtra("date", taskDate);
-//        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
-//        startActivity(intent);
-//    }
 }
