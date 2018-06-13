@@ -47,6 +47,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     @BindView(R.id.et_task_details)
     EditText taskDetailsEditText;
 
+    private String dateDb;
     private int mYear, mMonth, mDay;
 
     FirebaseDatabase rootRef = FirebaseDatabase.getInstance();
@@ -96,7 +97,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                             Date dateRepresentation = cal.getTime();
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                            String dateDb = sdf.format(dateRepresentation);
+                            dateDb = sdf.format(dateRepresentation);
 
                             Log.v("DATE", "FORMATTED DATE IS: " + dateDb);
 
@@ -120,7 +121,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String id = user.getUid();
 
-        String dateString = dueDate.getText().toString();
+        String dateString = dateDb;
         //make the modal object and convert it into hasmap
 
         //second section

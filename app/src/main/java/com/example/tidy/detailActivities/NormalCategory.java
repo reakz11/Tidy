@@ -31,13 +31,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.getTomorrowDate;
 import static com.example.tidy.Utils.getUserId;
+import static com.example.tidy.Utils.getCurrentDate;
 
 public class NormalCategory extends AppCompatActivity {
 
@@ -78,6 +83,13 @@ public class NormalCategory extends AppCompatActivity {
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
+        //TODO delete afterwards
+        getCurrentDate();
+        getTomorrowDate();
+
+        Log.v("CURRENT DATE", "DATE IS: " + getCurrentDate());
+        Log.v("TOMORROW DATE", "DATE IS: " + getTomorrowDate());
+
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
             @Override
             final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -94,7 +106,7 @@ public class NormalCategory extends AppCompatActivity {
                 final TaskHolder viewHolder = (TaskHolder) holder;
                 viewHolder.taskTitle.setText(task.getTitle());
                 viewHolder.taskContent.setText(task.getContent());
-                viewHolder.taskDate.setText(task.getDate());
+                viewHolder.taskDate.setText(task.getFormattedDate());
 
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -102,7 +114,7 @@ public class NormalCategory extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
                         intent.putExtra("title", task.getTitle());
                         intent.putExtra("content", task.getContent());
-                        intent.putExtra("date", task.getDate());
+                        intent.putExtra("date", task.getFormattedDate());
                         Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
                         startActivity(intent);
                     }
@@ -195,7 +207,11 @@ public class NormalCategory extends AppCompatActivity {
             .getReference()
             .child("users")
             .child(getUserId())
-            .child("tasks");
+            .child("tasks")
+            .orderByChild("date")
+            .startAt(getCurrentDate())
+            .endAt(getCurrentDate()+1);
+            //.endAt("20180614");
 
     FirebaseRecyclerOptions<Task> options =
             new FirebaseRecyclerOptions.Builder<Task>()

@@ -1,6 +1,11 @@
 package com.example.tidy.objects;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class Task {
 
@@ -39,6 +44,21 @@ public class Task {
 
     public void setDate(String date) {
         mDate = date;
+    }
+
+    public String getFormattedDate() {
+
+        DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd");
+        DateFormat targetFormat = new SimpleDateFormat("dd.MM.yyyy");
+        Date date;
+
+        try {
+            date = originalFormat.parse(mDate);
+        } catch (ParseException e){
+            return null;
+        }
+        String formattedDate = targetFormat.format(date);
+        return formattedDate;
     }
 
 
