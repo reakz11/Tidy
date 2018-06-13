@@ -31,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_btn)
     Button loginButton;
 
+    FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +40,15 @@ public class LoginActivity extends AppCompatActivity {
 
         getDatabase();
 
-
         ButterKnife.bind(this);
+
+        auth = FirebaseAuth.getInstance();
+
+        // If user is already logged it, he is forwarded to the main screen
+        if (auth.getCurrentUser() != null) {
+            // User is signed in (getCurrentUser() will be null if not signed in)
+            startActivity(new Intent(this, MainActivity.class));
+        }
 
         // Choose authentication providers
         final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -56,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
                         RC_SIGN_IN);
             }
         });
-
     }
 
     @Override
@@ -69,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                finish();
                 startActivity(new Intent(this, MainActivity.class));
 
                 // ...

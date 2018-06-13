@@ -183,8 +183,7 @@ public class NormalCategory extends AppCompatActivity {
             .getReference()
             .child("users")
             .child(getUserId())
-            .child("tasks")
-            .limitToLast(10);
+            .child("tasks");
 
     FirebaseRecyclerOptions<Task> options =
             new FirebaseRecyclerOptions.Builder<Task>()

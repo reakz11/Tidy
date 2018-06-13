@@ -129,11 +129,9 @@ public class MainActivity extends AppCompatActivity {
                     .signOut(getApplicationContext())
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         public void onComplete(@NonNull Task<Void> task) {
-                            // ...
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         }
                     });
-
-            startActivity(new Intent(this, LoginActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
