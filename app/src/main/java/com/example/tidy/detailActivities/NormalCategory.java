@@ -55,6 +55,7 @@ public class NormalCategory extends AppCompatActivity {
     private FirebaseRecyclerAdapter<Task, NormalCategory.TaskHolder> mAdapter;
 
     boolean isFABOpen=false;
+    Query query;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,15 +75,45 @@ public class NormalCategory extends AppCompatActivity {
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
+
+            switch (supportActionBarTitle) {
+                case "Today":
+                    query = FirebaseDatabase.getInstance()
+                            .getReference()
+                            .child("users")
+                            .child(getUserId())
+                            .child("tasks")
+                            .orderByChild("date")
+                            .startAt(String.valueOf(getCurrentDate()))
+                            .endAt(String.valueOf(getCurrentDate()));
+                    break;
+                case "Tomorrow":
+                    query = FirebaseDatabase.getInstance()
+                            .getReference()
+                            .child("users")
+                            .child(getUserId())
+                            .child("tasks")
+                            .orderByChild("date")
+                            .startAt(String.valueOf(getCurrentDate() + 1))
+                            .endAt(String.valueOf(getCurrentDate() + 1));
+                    break;
+                default:
+                    query = FirebaseDatabase.getInstance()
+                            .getReference()
+                            .child("users")
+                            .child(getUserId())
+                            .child("tasks")
+                            .orderByChild("date")
+                            .startAt(String.valueOf(getCurrentDate() + 2));
+                    break;
+            }
         }
 
-        //TODO delete afterwards
-        getCurrentDate();
-        getTomorrowDate();
-
-        Log.v("CURRENT DATE", "DATE IS: " + getCurrentDate());
-        Log.v("TOMORROW DATE", "DATE IS: " + getTomorrowDate());
-
+        FirebaseRecyclerOptions<Task> options =
+                new FirebaseRecyclerOptions.Builder<Task>()
+                        .setQuery(query, Task.class)
+                        .build();
+        
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
             @Override
             final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -116,7 +147,7 @@ public class NormalCategory extends AppCompatActivity {
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                            mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
                     }
                 });
 
@@ -196,20 +227,6 @@ public class NormalCategory extends AppCompatActivity {
         }
     }
 
-    Query query = FirebaseDatabase.getInstance()
-            .getReference()
-            .child("users")
-            .child(getUserId())
-            .child("tasks")
-            .orderByChild("date")
-            .startAt(getCurrentDate())
-            .endAt(getCurrentDate()+1);
-            //.endAt("20180614");
-
-    FirebaseRecyclerOptions<Task> options =
-            new FirebaseRecyclerOptions.Builder<Task>()
-                    .setQuery(query, Task.class)
-                    .build();
 
     @Override
     protected void onStart() {
