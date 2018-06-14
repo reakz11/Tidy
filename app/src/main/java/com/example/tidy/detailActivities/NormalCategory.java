@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,7 +34,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
-import static com.example.tidy.Utils.getTomorrowDate;
 import static com.example.tidy.Utils.getUserId;
 import static com.example.tidy.Utils.getCurrentDate;
 
@@ -132,6 +132,13 @@ public class NormalCategory extends AppCompatActivity {
                 viewHolder.taskContent.setText(task.getContent());
                 viewHolder.taskDate.setText(task.getFormattedDate());
 
+                viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                       mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
+                    }
+                });
+
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -215,6 +222,7 @@ public class NormalCategory extends AppCompatActivity {
         TextView taskDate;
 
         Button deleteButton;
+        CheckBox taskCheckbox;
 
         public TaskHolder(View itemView) {
             super(itemView);
@@ -224,6 +232,7 @@ public class NormalCategory extends AppCompatActivity {
             taskDate = (TextView) itemView.findViewById(R.id.task_due_date);
 
             deleteButton = (Button) itemView.findViewById(R.id.delete_btn);
+            taskCheckbox = (CheckBox) itemView.findViewById(R.id.task_check_box);
         }
     }
 

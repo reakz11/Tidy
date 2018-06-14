@@ -133,6 +133,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         task.setTitle(taskTitleEditText.getText().toString());
         task.setContent(taskDetailsEditText.getText().toString());
         task.setDate(dateString);
+        task.setState("0");
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());
