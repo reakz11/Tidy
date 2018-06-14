@@ -53,7 +53,7 @@ public class Utils {
 
     public static int getTomorrowDate() {
         if (mTomorrowDate == 0) {
-            int tomorrowDate = getCurrentDate() + 2;
+            int tomorrowDate = getCurrentDate() + 1;
             mTomorrowDate = tomorrowDate;
         }
         return mTomorrowDate;
