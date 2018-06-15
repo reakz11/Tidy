@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +27,11 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 
 import butterknife.BindView;
@@ -83,9 +87,11 @@ public class NormalCategory extends AppCompatActivity {
                             .child("users")
                             .child(getUserId())
                             .child("tasks")
+                            .child("state")
                             .orderByChild("date")
                             .startAt(String.valueOf(getCurrentDate()))
                             .endAt(String.valueOf(getCurrentDate()));
+
                     break;
                 case "Tomorrow":
                     query = FirebaseDatabase.getInstance()
@@ -136,6 +142,8 @@ public class NormalCategory extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
+                       viewHolder.itemView.setVisibility(View.GONE);
+                       mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                     }
                 });
 
@@ -157,7 +165,10 @@ public class NormalCategory extends AppCompatActivity {
                         mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
                     }
                 });
-
+                if (String.valueOf(task.getState()).equals("1")) {
+                    viewHolder.itemView.setVisibility(View.GONE);
+                    viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                }
             }
         };
 
