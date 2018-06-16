@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.tidy.R;
@@ -26,8 +28,12 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +53,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
     @BindView(R.id.rv_finished_tasks) RecyclerView recyclerView;
+    @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -54,6 +61,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
 
     private FirebaseRecyclerAdapter<Task, FinishedTasksCategory.TaskHolder> mAdapter;
     Query query;
+    private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +78,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
         getSupportActionBar().setTitle("Finished Tasks");
 
 
-        query = FirebaseDatabase.getInstance()
-                .getReference()
+        query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
                 .child("tasks")
@@ -132,13 +139,23 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 });
             }
         };
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loadingIndicator.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged();
-
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);

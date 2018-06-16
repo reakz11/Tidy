@@ -22,6 +22,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollview_tasks"
         android:layout_width="match_parent"
