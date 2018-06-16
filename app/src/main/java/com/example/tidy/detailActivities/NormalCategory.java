@@ -87,7 +87,6 @@ public class NormalCategory extends AppCompatActivity {
                             .child("users")
                             .child(getUserId())
                             .child("tasks")
-                            .child("state")
                             .orderByChild("date")
                             .startAt(String.valueOf(getCurrentDate()))
                             .endAt(String.valueOf(getCurrentDate()));
