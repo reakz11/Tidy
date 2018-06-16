@@ -141,8 +141,7 @@ public class NormalCategory extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
-                       viewHolder.itemView.setVisibility(View.GONE);
-                       mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                       mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
                     }
                 });
 
