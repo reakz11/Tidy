@@ -100,6 +100,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 viewHolder.taskTitle.setText(task.getTitle());
                 viewHolder.taskContent.setText(task.getContent());
                 viewHolder.taskDate.setText(task.getFormattedDate());
+                viewHolder.taskCheckbox.setChecked(true);
 
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override

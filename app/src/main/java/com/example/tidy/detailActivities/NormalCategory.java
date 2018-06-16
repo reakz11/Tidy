@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.getTomorrowDate;
 import static com.example.tidy.Utils.getUserId;
 import static com.example.tidy.Utils.getCurrentDate;
 
@@ -95,8 +96,7 @@ public class NormalCategory extends AppCompatActivity {
                             .child(getUserId())
                             .child("tasks")
                             .orderByChild("date")
-                            .startAt(String.valueOf(getCurrentDate() + 1))
-                            .endAt(String.valueOf(getCurrentDate() + 1));
+                            .equalTo(String.valueOf(getTomorrowDate()));
                     break;
                 default:
                     query = FirebaseDatabase.getInstance()

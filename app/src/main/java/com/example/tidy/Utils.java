@@ -1,9 +1,13 @@
 package com.example.tidy;
 
+import android.text.format.DateUtils;
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,11 +55,33 @@ public class Utils {
         return mCurrentDate;
     }
 
-    public static int getTomorrowDate() {
-        if (mTomorrowDate == 0) {
-            int tomorrowDate = getCurrentDate() + 1;
-            mTomorrowDate = tomorrowDate;
+    public static class DateUtil
+    {
+        public static Date addDays(Date date, int days)
+        {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.DATE, days); //minus number would decrement the days
+            return cal.getTime();
         }
+    }
+
+    public static int getTomorrowDate() {
+        String sourceDate = String.valueOf(getCurrentDate());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date myDate;
+
+        try {
+            myDate = sdf.parse(sourceDate);
+            myDate = DateUtil.addDays(myDate, 1);
+            String dateString = sdf.format(myDate);
+            mTomorrowDate = Integer.parseInt(dateString);
+
+        } catch (ParseException e){
+            Log.v("DATE", "getTomorrowDate parsing error");
+        }
+
+        Log.v("DATE", "tomorrow date is: " + mTomorrowDate);
         return mTomorrowDate;
     }
 }
