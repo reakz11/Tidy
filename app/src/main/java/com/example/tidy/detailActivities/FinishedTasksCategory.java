@@ -5,19 +5,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.tidy.R;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
+import com.example.tidy.objects.Task;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.tidy.Utils.getCurrentDate;
+import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.getUserId;
 
 public class FinishedTasksCategory extends AppCompatActivity {
 
@@ -29,14 +46,20 @@ public class FinishedTasksCategory extends AppCompatActivity {
     @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
+    @BindView(R.id.rv_finished_tasks) RecyclerView recyclerView;
 
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
 
+    private FirebaseRecyclerAdapter<Task, FinishedTasksCategory.TaskHolder> mAdapter;
+    Query query;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.finished_tasks_category);
+
+        getDatabase();
 
         ButterKnife.bind(this);
 
@@ -45,6 +68,74 @@ public class FinishedTasksCategory extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Finished Tasks");
+
+
+        query = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("users")
+                .child(getUserId())
+                .child("tasks")
+                .orderByChild("state")
+                .equalTo("1");
+
+        FirebaseRecyclerOptions<Task> options =
+                new FirebaseRecyclerOptions.Builder<Task>()
+                        .setQuery(query, Task.class)
+                        .build();
+
+        mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @Override
+            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.task_item, parent, false);
+
+                return new TaskHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
+                final TaskHolder viewHolder = (TaskHolder) holder;
+                viewHolder.taskTitle.setText(task.getTitle());
+                viewHolder.taskContent.setText(task.getContent());
+                viewHolder.taskDate.setText(task.getFormattedDate());
+
+                viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("0");
+                        mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    }
+                });
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
+                        intent.putExtra("title", task.getTitle());
+                        intent.putExtra("content", task.getContent());
+                        intent.putExtra("date", task.getFormattedDate());
+                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
+                        startActivity(intent);
+                    }
+                });
+
+                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                    }
+                });
+            }
+        };
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(mAdapter);
+
+        mAdapter.notifyDataSetChanged();
+
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
@@ -91,6 +182,39 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), CreateProjectActivity.class));
             }
         });
+    }
+
+    public static class TaskHolder extends RecyclerView.ViewHolder {
+
+        TextView taskTitle;
+        TextView taskContent;
+        TextView taskDate;
+
+        Button deleteButton;
+        CheckBox taskCheckbox;
+
+        public TaskHolder(View itemView) {
+            super(itemView);
+
+            taskTitle = (TextView) itemView.findViewById(R.id.task_name);
+            taskContent = (TextView) itemView.findViewById(R.id.task_content);
+            taskDate = (TextView) itemView.findViewById(R.id.task_due_date);
+
+            deleteButton = (Button) itemView.findViewById(R.id.delete_btn);
+            taskCheckbox = (CheckBox) itemView.findViewById(R.id.task_check_box);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation
