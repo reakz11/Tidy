@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -68,6 +69,7 @@ public class NormalCategory extends AppCompatActivity {
 
     String supportActionBarTitle;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
+    Handler hand = new Handler();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,7 +158,9 @@ public class NormalCategory extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
                         intent.putExtra("title", task.getTitle());
                         intent.putExtra("content", task.getContent());
-                        intent.putExtra("date", task.getFormattedDate());
+                        if (task.getDate() != null) {
+                            intent.putExtra("date", task.getFormattedDate());
+                        }
                         Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
                         startActivity(intent);
                     }
@@ -248,6 +252,15 @@ public class NormalCategory extends AppCompatActivity {
             }
         });
     }
+
+    Runnable run = new Runnable() {
+        @Override
+
+        public void run() {
+            mAdapter.notifyDataSetChanged();
+        }
+
+    };
 
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
