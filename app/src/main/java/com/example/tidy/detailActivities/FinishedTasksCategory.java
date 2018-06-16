@@ -99,7 +99,9 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 final TaskHolder viewHolder = (TaskHolder) holder;
                 viewHolder.taskTitle.setText(task.getTitle());
                 viewHolder.taskContent.setText(task.getContent());
-                viewHolder.taskDate.setText(task.getFormattedDate());
+                if (task.getDate() != null) {
+                    viewHolder.taskDate.setText(task.getFormattedDate());
+                }
                 viewHolder.taskCheckbox.setChecked(true);
 
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {

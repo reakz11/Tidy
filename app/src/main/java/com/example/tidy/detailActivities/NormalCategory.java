@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.getOtherTimeValue;
 import static com.example.tidy.Utils.getTomorrowDate;
 import static com.example.tidy.Utils.getUserId;
 import static com.example.tidy.Utils.getCurrentDate;
@@ -58,6 +59,8 @@ public class NormalCategory extends AppCompatActivity {
     boolean isFABOpen=false;
     Query query;
 
+    String supportActionBarTitle;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_category);
@@ -74,7 +77,7 @@ public class NormalCategory extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
+            supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
 
             switch (supportActionBarTitle) {
@@ -104,8 +107,7 @@ public class NormalCategory extends AppCompatActivity {
                             .child("users")
                             .child(getUserId())
                             .child("tasks")
-                            .orderByChild("date")
-                            .startAt(String.valueOf(getCurrentDate() + 2));
+                            .orderByChild("date");
                     break;
             }
         }
@@ -131,7 +133,9 @@ public class NormalCategory extends AppCompatActivity {
                 final TaskHolder viewHolder = (TaskHolder) holder;
                 viewHolder.taskTitle.setText(task.getTitle());
                 viewHolder.taskContent.setText(task.getContent());
-                viewHolder.taskDate.setText(task.getFormattedDate());
+                if (task.getDate() != null) {
+                    viewHolder.taskDate.setText(task.getFormattedDate());
+                }
 
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -159,10 +163,20 @@ public class NormalCategory extends AppCompatActivity {
                         mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
                     }
                 });
-                if (String.valueOf(task.getState()).equals("1")) {
-                    viewHolder.itemView.setVisibility(View.GONE);
-                    viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+
+                if (supportActionBarTitle.equals("Today") || supportActionBarTitle.equals("Tomorrow")) {
+                    if (String.valueOf(task.getState()).equals("1")) {
+                        viewHolder.itemView.setVisibility(View.GONE);
+                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                    }
+                } else {
+                    if (task.getDate() != null && Integer.parseInt(task.getDate()) < getOtherTimeValue() || Integer.parseInt(task.getState()) == 1) {
+                        viewHolder.itemView.setVisibility(View.GONE);
+                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                    }
                 }
+
+
             }
         };
 

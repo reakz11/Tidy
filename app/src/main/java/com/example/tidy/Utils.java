@@ -22,6 +22,8 @@ public class Utils {
 
     private static int mTomorrowDate;
 
+    private static int mOtherTimeValue;
+
     private static int mYear, mMonth, mDay;
 
     public static FirebaseDatabase getDatabase() {
@@ -83,5 +85,24 @@ public class Utils {
 
         Log.v("DATE", "tomorrow date is: " + mTomorrowDate);
         return mTomorrowDate;
+    }
+
+    public static int getOtherTimeValue() {
+        String sourceDate = String.valueOf(getCurrentDate());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date myDate;
+
+        try {
+            myDate = sdf.parse(sourceDate);
+            myDate = DateUtil.addDays(myDate, 2);
+            String dateString = sdf.format(myDate);
+            mOtherTimeValue = Integer.parseInt(dateString);
+
+        } catch (ParseException e){
+            Log.v("DATE", "getTomorrowDate parsing error");
+        }
+
+        Log.v("DATE", "tomorrow date is: " + mOtherTimeValue);
+        return mOtherTimeValue;
     }
 }

@@ -13,10 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.tidy.adapters.ProjectsAdapter;
-import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.detailActivities.FinishedTasksCategory;
 import com.example.tidy.detailActivities.NormalCategory;
-import com.example.tidy.detailActivities.NoteDetails;
 import com.example.tidy.detailActivities.ProjectDetails;
 import com.example.tidy.objects.Project;
 
