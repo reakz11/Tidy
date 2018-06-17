@@ -76,86 +76,6 @@ public class FinishedTasksCategory extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Finished Tasks");
 
-
-        query = mFirebaseDatabase
-                .child("users")
-                .child(getUserId())
-                .child("tasks")
-                .orderByChild("state")
-                .equalTo("1");
-
-        FirebaseRecyclerOptions<Task> options =
-                new FirebaseRecyclerOptions.Builder<Task>()
-                        .setQuery(query, Task.class)
-                        .build();
-
-        mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
-            @Override
-            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.finished_task_item, parent, false);
-
-                return new TaskHolder(view);
-            }
-
-            @Override
-            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
-                final TaskHolder viewHolder = (TaskHolder) holder;
-                viewHolder.taskTitle.setText(task.getTitle());
-                viewHolder.taskContent.setText(task.getContent());
-                if (task.getDate() != null) {
-                    viewHolder.taskDate.setText(task.getFormattedDate());
-                }
-
-                viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("0");
-                        mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                    }
-                });
-
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
-                        intent.putExtra("title", task.getTitle());
-                        intent.putExtra("content", task.getContent());
-                        intent.putExtra("date", task.getFormattedDate());
-                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
-                        startActivity(intent);
-                    }
-                });
-
-                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
-                    }
-                });
-            }
-        };
-
-        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                loadingIndicator.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(mAdapter);
-
-        mAdapter.notifyDataSetChanged();
-
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 
@@ -224,6 +144,86 @@ public class FinishedTasksCategory extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        query = mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("tasks")
+                .orderByChild("state")
+                .equalTo("1");
+
+        FirebaseRecyclerOptions<Task> options =
+                new FirebaseRecyclerOptions.Builder<Task>()
+                        .setQuery(query, Task.class)
+                        .build();
+
+        mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @Override
+            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.finished_task_item, parent, false);
+
+                return new TaskHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
+                final TaskHolder viewHolder = (TaskHolder) holder;
+                viewHolder.taskTitle.setText(task.getTitle());
+                viewHolder.taskContent.setText(task.getContent());
+                if (task.getDate() != null) {
+                    viewHolder.taskDate.setText(task.getFormattedDate());
+                }
+
+                viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("0");
+                        mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    }
+                });
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
+                        intent.putExtra("title", task.getTitle());
+                        intent.putExtra("content", task.getContent());
+                        intent.putExtra("date", task.getFormattedDate());
+                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
+                        startActivity(intent);
+                    }
+                });
+
+                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                    }
+                });
+            }
+        };
+
+        mAdapter.notifyDataSetChanged();
+
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loadingIndicator.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(mAdapter);
+
         mAdapter.startListening();
     }
 

@@ -88,122 +88,7 @@ public class NormalCategory extends AppCompatActivity {
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
-
-            switch (supportActionBarTitle) {
-                case "Today":
-                    query = mFirebaseDatabase
-                            .child("users")
-                            .child(getUserId())
-                            .child("tasks")
-                            .orderByChild("date")
-                            .startAt(String.valueOf(getCurrentDate()))
-                            .endAt(String.valueOf(getCurrentDate()));
-
-                    break;
-                case "Tomorrow":
-                    query = mFirebaseDatabase
-                            .child("users")
-                            .child(getUserId())
-                            .child("tasks")
-                            .orderByChild("date")
-                            .equalTo(String.valueOf(getTomorrowDate()));
-                    break;
-                default:
-                    query = mFirebaseDatabase
-                            .child("users")
-                            .child(getUserId())
-                            .child("tasks")
-                            .orderByChild("date");
-                    break;
-            }
         }
-
-        FirebaseRecyclerOptions<Task> options =
-                new FirebaseRecyclerOptions.Builder<Task>()
-                        .setQuery(query, Task.class)
-                        .build();
-        
-        mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
-            @Override
-            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.task_item, parent, false);
-
-                return new TaskHolder(view);
-            }
-
-            @Override
-            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
-                final TaskHolder viewHolder = (TaskHolder) holder;
-                viewHolder.taskTitle.setText(task.getTitle());
-                viewHolder.taskContent.setText(task.getContent());
-                if (task.getDate() != null) {
-                    viewHolder.taskDate.setText(task.getFormattedDate());
-                }
-
-                viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                       mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
-                       mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                    }
-                });
-
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
-                        intent.putExtra("title", task.getTitle());
-                        intent.putExtra("content", task.getContent());
-                        if (task.getDate() != null) {
-                            intent.putExtra("date", task.getFormattedDate());
-                        }
-                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
-                        startActivity(intent);
-                    }
-                });
-
-                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
-                    }
-                });
-
-                if (supportActionBarTitle.equals("Today") || supportActionBarTitle.equals("Tomorrow")) {
-                    if (String.valueOf(task.getState()).equals("1")) {
-                        viewHolder.itemView.setVisibility(View.GONE);
-                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
-                    }
-                } else {
-                    if (task.getDate() != null && Integer.parseInt(task.getDate()) < getOtherTimeValue() || Integer.parseInt(task.getState()) == 1) {
-                        viewHolder.itemView.setVisibility(View.GONE);
-                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
-                    }
-                }
-
-
-            }
-        };
-        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    loadingIndicator.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(mAdapter);
-
-        mAdapter.notifyDataSetChanged();
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
@@ -273,6 +158,124 @@ public class NormalCategory extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        switch (supportActionBarTitle) {
+            case "Today":
+                query = mFirebaseDatabase
+                        .child("users")
+                        .child(getUserId())
+                        .child("tasks")
+                        .orderByChild("date")
+                        .startAt(String.valueOf(getCurrentDate()))
+                        .endAt(String.valueOf(getCurrentDate()));
+
+                break;
+            case "Tomorrow":
+                query = mFirebaseDatabase
+                        .child("users")
+                        .child(getUserId())
+                        .child("tasks")
+                        .orderByChild("date")
+                        .equalTo(String.valueOf(getTomorrowDate()));
+                break;
+            default:
+                query = mFirebaseDatabase
+                        .child("users")
+                        .child(getUserId())
+                        .child("tasks")
+                        .orderByChild("date");
+                break;
+        }
+
+
+        FirebaseRecyclerOptions<Task> options =
+                new FirebaseRecyclerOptions.Builder<Task>()
+                        .setQuery(query, Task.class)
+                        .build();
+
+        mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @Override
+            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.task_item, parent, false);
+
+                return new TaskHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
+                final TaskHolder viewHolder = (TaskHolder) holder;
+                viewHolder.taskTitle.setText(task.getTitle());
+                viewHolder.taskContent.setText(task.getContent());
+                if (task.getDate() != null) {
+                    viewHolder.taskDate.setText(task.getFormattedDate());
+                }
+
+                viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
+                        mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    }
+                });
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
+                        intent.putExtra("title", task.getTitle());
+                        intent.putExtra("content", task.getContent());
+                        if (task.getDate() != null) {
+                            intent.putExtra("date", task.getFormattedDate());
+                        }
+                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
+                        startActivity(intent);
+                    }
+                });
+
+                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                    }
+                });
+
+                if (supportActionBarTitle.equals("Today") || supportActionBarTitle.equals("Tomorrow")) {
+                    if (String.valueOf(task.getState()).equals("1")) {
+                        viewHolder.itemView.setVisibility(View.GONE);
+                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                    }
+                } else {
+                    if (task.getDate() != null && Integer.parseInt(task.getDate()) < getOtherTimeValue() || Integer.parseInt(task.getState()) == 1) {
+                        viewHolder.itemView.setVisibility(View.GONE);
+                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                    }
+                }
+
+
+            }
+        };
+
+        mAdapter.notifyDataSetChanged();
+
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loadingIndicator.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(mAdapter);
+
         mAdapter.startListening();
     }
 
