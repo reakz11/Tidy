@@ -37,8 +37,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-import static com.example.tidy.Utils.getCurrentDate;
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
 
@@ -72,7 +72,6 @@ public class FinishedTasksCategory extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Finished Tasks");
@@ -96,7 +95,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.task_item, parent, false);
+                        .inflate(R.layout.finished_task_item, parent, false);
 
                 return new TaskHolder(view);
             }
@@ -109,7 +108,6 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                 }
-                viewHolder.taskCheckbox.setChecked(true);
 
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -139,6 +137,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 });
             }
         };
+
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -206,22 +205,19 @@ public class FinishedTasksCategory extends AppCompatActivity {
 
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
-        TextView taskTitle;
-        TextView taskContent;
-        TextView taskDate;
+        @BindView(R.id.task_name) TextView taskTitle;
+        @BindView(R.id.task_content) TextView taskContent;
+        @BindView(R.id.task_due_date) TextView taskDate;
+        @BindView(R.id.delete_btn) Button deleteButton;
+        @BindView(R.id.task_check_box) CheckBox taskCheckbox;
 
-        Button deleteButton;
-        CheckBox taskCheckbox;
-
-        public TaskHolder(View itemView) {
+        private TaskHolder(View itemView) {
             super(itemView);
-
-            taskTitle = (TextView) itemView.findViewById(R.id.task_name);
-            taskContent = (TextView) itemView.findViewById(R.id.task_content);
-            taskDate = (TextView) itemView.findViewById(R.id.task_due_date);
-
-            deleteButton = (Button) itemView.findViewById(R.id.delete_btn);
-            taskCheckbox = (CheckBox) itemView.findViewById(R.id.task_check_box);
+            try {
+                ButterKnife.bind(this, itemView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

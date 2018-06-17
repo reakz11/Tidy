@@ -4,42 +4,38 @@
     android:layout_height="85dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="#FFFFFF"
     android:padding="10dp">
 
-    <LinearLayout
+    <TextView
+        tools:text="Title"
+        android:id="@+id/note_name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/note_content"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/note_name"
+        android:layout_below="@+id/note_name"
+        android:paddingTop="5dp"
+        android:textSize="14sp"
+        tools:text="Content" />
+
+    <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            tools:text="Title"
-            android:id="@+id/note_name"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:textSize="20sp" />
-
-        <TextView
-            tools:text="Content"
-            android:id="@+id/note_content"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:textSize="14sp" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="#000000" />
-    </LinearLayout>
+        android:layout_height="1dp"
+        android:layout_below="@id/note_content"
+        android:layout_marginTop="10dp"
+        android:background="#000000" />
 
     <ImageButton
         android:id="@+id/icon_delete_note"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/note_content"
         android:scaleType="fitXY"
         android:background="#FFFFFF"
         android:src="@mipmap/baseline_delete_forever_black_48dp"/>

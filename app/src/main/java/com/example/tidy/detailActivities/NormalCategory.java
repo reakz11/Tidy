@@ -69,7 +69,6 @@ public class NormalCategory extends AppCompatActivity {
 
     String supportActionBarTitle;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
-    Handler hand = new Handler();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -253,33 +252,21 @@ public class NormalCategory extends AppCompatActivity {
         });
     }
 
-    Runnable run = new Runnable() {
-        @Override
-
-        public void run() {
-            mAdapter.notifyDataSetChanged();
-        }
-
-    };
-
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
-        TextView taskTitle;
-        TextView taskContent;
-        TextView taskDate;
+        @BindView(R.id.task_name) TextView taskTitle;
+        @BindView(R.id.task_content) TextView taskContent;
+        @BindView(R.id.task_due_date) TextView taskDate;
+        @BindView(R.id.delete_btn) Button deleteButton;
+        @BindView(R.id.task_check_box) CheckBox taskCheckbox;
 
-        Button deleteButton;
-        CheckBox taskCheckbox;
-
-        public TaskHolder(View itemView) {
+        private TaskHolder(View itemView) {
             super(itemView);
-
-            taskTitle = (TextView) itemView.findViewById(R.id.task_name);
-            taskContent = (TextView) itemView.findViewById(R.id.task_content);
-            taskDate = (TextView) itemView.findViewById(R.id.task_due_date);
-
-            deleteButton = (Button) itemView.findViewById(R.id.delete_btn);
-            taskCheckbox = (CheckBox) itemView.findViewById(R.id.task_check_box);
+            try {
+                ButterKnife.bind(this, itemView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
