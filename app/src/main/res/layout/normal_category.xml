@@ -39,6 +39,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_tasks"
             android:layout_width="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:nestedScrollingEnabled="false"
             android:layout_height="wrap_content"/>
     </android.support.v4.widget.NestedScrollView>
 
@@ -46,11 +48,10 @@
         android:id="@+id/fab_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_anchor="@id/scrollview_tasks"
-        app:layout_anchorGravity="bottom|end"
         android:layout_margin="16dp"
+        android:src="@mipmap/baseline_add_black_36dp"
         app:fabSize="normal"
-        android:src="@mipmap/baseline_add_black_36dp"/>
+        android:layout_gravity="end|bottom" />
 
     <LinearLayout
         android:id="@+id/layout_fab_project"

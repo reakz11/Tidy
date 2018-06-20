@@ -3,14 +3,12 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,7 +228,6 @@ public class NormalCategory extends AppCompatActivity {
                         if (task.getDate() != null) {
                             intent.putExtra("date", task.getFormattedDate());
                         }
-                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
                         startActivity(intent);
                     }
                 });

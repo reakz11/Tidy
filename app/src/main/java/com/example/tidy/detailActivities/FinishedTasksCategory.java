@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,7 +191,6 @@ public class FinishedTasksCategory extends AppCompatActivity {
                         intent.putExtra("title", task.getTitle());
                         intent.putExtra("content", task.getContent());
                         intent.putExtra("date", task.getFormattedDate());
-                        Log.v("TASK_INTENT", "sending data to task: " + intent.getExtras());
                         startActivity(intent);
                     }
                 });

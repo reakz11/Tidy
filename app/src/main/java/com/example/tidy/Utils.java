@@ -83,7 +83,6 @@ public class Utils {
             Log.v("DATE", "getTomorrowDate parsing error");
         }
 
-        Log.v("DATE", "tomorrow date is: " + mTomorrowDate);
         return mTomorrowDate;
     }
 
@@ -101,8 +100,6 @@ public class Utils {
         } catch (ParseException e){
             Log.v("DATE", "getTomorrowDate parsing error");
         }
-
-        Log.v("DATE", "tomorrow date is: " + mOtherTimeValue);
         return mOtherTimeValue;
     }
 }

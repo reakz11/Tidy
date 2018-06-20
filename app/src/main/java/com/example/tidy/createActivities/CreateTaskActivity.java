@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -40,7 +38,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     TextView dueDate;
     @BindView(R.id.pick_date_button)
     Button pickDate;
-    @BindView(R.id.fab_save)
+    @BindView(R.id.fab_save_task)
     FloatingActionButton fabSave;
     @BindView(R.id.et_task_title)
     EditText taskTitleEditText;
@@ -98,8 +96,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                             dateDb = sdf.format(dateRepresentation);
-
-                            Log.v("DATE", "FORMATTED DATE IS: " + dateDb);
 
                             dueDate.setText(selectedDate);
                         }
