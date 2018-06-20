@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d("LOGIN", "signInAnonymously:success");
                                     FirebaseUser user = auth.getCurrentUser();
                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    finish();
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w("LOGIN", "signInAnonymously:failure", task.getException());
@@ -104,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
-                // ...
             } else {
                 Log.v("AUTH", "SIGN IN FAILED");
             }
