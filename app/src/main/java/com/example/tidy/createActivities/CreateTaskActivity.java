@@ -48,8 +48,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String dateDb;
     private int mYear, mMonth, mDay;
 
-    FirebaseDatabase rootRef = FirebaseDatabase.getInstance();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +101,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             datePickerDialog.show();
         } else if(view == fabSave) {
             saveTodo();
+            finish();
         }
     }
 
@@ -133,13 +132,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());
-        database.getReference("users").child(id).child("tasks").updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError == null) {
-                    finish();
-                }
-            }
-        });
+        database.getReference("users").child(id).child("tasks").updateChildren(childUpdates);
     }
 }

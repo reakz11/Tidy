@@ -20,6 +20,8 @@ public class Utils {
 
     private static int mCurrentDate;
 
+    private static String mCurrentDateAndTime;
+
     private static int mTomorrowDate;
 
     private static int mOtherTimeValue;
@@ -55,6 +57,12 @@ public class Utils {
             mCurrentDate = Integer.parseInt(dateString);
         }
         return mCurrentDate;
+    }
+
+    public static String getCurrentDateAndTime() {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            mCurrentDateAndTime = sdf.format(new Date());
+            return mCurrentDateAndTime;
     }
 
     public static class DateUtil

@@ -164,7 +164,6 @@ public class NormalCategory extends AppCompatActivity {
                         .child(getUserId())
                         .child("tasks")
                         .orderByChild("date")
-                        .startAt(String.valueOf(getCurrentDate()))
                         .endAt(String.valueOf(getCurrentDate()));
 
                 break;

@@ -51,17 +51,6 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         list = new ArrayList<>();
-        list.add(new Project("Project 1"));
-        list.add(new Project("Project 2"));
-        list.add(new Project("Project 3"));
-        list.add(new Project("Project 4"));
-        list.add(new Project("Project 5"));
-        list.add(new Project("Project 6"));
-        list.add(new Project("Project 7"));
-        list.add(new Project("Project 8"));
-        list.add(new Project("Project 9"));
-        list.add(new Project("Project 10"));
-        list.add(new Project("Project 11"));
 
         adapter = new ProjectsAdapter(getContext(), list, this);
         recyclerView.setAdapter(adapter);
