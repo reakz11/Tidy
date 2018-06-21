@@ -1,7 +1,6 @@
 package com.example.tidy;
 
 import android.animation.Animator;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -10,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +23,6 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -136,11 +132,6 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onBackPressed()
-    {
-        getFragmentManager().popBackStackImmediate();
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation

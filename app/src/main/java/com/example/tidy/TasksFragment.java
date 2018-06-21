@@ -11,12 +11,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.tidy.adapters.ProjectsAdapter;
 import com.example.tidy.detailActivities.FinishedTasksCategory;
 import com.example.tidy.detailActivities.NormalCategory;
 import com.example.tidy.detailActivities.ProjectDetails;
+import com.example.tidy.objects.Note;
 import com.example.tidy.objects.Project;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +36,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectClickListener {
+import static com.example.tidy.Utils.getUserId;
+
+public class TasksFragment extends Fragment {
 
     public TasksFragment() {}
 
@@ -34,8 +48,13 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
     @BindView(R.id.card_tomorrow) CardView tomorrowCard;
     @BindView(R.id.card_other_time) CardView otherTimeCard;
     @BindView(R.id.card_finished_tasks) CardView finishedTasksCard;
+    @BindView(R.id.loading_indicator)
+    ProgressBar loadingIndicator;
 
-    ProjectsAdapter adapter;
+    private Query query;
+    private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
+    private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
+
 
     public static Fragment getInstance() {
         return new TasksFragment();
@@ -46,15 +65,6 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
         View rootView =  inflater.inflate(R.layout.fragment_tasks, container, false);
 
         ButterKnife.bind(this,rootView);
-
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        list = new ArrayList<>();
-
-        adapter = new ProjectsAdapter(getContext(), list, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setFocusable(false);
 
         return rootView;
     }
@@ -100,10 +110,93 @@ public class TasksFragment extends Fragment implements ProjectsAdapter.ProjectCl
         });
     }
 
-    @Override
-    public void onProjectClick(String projectTitle) {
-        Intent intent = new Intent(getContext(), ProjectDetails.class);
-        intent.putExtra(Intent.EXTRA_TEXT, projectTitle);
-        startActivity(intent);
+    public static class ProjectHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.project_name) TextView projectNameTv;
+
+        private ProjectHolder(View itemView) {
+            super(itemView);
+            try {
+                ButterKnife.bind(this, itemView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        query = mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("projects");
+
+        FirebaseRecyclerOptions<Project> options =
+                new FirebaseRecyclerOptions.Builder<Project>()
+                        .setQuery(query, Project.class)
+                        .build();
+
+
+        mAdapter = new FirebaseRecyclerAdapter<Project, ProjectHolder>(options) {
+            @Override
+            final public ProjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.project_item, parent, false);
+
+                return new ProjectHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(ProjectHolder holder, final int position, final Project project) {
+                final ProjectHolder viewHolder = (ProjectHolder) holder;
+                viewHolder.projectNameTv.setText(project.getTitle());
+
+//                viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+//                    }
+//                });
+            }
+        };
+
+        mAdapter.notifyDataSetChanged();
+
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loadingIndicator.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setFocusable(false);
+
+        mAdapter.startListening();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.stopListening();
+    }
+
+//    @Override
+//    public void onProjectClick(String projectTitle) {
+//        Intent intent = new Intent(getContext(), ProjectDetails.class);
+//        intent.putExtra(Intent.EXTRA_TEXT, projectTitle);
+//        startActivity(intent);
+//    }
 }

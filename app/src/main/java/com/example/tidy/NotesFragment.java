@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,6 @@ import com.example.tidy.detailActivities.NoteDetails;
 import com.example.tidy.objects.Note;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,8 +39,6 @@ public class NotesFragment extends Fragment {
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
 
     private Query query;
-    FirebaseAuth.AuthStateListener mAuthStateListener;
-    FirebaseUser user;
     private FirebaseRecyclerAdapter<Note, NoteHolder> mAdapter;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -92,8 +87,6 @@ public class NotesFragment extends Fragment {
                 .child("users")
                 .child(getUserId())
                 .child("notes");
-
-        Log.v("NotesFragment onResume", "userId is: " + getUserId());
 
         FirebaseRecyclerOptions<Note> options =
                 new FirebaseRecyclerOptions.Builder<Note>()
@@ -164,9 +157,4 @@ public class NotesFragment extends Fragment {
         mAdapter.stopListening();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mAdapter.stopListening();
-    }
 }
