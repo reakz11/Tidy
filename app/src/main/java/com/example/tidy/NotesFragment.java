@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,9 @@ public class NotesFragment extends Fragment {
     @BindView(R.id.rv_notes) RecyclerView recyclerView;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
 
-    Query query;
+    private Query query;
+    FirebaseAuth.AuthStateListener mAuthStateListener;
+    FirebaseUser user;
     private FirebaseRecyclerAdapter<Note, NoteHolder> mAdapter;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -53,10 +56,6 @@ public class NotesFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_notes, container, false);
 
         ButterKnife.bind(this,rootView);
-        query = mFirebaseDatabase
-                .child("users")
-                .child(getUserId())
-                .child("notes");
 
         return rootView;
 
@@ -84,9 +83,17 @@ public class NotesFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+
+        query = mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("notes");
+
+        Log.v("NotesFragment onResume", "userId is: " + getUserId());
 
         FirebaseRecyclerOptions<Note> options =
                 new FirebaseRecyclerOptions.Builder<Note>()

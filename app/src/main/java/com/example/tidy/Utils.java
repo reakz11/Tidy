@@ -37,10 +37,8 @@ public class Utils {
     }
 
     public static String getUserId() {
-        if (mUserId == null) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            mUserId = user.getUid();
-        }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mUserId = user.getUid();
         return mUserId;
     }
 
