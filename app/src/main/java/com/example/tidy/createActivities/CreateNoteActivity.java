@@ -1,17 +1,30 @@
 package com.example.tidy.createActivities;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.EditText;
 
 import com.example.tidy.R;
+import com.example.tidy.objects.Note;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateNoteActivity extends AppCompatActivity {
+public class CreateNoteActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.fab_save_note) FloatingActionButton fabSaveNote;
+    @BindView(R.id.et_note_title) EditText noteTitleEditText;
+    @BindView(R.id.et_note_content) EditText noteContentEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +35,45 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        fabSaveNote.setOnClickListener(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Create New Note");
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == fabSaveNote){
+            saveNote();
+            finish();
+        }
+    }
+
+    void saveNote() {
+
+// Assuming the user is already logged in.
+//        DatabaseReference userRef = rootRef.getReference("users").;
+//        userRef.child("message1").setValue("Hello World");
+
+        // first section
+        // get the data to save in our firebase db
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String id = user.getUid();
+
+        //make the modal object and convert it into hashmap
+
+        //second section
+        //save it to the firebase db
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        String key = database.getReference("taskList").push().getKey();
+
+        final Note note = new Note();
+        note.setTitle(noteTitleEditText.getText().toString());
+        note.setContent(noteContentEditText.getText().toString());
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put( key, note.toFirebaseObject());
+        database.getReference("users").child(id).child("notes").updateChildren(childUpdates);
+    }
 }

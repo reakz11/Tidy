@@ -12,7 +12,6 @@ public class Project {
     public Project(String title, String id) {
         this.mTitle = title;
         this.mId = id;
-
     }
 
     public void setTitle(String title) {

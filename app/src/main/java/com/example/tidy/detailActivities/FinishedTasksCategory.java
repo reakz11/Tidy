@@ -36,7 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;

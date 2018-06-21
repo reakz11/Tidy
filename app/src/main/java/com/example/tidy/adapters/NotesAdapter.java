@@ -8,14 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.tidy.objects.Note;
 import com.example.tidy.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
@@ -65,11 +62,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         public NotesViewHolder(View itemView) {
             super(itemView);
-            noteTitle = (TextView) itemView.findViewById(R.id.note_name);
+            noteTitle = (TextView) itemView.findViewById(R.id.note_title);
             noteContent = (TextView) itemView.findViewById(R.id.note_content);
             itemView.setOnClickListener(this);
 
-            deleteNote = itemView.findViewById(R.id.icon_delete_note);
+            deleteNote = itemView.findViewById(R.id.delete_note_btn);
             deleteNote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

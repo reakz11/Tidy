@@ -1,6 +1,5 @@
 package com.example.tidy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,32 +7,42 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-
-import com.example.tidy.adapters.NotesAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.example.tidy.detailActivities.NoteDetails;
 import com.example.tidy.objects.Note;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NotesFragment extends Fragment implements NotesAdapter.NoteClickListener {
+import static com.example.tidy.Utils.getUserId;
+
+public class NotesFragment extends Fragment {
 
 
     public NotesFragment() {}
 
     @BindView(R.id.rv_notes) RecyclerView recyclerView;
+    @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
 
-    List<Note> list;
-    NotesAdapter adapter;
-
+    Query query;
+    private FirebaseRecyclerAdapter<Note, NoteHolder> mAdapter;
+    private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     public static Fragment getInstance() {
         return new NotesFragment();
@@ -44,27 +53,10 @@ public class NotesFragment extends Fragment implements NotesAdapter.NoteClickLis
         View rootView =  inflater.inflate(R.layout.fragment_notes, container, false);
 
         ButterKnife.bind(this,rootView);
-
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        list = new ArrayList<>();
-        list.add(new Note("Test Title 1", "Test Content 1"));
-        list.add(new Note("Test Title 2", "Test Content 2"));
-        list.add(new Note("Test Title 3", "Test Content 3"));
-        list.add(new Note("Test Title 4", "Test Content 4"));
-        list.add(new Note("Test Title 5", "Test Content 5"));
-        list.add(new Note("Test Title 6", "Test Content 6"));
-        list.add(new Note("Test Title 7", "Test Content 7"));
-        list.add(new Note("Test Title 8", "Test Content 8"));
-        list.add(new Note("Test Title 9", "Test Content 9"));
-        list.add(new Note("Test Title 10", "Test Content 10"));
-        list.add(new Note("Test Title 11", "Test Content 11"));
-        list.add(new Note("Test Title 12", "Test Content 12"));
-        list.add(new Note("Test Title 13", "Test Content 13"));
-
-        adapter = new NotesAdapter(getContext(), list, this);
-        recyclerView.setAdapter(adapter);
+        query = mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("notes");
 
         return rootView;
 
@@ -76,12 +68,98 @@ public class NotesFragment extends Fragment implements NotesAdapter.NoteClickLis
 
     }
 
+    public static class NoteHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.note_title) TextView noteTitleTv;
+        @BindView(R.id.note_content) TextView noteContentTv;
+        @BindView(R.id.delete_note_btn) Button deleteNoteButton;
+
+        private NoteHolder(View itemView) {
+            super(itemView);
+            try {
+                ButterKnife.bind(this, itemView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
-    public void onNoteClick(String noteTitle, String noteContent) {
-        Intent intent = new Intent(getContext(), NoteDetails.class);
-        intent.putExtra("note_title", noteTitle);
-        intent.putExtra("note_content", noteContent);
-        Log.v("NOTE_INTENT", "sending data to note: " + intent.getExtras());
-        startActivity(intent);
+    public void onResume() {
+        super.onResume();
+
+        FirebaseRecyclerOptions<Note> options =
+                new FirebaseRecyclerOptions.Builder<Note>()
+                        .setQuery(query, Note.class)
+                        .build();
+
+
+        mAdapter = new FirebaseRecyclerAdapter<Note, NoteHolder>(options) {
+            @Override
+            final public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.note_item, parent, false);
+
+                return new NoteHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(NoteHolder holder, final int position, final Note note) {
+                final NoteHolder viewHolder = (NoteHolder) holder;
+                viewHolder.noteTitleTv.setText(note.getTitle());
+                viewHolder.noteContentTv.setText(note.getContent());
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), NoteDetails.class);
+                        intent.putExtra("title", note.getTitle());
+                        intent.putExtra("content", note.getContent());
+                        startActivity(intent);
+                    }
+                });
+
+//                viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+//                    }
+//                });
+            }
+        };
+
+        mAdapter.notifyDataSetChanged();
+
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loadingIndicator.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(mAdapter);
+
+        mAdapter.startListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.stopListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
     }
 }
