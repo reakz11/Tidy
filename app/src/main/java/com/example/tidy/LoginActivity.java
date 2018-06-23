@@ -1,6 +1,8 @@
 package com.example.tidy;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.MainActivity.myPreference;
 import static com.example.tidy.Utils.getDatabase;
 
 public class LoginActivity extends AppCompatActivity {
@@ -36,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
     Button loginAnonButton;
 
     FirebaseAuth auth;
+    SharedPreferences pref;
+    private String currentFragmentIndex = "current_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +51,19 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        pref = getSharedPreferences(myPreference,
+                Context.MODE_PRIVATE);
+
         auth = FirebaseAuth.getInstance();
 
         // If user is already logged it, he is forwarded to the main screen
         if (auth.getCurrentUser() != null) {
             // User is signed in (getCurrentUser() will be null if not signed in)
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt(currentFragmentIndex,0);
+            editor.apply();
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
 
         // Choose authentication providers

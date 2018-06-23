@@ -71,11 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        SharedPreferences.Editor editor = pref.edit();
-
-        editor.putInt(currentFragmentIndex,0);
-        editor.apply();
-
         // Setting up fragments
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(TasksFragment.getInstance(), "Tasks");
@@ -138,10 +133,20 @@ public class MainActivity extends AppCompatActivity {
         if (pref.contains(currentFragmentIndex)) {
             int currentItem = pref.getInt(currentFragmentIndex,0);
             viewPager.setCurrentItem(currentItem);
+            Log.v("MainActivity", "sharedPreferences set to: " + currentItem);
         } else {
             Log.v("MainActivity", "sharedPreferences are null.");
         }
     }
+
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        SharedPreferences.Editor editor = pref.edit();
+//
+//        editor.putInt(currentFragmentIndex,0);
+//        editor.apply();
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
