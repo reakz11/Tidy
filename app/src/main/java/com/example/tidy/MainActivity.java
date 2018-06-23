@@ -1,12 +1,13 @@
 package com.example.tidy;
 
 import android.animation.Animator;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,7 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     private Animation rotate_forward,rotate_backward;
 
+    private String currentFragmentIndex = "current_fragment";
+    private String scrollPositionString = "scroll_position";
+
     boolean isFABOpen=false;
+
+    SharedPreferences pref;
+    public static final String myPreference = "mypref";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +63,18 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
+        pref = getSharedPreferences(myPreference,
+                Context.MODE_PRIVATE);
+
         ButterKnife.bind(this);
         getDatabase();
 
         setSupportActionBar(toolbar);
+
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putInt(currentFragmentIndex,0);
+        editor.apply();
 
         // Setting up fragments
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -114,6 +129,40 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CreateProjectActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (pref.contains(currentFragmentIndex)) {
+            int currentItem = pref.getInt(currentFragmentIndex,0);
+            viewPager.setCurrentItem(currentItem);
+        } else {
+            Log.v("MainActivity", "sharedPreferences are null.");
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+
+        int currentFragmentInt = tabLayout.getSelectedTabPosition();
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putInt(currentFragmentIndex,currentFragmentInt);
+
+        editor.commit();
+
+        Log.v("MainActivity", "current fragment is " + currentFragmentInt);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle outState){
+        super.onRestoreInstanceState(outState);
+            viewPager.setCurrentItem(outState.getInt(currentFragmentIndex));
+            tabLayout.setScrollY(outState.getInt(scrollPositionString));
+            Log.v("MainActivity", "last saved fragment is: " + outState.getInt(currentFragmentIndex));
     }
 
     @Override

@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.tidy.detailActivities.NoteDetails;
@@ -33,13 +35,17 @@ import static com.example.tidy.Utils.getUserId;
 public class NotesFragment extends Fragment {
 
 
-    public NotesFragment() {}
+    public NotesFragment() {
+    }
 
-    @BindView(R.id.rv_notes) RecyclerView recyclerView;
-    @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
+    @BindView(R.id.rv_notes)
+    RecyclerView recyclerView;
+    @BindView(R.id.loading_indicator)
+    ProgressBar loadingIndicator;
 
     private Query query;
     private FirebaseRecyclerAdapter<Note, NoteHolder> mAdapter;
+    private LinearLayoutManager llm;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     public static Fragment getInstance() {
@@ -48,9 +54,9 @@ public class NotesFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_notes, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        ButterKnife.bind(this,rootView);
+        ButterKnife.bind(this, rootView);
 
         return rootView;
 
@@ -122,19 +128,57 @@ public class NotesFragment extends Fragment {
             }
         });
 
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
-
         mAdapter.startListening();
 
+        if (savedInstanceState != null) {
+
+            final int positionIndex = savedInstanceState.getInt("rv_position");
+            final int topView = savedInstanceState.getInt("rv_top_view");
+            Log.v("NotesFragment", "bundle contents: " + savedInstanceState);
+
+            mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onItemRangeInserted(int positionStart, int itemCount) {
+                    super.onItemRangeInserted(positionStart, itemCount);
+
+                    try {
+                        llm.scrollToPositionWithOffset(positionIndex, topView);
+
+                        Log.v("NotesFragment", "positionIndex is: " + positionIndex);
+                        Log.v("NotesFragment", "topView is: " + topView);
+                    } catch (NullPointerException e) {
+                        Log.v("NotesFragment", "NullPointerException");
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int positionIndex;
+        int topView;
+
+        positionIndex = llm.findFirstVisibleItemPosition();
+        View startView = recyclerView.getChildAt(0);
+
+        topView = (startView == null) ? 0 : (startView.getTop() - recyclerView.getPaddingTop());
+
+        outState.putInt("rv_position", positionIndex);
+        Log.v("NotesFragment", "rv_position is: " + positionIndex);
+        outState.putInt("rv_top_view", topView);
+        Log.v("NotesFragment", "rv_top_view is: " + topView);
     }
 
     public static class NoteHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.note_title) TextView noteTitleTv;
         @BindView(R.id.note_content) TextView noteContentTv;
-        @BindView(R.id.delete_note_btn) Button deleteNoteButton;
+        @BindView(R.id.delete_note_btn) ImageButton deleteNoteButton;
 
         private NoteHolder(View itemView) {
             super(itemView);
