@@ -1,14 +1,17 @@
 package com.example.tidy;
 
 import android.animation.Animator;
+import android.app.Fragment;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tabs) TabLayout tabLayout;
-    @BindView(R.id.viewpager) ViewPager viewPager;
-
+    public static ViewPager viewPager;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
     @BindView(R.id.fab_project) FloatingActionButton fabProject;
     @BindView(R.id.fab_note) FloatingActionButton fabNote;
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         ButterKnife.bind(this);
         getDatabase();
@@ -110,6 +114,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CreateProjectActivity.class));
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        int currentFragment = viewPager.getCurrentItem();
+
+        if (currentFragment > 0) {
+            // the code for whatever behaviour you want goes here
+            viewPager.setCurrentItem(0);
+        } else {
+            this.moveTaskToBack(true);
+        }
     }
 
     @Override

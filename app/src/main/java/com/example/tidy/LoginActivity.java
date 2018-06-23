@@ -111,4 +111,18 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        auth = FirebaseAuth.getInstance();
+
+        // If user is already logged it, he is forwarded to the main screen
+        if (auth.getCurrentUser() != null) {
+            // User is signed in (getCurrentUser() will be null if not signed in)
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
+    }
+
 }

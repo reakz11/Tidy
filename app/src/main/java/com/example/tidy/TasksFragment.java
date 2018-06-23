@@ -181,17 +181,6 @@ public class TasksFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
 //    @Override
 //    public void onProjectClick(String projectTitle) {
 //        Intent intent = new Intent(getContext(), ProjectDetails.class);
