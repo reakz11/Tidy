@@ -73,61 +73,6 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Sets onClickListener on CardViews
-        todayCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), NormalCategory.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Today");
-                startActivity(intent);
-            }
-        });
-
-        tomorrowCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), NormalCategory.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Tomorrow");
-                startActivity(intent);
-            }
-        });
-
-        otherTimeCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), NormalCategory.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Other Time");
-                startActivity(intent);
-            }
-        });
-
-        finishedTasksCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), FinishedTasksCategory.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    public static class ProjectHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.project_name) TextView projectNameTv;
-
-        private ProjectHolder(View itemView) {
-            super(itemView);
-            try {
-                ButterKnife.bind(this, itemView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
@@ -185,12 +130,66 @@ public class TasksFragment extends Fragment {
 
         mAdapter.startListening();
 
+        // Sets onClickListener on CardViews
+        todayCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), NormalCategory.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Today");
+                startActivity(intent);
+            }
+        });
+
+        tomorrowCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), NormalCategory.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Tomorrow");
+                startActivity(intent);
+            }
+        });
+
+        otherTimeCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), NormalCategory.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Other Time");
+                startActivity(intent);
+            }
+        });
+
+        finishedTasksCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FinishedTasksCategory.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    public static class ProjectHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.project_name) TextView projectNameTv;
+
+        private ProjectHolder(View itemView) {
+            super(itemView);
+            try {
+                ButterKnife.bind(this, itemView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mAdapter.stopListening();
     }
 
 //    @Override

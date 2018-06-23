@@ -60,28 +60,6 @@ public class NotesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-    }
-
-    public static class NoteHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.note_title) TextView noteTitleTv;
-        @BindView(R.id.note_content) TextView noteContentTv;
-        @BindView(R.id.delete_note_btn) Button deleteNoteButton;
-
-        private NoteHolder(View itemView) {
-            super(itemView);
-            try {
-                ButterKnife.bind(this, itemView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
 
         query = mFirebaseDatabase
                 .child("users")
@@ -149,12 +127,22 @@ public class NotesFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.startListening();
+
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mAdapter.stopListening();
-    }
+    public static class NoteHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.note_title) TextView noteTitleTv;
+        @BindView(R.id.note_content) TextView noteContentTv;
+        @BindView(R.id.delete_note_btn) Button deleteNoteButton;
+
+        private NoteHolder(View itemView) {
+            super(itemView);
+            try {
+                ButterKnife.bind(this, itemView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
