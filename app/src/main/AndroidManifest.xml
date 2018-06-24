@@ -46,6 +46,8 @@
         <activity android:name=".detailActivities.TaskDetails"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTask"/>
+        <activity android:name=".pomodoro.PomodoroMain" />
+        <activity android:name=".pomodoro.RelaxActivity" />
     </application>
 
 </manifest>

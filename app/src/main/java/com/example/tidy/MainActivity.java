@@ -7,8 +7,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +28,7 @@ import com.example.tidy.adapters.ViewPagerAdapter;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
+import com.example.tidy.pomodoro.PomodoroMain;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences pref;
     public static final String myPreference = "mypref";
 
+    private DrawerLayout mDrawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +77,31 @@ public class MainActivity extends AppCompatActivity {
         getDatabase();
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        if (menuItem.getItemId() == R.id.pomodoro){
+                            startActivity(new Intent(MainActivity.this, PomodoroMain.class));
+                        }
+                        // close drawer when item is tapped
+
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+
+                        return true;
+                    }
+                });
 
         // Setting up fragments
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -185,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.drawer_view, menu);
         return true;
     }
 
@@ -200,6 +233,10 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         }
                     });
+        } else if (itemThatWasClickedId == android.R.id.home){
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            Log.v("MainActivity", "Navigation Drawer Clicked");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
