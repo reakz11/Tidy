@@ -12,15 +12,16 @@ public class Task {
     private String mContent;
     private String mDate;
     private String mState;
+    private String mProjectId;
 
     public Task() {}
 
-    public Task(String title, String content, String date, String state) {
+    public Task(String title, String content, String date, String state, String projectId) {
         this.mTitle = title;
         this.mContent = content;
         this.mDate = date;
         this.mState = state;
-
+        this.mProjectId = projectId;
     }
 
     public String getTitle() {
@@ -70,6 +71,14 @@ public class Task {
         mState = state;
     }
 
+    public String getProjectId() {
+        return mProjectId;
+    }
+
+    public void setProjectId(String projectId) {
+        mProjectId = projectId;
+    }
+
 
     public HashMap<String,String> toFirebaseObject() {
         HashMap<String,String> todo =  new HashMap<String,String>();
@@ -77,6 +86,7 @@ public class Task {
         todo.put("content", mContent);
         todo.put("date", mDate);
         todo.put("state", mState);
+        todo.put("projectId", mProjectId);
 
         return todo;
     }

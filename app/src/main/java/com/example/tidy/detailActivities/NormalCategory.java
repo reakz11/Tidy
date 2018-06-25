@@ -228,6 +228,7 @@ public class NormalCategory extends AppCompatActivity {
                         if (task.getDate() != null) {
                             intent.putExtra("date", task.getFormattedDate());
                         }
+                        intent.putExtra("projectId", task.getProjectId());
                         startActivity(intent);
                     }
                 });

@@ -107,20 +107,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
     void saveTodo() {
 
-// Assuming the user is already logged in.
-//        DatabaseReference userRef = rootRef.getReference("users").;
-//        userRef.child("message1").setValue("Hello World");
-
-        // first section
-        // get the data to save in our firebase db
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String id = user.getUid();
 
         String dateString = dateDb;
-        //make the modal object and convert it into hasmap
 
-        //second section
-        //save it to the firebase db
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String key = database.getReference("taskList").push().getKey();
 
@@ -129,6 +120,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         task.setContent(taskDetailsEditText.getText().toString());
         task.setDate(dateString);
         task.setState("0");
+        task.setProjectId("0");
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());

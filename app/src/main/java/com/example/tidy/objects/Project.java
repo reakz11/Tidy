@@ -4,38 +4,39 @@ import java.util.HashMap;
 
 public class Project {
 
-    private String mTitle;
-    private String mId;
+    private String title;
+    private String id;
 
     public Project() {}
 
     public Project(String title, String id) {
-        this.mTitle = title;
-        this.mId = id;
+        this.title = title;
+        this.id = id;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setId(String id) {
-        mId = id;
+        this.id = id;
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
 
     public HashMap<String,String> toFirebaseObject() {
         HashMap<String,String> project =  new HashMap<String,String>();
-        project.put("title", mTitle);
-        project.put("id", mId);
+        project.put("title", title);
+        project.put("id", id);
 
         return project;
     }
 }
+

@@ -36,13 +36,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
 
 public class TasksFragment extends Fragment {
 
     public TasksFragment() {}
 
-    List<Project> list;
     @BindView(R.id.rv_projects) RecyclerView recyclerView;
     @BindView(R.id.card_today) CardView todayCard;
     @BindView(R.id.card_tomorrow) CardView tomorrowCard;
@@ -65,6 +65,7 @@ public class TasksFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_tasks, container, false);
 
         ButterKnife.bind(this,rootView);
+        getDatabase();
 
         return rootView;
     }
@@ -82,7 +83,6 @@ public class TasksFragment extends Fragment {
                 new FirebaseRecyclerOptions.Builder<Project>()
                         .setQuery(query, Project.class)
                         .build();
-
 
         mAdapter = new FirebaseRecyclerAdapter<Project, ProjectHolder>(options) {
             @Override

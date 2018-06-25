@@ -36,8 +36,9 @@
     <TextView
         android:id="@+id/task_title_tv"
         tools:text="Task Title"
-        android:layout_marginTop="80dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/appBarLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -46,13 +47,14 @@
         tools:text="Task Content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_below="@id/task_title_tv"
         android:layout_marginStart="10dp"/>
 
     <TextView
+        android:id="@+id/deadline_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_below="@id/task_content_tv"
         android:layout_marginStart="10dp"
         android:text="Deadline: "/>
 
@@ -61,8 +63,46 @@
         android:hint="No Deadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginStart="75dp"/>
+        android:layout_toEndOf="@+id/deadline_text"
+        android:layout_below="@id/task_content_tv"
+        android:layout_marginStart="5dp"/>
+
+    <TextView
+        android:id="@+id/project_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_below="@id/task_date"
+        android:text="Assigned to project: "/>
+
+    <TextView
+        android:id="@+id/task_project"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/deadline_text"
+        android:layout_toEndOf="@+id/project_text"
+        android:hint="No project" />
+
+
+<!--    <Button
+        android:id="@+id/pick_project_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/task_title_tv"
+        android:layout_below="@+id/project_text"
+        android:text="Add to Project" />-->
+
+    <iammert.com.expandablelib.ExpandableLayout
+        android:id="@+id/el"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_below="@id/project_text"
+        app:parentLayout="@layout/layout_parent"
+        app:childLayout="@layout/layout_child">
+
+    </iammert.com.expandablelib.ExpandableLayout>
+
 
     <LinearLayout
         android:id="@+id/layout_fab_project"

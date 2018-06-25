@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -138,15 +137,6 @@ public class MainActivity extends AppCompatActivity {
             Log.v("MainActivity", "sharedPreferences are null.");
         }
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        SharedPreferences.Editor editor = pref.edit();
-//
-//        editor.putInt(currentFragmentIndex,0);
-//        editor.apply();
-//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
