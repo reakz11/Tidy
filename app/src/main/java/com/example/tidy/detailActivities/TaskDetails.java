@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,8 +13,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -51,6 +54,7 @@ import butterknife.ButterKnife;
 import iammert.com.expandablelib.ExpandableLayout;
 import iammert.com.expandablelib.Section;
 
+import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
 
 public class TaskDetails extends AppCompatActivity {
@@ -74,11 +78,11 @@ public class TaskDetails extends AppCompatActivity {
     private String mTaskTitle = "title";
     private String mTaskContent = "content";
     private String mTaskDate = "date";
-    private ListView listView;
-    private SimpleAdapter simpleAdapter;
+    private String mTaskId = "taskId";
+    private String mTaskKey = "taskKey";
 
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
-            .getReference().child("users").child(getUserId()).child("projects");
+            .getReference();
 
     Section<ProjectCategory,String> section;
     ExpandableLayout layout;
@@ -87,6 +91,8 @@ public class TaskDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_details);
+
+        getDatabase();
 
         ButterKnife.bind(this);
 
@@ -97,7 +103,7 @@ public class TaskDetails extends AppCompatActivity {
         getSupportActionBar().setTitle("Task Details");
 
         // Getting data from intent list and displaying them
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
 
         if (intent.hasExtra(mTaskTitle)) {
             String taskTitle = intent.getStringExtra(mTaskTitle);
@@ -175,42 +181,44 @@ public class TaskDetails extends AppCompatActivity {
             }
 
             @Override
-            public void renderChild(View view, Project project, int parentPosition, int childPosition) {
+            public void renderChild(View view, final Project project, int parentPosition, int childPosition) {
                 ((TextView)view.findViewById(R.id.tv_child_name)).setText(project.getTitle());
-                Log.v("TaskDetails", "renderChild executed, title is: " + project);
+                ((RadioButton)view.findViewById(R.id.radio_button)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
+
+                        String projectId = String.valueOf(project.getId());
+                        String taskKey = intent.getStringExtra(mTaskKey);
+
+                        if (radioButton.isChecked()) {
+                            mFirebaseDatabase.child("users").child(getUserId())
+                                    .child("tasks").child(taskKey).child("projectId").setValue(projectId);
+                        }
+
+                        Log.v("TaskDetails", "RenderChild onClick projectId is: " + projectId);
+
+                    }
+                });
             }
         });
 
-        mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
+        mFirebaseDatabase.child("users").child(getUserId())
+                .child("projects").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, String> td = (HashMap<String,String>) dataSnapshot.getValue();
 
-                Log.v("TaskDetails", "Map td: " + td);
-
                 List<String> values = new ArrayList<>(td.values());
-
-                Log.v("TaskDetails", "Arraylist values: " + values);
-
                 JSONArray jsonArray = new JSONArray(values);
-
-                Log.v("TaskDetails", "JSONArray values: " + jsonArray);
-
                 String jsonArrayStr = jsonArray.toString();
-
-                Log.v("TaskDetails", "JSONArrayString values: " + jsonArrayStr);
 
                 List<Project> projects = new ArrayList<Project>();
                 Type listType = new TypeToken<List<Project>>(){}.getType();
                 projects = new Gson().fromJson(jsonArrayStr, listType);
 
-                Log.v("TaskDetails", "GSON CONTENT: " + projects);
-
                 layout.addSection(getSection(projects));
-
-
-
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -222,6 +230,8 @@ public class TaskDetails extends AppCompatActivity {
     private Section<ProjectCategory,Project> getSection(List<Project> values) {
         Section<ProjectCategory, Project> section = new Section<>();
         ProjectCategory projectCategory = new ProjectCategory("Projects");
+
+        values.add(new Project("None","0"));
 
         section.parent = projectCategory;
         section.children.addAll(values);

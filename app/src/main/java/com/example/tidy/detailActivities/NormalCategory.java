@@ -229,6 +229,8 @@ public class NormalCategory extends AppCompatActivity {
                             intent.putExtra("date", task.getFormattedDate());
                         }
                         intent.putExtra("projectId", task.getProjectId());
+                        intent.putExtra("taskId",task.getTaskId());
+                        intent.putExtra("taskKey", mAdapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         startActivity(intent);
                     }
                 });
@@ -248,11 +250,9 @@ public class NormalCategory extends AppCompatActivity {
                 } else {
                     if (task.getDate() != null && Integer.parseInt(task.getDate()) < getOtherTimeValue() || Integer.parseInt(task.getState()) == 1) {
                         viewHolder.itemView.setVisibility(View.GONE);
-                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                        viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                     }
                 }
-
-
             }
         };
 

@@ -28,6 +28,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.getCurrentDateAndTime;
 import static com.example.tidy.Utils.getDatabase;
 
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener {
@@ -114,6 +115,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String key = database.getReference("taskList").push().getKey();
+        String taskID = getCurrentDateAndTime();
 
         Task task = new Task();
         task.setTitle(taskTitleEditText.getText().toString());
@@ -121,6 +123,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         task.setDate(dateString);
         task.setState("0");
         task.setProjectId("0");
+        task.setTaskId(taskID);
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());

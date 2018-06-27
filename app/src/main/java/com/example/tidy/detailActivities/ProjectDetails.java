@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.tidy.MainActivity;
 import com.example.tidy.R;
@@ -30,6 +31,7 @@ public class ProjectDetails extends AppCompatActivity {
     @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
+    @BindView(R.id.project_title) TextView projectTitleTv;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -51,6 +53,11 @@ public class ProjectDetails extends AppCompatActivity {
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
+        }
+
+        if (intent.hasExtra("title")) {
+            String projectTitle = intent.getStringExtra("title");
+            projectTitleTv.setText(projectTitle);
         }
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);

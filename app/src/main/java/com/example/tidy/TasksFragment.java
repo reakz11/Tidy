@@ -48,8 +48,7 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.card_tomorrow) CardView tomorrowCard;
     @BindView(R.id.card_other_time) CardView otherTimeCard;
     @BindView(R.id.card_finished_tasks) CardView finishedTasksCard;
-    @BindView(R.id.loading_indicator)
-    ProgressBar loadingIndicator;
+    @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
 
     private Query query;
     private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
@@ -99,13 +98,22 @@ public class TasksFragment extends Fragment {
             public void onBindViewHolder(ProjectHolder holder, final int position, final Project project) {
                 final ProjectHolder viewHolder = (ProjectHolder) holder;
                 viewHolder.projectNameTv.setText(project.getTitle());
-
-//                viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
-//                    }
-//                });
+                viewHolder.projectNameTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), ProjectDetails.class);
+                        intent.putExtra("title", project.getTitle());
+                        intent.putExtra("id", project.getId());
+                        startActivity(intent);
+                    }
+                });
+                viewHolder.deleteProjectBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         };
 
@@ -170,6 +178,7 @@ public class TasksFragment extends Fragment {
     public static class ProjectHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.project_name) TextView projectNameTv;
+        @BindView(R.id.delete_btn) Button deleteProjectBtn;
 
         private ProjectHolder(View itemView) {
             super(itemView);
@@ -180,11 +189,4 @@ public class TasksFragment extends Fragment {
             }
         }
     }
-
-//    @Override
-//    public void onProjectClick(String projectTitle) {
-//        Intent intent = new Intent(getContext(), ProjectDetails.class);
-//        intent.putExtra(Intent.EXTRA_TEXT, projectTitle);
-//        startActivity(intent);
-//    }
 }
