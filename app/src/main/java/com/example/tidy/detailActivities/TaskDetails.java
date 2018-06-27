@@ -169,57 +169,80 @@ public class TaskDetails extends AppCompatActivity {
             }
         });
 
-        layout = (ExpandableLayout) findViewById(R.id.el);
+        DatabaseReference projectsRef = mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("projects");
 
-        layout.setRenderer(new ExpandableLayout.Renderer<ProjectCategory,Project>(){
-
+        projectsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void renderParent(View view, ProjectCategory projectCategory, boolean isExpanded, int parentPosition) {
-                ((TextView)view.findViewById(R.id.tv_parent_name)).setText(projectCategory.name);
-                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded?
-                        R.mipmap.baseline_expand_less_black_24dp:R.mipmap.baseline_expand_more_black_24dp);
-            }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
 
-            @Override
-            public void renderChild(View view, final Project project, int parentPosition, int childPosition) {
-                ((TextView)view.findViewById(R.id.tv_child_name)).setText(project.getTitle());
-                ((RadioButton)view.findViewById(R.id.radio_button)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
 
-                        RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
+                    layout = (ExpandableLayout) findViewById(R.id.el);
 
-                        String projectId = String.valueOf(project.getId());
-                        String taskKey = intent.getStringExtra(mTaskKey);
+                    layout.setRenderer(new ExpandableLayout.Renderer<ProjectCategory,Project>(){
 
-                        if (radioButton.isChecked()) {
-                            mFirebaseDatabase.child("users").child(getUserId())
-                                    .child("tasks").child(taskKey).child("projectId").setValue(projectId);
+                        @Override
+                        public void renderParent(View view, ProjectCategory projectCategory, boolean isExpanded, int parentPosition) {
+                            ((TextView)view.findViewById(R.id.tv_parent_name)).setText(projectCategory.name);
+                            view.findViewById(R.id.arrow).setBackgroundResource(isExpanded?
+                                    R.mipmap.baseline_expand_less_black_24dp:R.mipmap.baseline_expand_more_black_24dp);
                         }
 
-                        Log.v("TaskDetails", "RenderChild onClick projectId is: " + projectId);
+                        @Override
+                        public void renderChild(View view, final Project project, int parentPosition, int childPosition) {
+                            ((TextView)view.findViewById(R.id.tv_child_name)).setText(project.getTitle());
+                            ((RadioButton)view.findViewById(R.id.radio_button)).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
 
-                    }
-                });
+                                    RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
+
+                                    String projectId = String.valueOf(project.getId());
+                                    String taskKey = intent.getStringExtra(mTaskKey);
+
+                                    if (radioButton.isChecked()) {
+                                        mFirebaseDatabase.child("users").child(getUserId())
+                                                .child("tasks").child(taskKey).child("projectId").setValue(projectId);
+                                    }
+
+                                    Log.v("TaskDetails", "RenderChild onClick projectId is: " + projectId);
+
+                                }
+                            });
+                        }
+                    });
+
+                    mFirebaseDatabase.child("users").child(getUserId())
+                            .child("projects").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Map<String, String> td = (HashMap<String,String>) dataSnapshot.getValue();
+
+                                List<String> values = new ArrayList<>(td.values());
+                                JSONArray jsonArray = new JSONArray(values);
+                                String jsonArrayStr = jsonArray.toString();
+
+                                List<Project> projects = new ArrayList<Project>();
+                                Type listType = new TypeToken<List<Project>>(){}.getType();
+                                projects = new Gson().fromJson(jsonArrayStr, listType);
+
+                                layout.addSection(getSection(projects));
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                } else {
+                    Log.v("TaskDetails", "No projects exist in database");
+                }
             }
-        });
 
-        mFirebaseDatabase.child("users").child(getUserId())
-                .child("projects").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> td = (HashMap<String,String>) dataSnapshot.getValue();
-
-                List<String> values = new ArrayList<>(td.values());
-                JSONArray jsonArray = new JSONArray(values);
-                String jsonArrayStr = jsonArray.toString();
-
-                List<Project> projects = new ArrayList<Project>();
-                Type listType = new TypeToken<List<Project>>(){}.getType();
-                projects = new Gson().fromJson(jsonArrayStr, listType);
-
-                layout.addSection(getSection(projects));
-            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

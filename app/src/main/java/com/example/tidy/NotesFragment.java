@@ -105,12 +105,12 @@ public class NotesFragment extends Fragment {
                     }
                 });
 
-//                viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
-//                    }
-//                });
+                viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                    }
+                });
             }
         };
 
@@ -178,7 +178,7 @@ public class NotesFragment extends Fragment {
 
         @BindView(R.id.note_title) TextView noteTitleTv;
         @BindView(R.id.note_content) TextView noteContentTv;
-        @BindView(R.id.delete_note_btn) ImageButton deleteNoteButton;
+        @BindView(R.id.delete_btn) Button deleteNoteButton;
 
         private NoteHolder(View itemView) {
             super(itemView);
