@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.tidy.adapters.ProjectsAdapter;
-import com.example.tidy.detailActivities.FinishedTasksCategory;
+import com.example.tidy.detailActivities.CompletedTasksCategory;
 import com.example.tidy.detailActivities.NormalCategory;
 import com.example.tidy.detailActivities.ProjectDetails;
-import com.example.tidy.objects.Note;
 import com.example.tidy.objects.Project;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -29,9 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +45,7 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.card_other_time) CardView otherTimeCard;
     @BindView(R.id.card_finished_tasks) CardView finishedTasksCard;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
+    @BindView(R.id.hint_no_projects) TextView hintNoProjects;
 
     private Query query;
     private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
@@ -119,24 +116,27 @@ public class TasksFragment extends Fragment {
 
         mAdapter.notifyDataSetChanged();
 
-        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                loadingIndicator.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setFocusable(false);
 
         mAdapter.startListening();
+
+        mFirebaseDatabase.child("users").child(getUserId()).child("projects")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        hintNoProjects.setVisibility((mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE));
+                        Log.v("TaskFragment", "mAdapter itemCount: " + mAdapter.getItemCount());
+                        loadingIndicator.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
         // Sets onClickListener on CardViews
         todayCard.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +169,7 @@ public class TasksFragment extends Fragment {
         finishedTasksCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), FinishedTasksCategory.class);
+                Intent intent = new Intent(getContext(), CompletedTasksCategory.class);
                 startActivity(intent);
             }
         });

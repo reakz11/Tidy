@@ -36,7 +36,7 @@
         <activity android:name=".detailActivities.NormalCategory"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTask"/>
-        <activity android:name=".detailActivities.FinishedTasksCategory"
+        <activity android:name=".detailActivities.CompletedTasksCategory"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"/>

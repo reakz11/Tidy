@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ import butterknife.ButterKnife;
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
 
-public class FinishedTasksCategory extends AppCompatActivity {
+public class CompletedTasksCategory extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
@@ -50,20 +51,21 @@ public class FinishedTasksCategory extends AppCompatActivity {
     @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
-    @BindView(R.id.rv_finished_tasks) RecyclerView recyclerView;
+    @BindView(R.id.rv_completed_tasks) RecyclerView recyclerView;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
+    @BindView(R.id.hint_no_completed_tasks) TextView hintNoCompletedTasks;
 
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
 
-    private FirebaseRecyclerAdapter<Task, FinishedTasksCategory.TaskHolder> mAdapter;
+    private FirebaseRecyclerAdapter<Task, CompletedTasksCategory.TaskHolder> mAdapter;
     Query query;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.finished_tasks_category);
+        setContentView(R.layout.completed_tasks_category);
 
         getDatabase();
 
@@ -72,7 +74,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Finished Tasks");
+        getSupportActionBar().setTitle("Completed Tasks");
 
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
@@ -161,7 +163,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.finished_task_item, parent, false);
+                        .inflate(R.layout.completed_task_item, parent, false);
 
                 return new TaskHolder(view);
             }
@@ -179,7 +181,7 @@ public class FinishedTasksCategory extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("0");
-                        mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
 
@@ -189,7 +191,9 @@ public class FinishedTasksCategory extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), TaskDetails.class);
                         intent.putExtra("title", task.getTitle());
                         intent.putExtra("content", task.getContent());
-                        intent.putExtra("date", task.getFormattedDate());
+                        if (task.getDate() != null) {
+                            intent.putExtra("date", task.getFormattedDate());
+                        }
                         startActivity(intent);
                     }
                 });
@@ -205,23 +209,38 @@ public class FinishedTasksCategory extends AppCompatActivity {
 
         mAdapter.notifyDataSetChanged();
 
-        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                loadingIndicator.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                loadingIndicator.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.startListening();
+
+        mFirebaseDatabase.child("users").child(getUserId()).child("tasks").orderByChild("state").equalTo("1")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        hintNoCompletedTasks.setVisibility((mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE));
+                        Log.v("TaskFragment", "mAdapter itemCount: " + mAdapter.getItemCount());
+                        loadingIndicator.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     @Override

@@ -37,10 +37,19 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_finished_tasks"
+            android:id="@+id/rv_completed_tasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/hint_no_completed_tasks"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:text="All completed tasks will be displayed here"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_main"

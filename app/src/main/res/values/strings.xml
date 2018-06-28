@@ -5,7 +5,7 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="other_time">Other Time</string>
-    <string name="finished_tasks">Finished Tasks</string>
+    <string name="completed_tasks">Completed Tasks</string>
 
     <string name="new_task">New Task</string>
     <string name="new_note">New Note</string>

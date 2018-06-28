@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="card_width">340dp</dimen>
+<resources>
+    <dimen name="card_width">375dp</dimen>
     <dimen name="card_height">60dp</dimen>
     <dimen name="card_margin_start">4dp</dimen>
     <dimen name="card_margin_end">4dp</dimen>

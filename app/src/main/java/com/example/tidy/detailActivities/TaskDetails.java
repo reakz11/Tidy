@@ -179,7 +179,6 @@ public class TaskDetails extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
 
-
                     layout = (ExpandableLayout) findViewById(R.id.el);
 
                     layout.setRenderer(new ExpandableLayout.Renderer<ProjectCategory,Project>(){
