@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,6 +60,7 @@ public class NormalCategory extends AppCompatActivity {
     @BindView(R.id.rv_tasks) RecyclerView recyclerView;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
     @BindView(R.id.hint_no_tasks) TextView hintNoTasks;
+    @Nullable @BindView(R.id.delete_btn) Button deleteButton;
 
 
     private Animation rotate_forward,rotate_backward;
@@ -278,13 +281,64 @@ public class NormalCategory extends AppCompatActivity {
 
         mAdapter.startListening();
 
+
+        //TODO: FIX HINT DISPLAY CHILD
+        mFirebaseDatabase.child("users").child(getUserId()).child("tasks").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (deleteButton != null) {
+                    hintNoTasks.setVisibility(View.VISIBLE);
+                } else {
+                    hintNoTasks.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                loadingIndicator.setVisibility(View.GONE);
+                if (deleteButton == null) {
+                    hintNoTasks.setVisibility(View.VISIBLE);
+                    Log.v("NormalCategory", "onChildChanged triggered");
+                } else {
+                    if (deleteButton.getVisibility() == View.VISIBLE) {
+                        hintNoTasks.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                if (deleteButton == null) {
+                    hintNoTasks.setVisibility(View.VISIBLE);
+                    Log.v("NormalCategory", "onChildRemoved triggered");
+                } else {
+                    hintNoTasks.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         //TODO: Fix hint displaying in categories
-        mFirebaseDatabase.child("users").child(getUserId()).child("tasks").orderByChild("state").equalTo("0")
+        mFirebaseDatabase.child("users").child(getUserId()).child("tasks")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        hintNoTasks.setVisibility((mAdapter.getItemCount()== 0 ? View.VISIBLE : View.GONE));
-                        Log.v("TaskFragment", "rv height: " + recyclerView.getHeight());
+                        if (deleteButton != null) {
+                            hintNoTasks.setVisibility(View.GONE);
+                            Log.v("NormalCategory", "onDataChange deleteBtn != null");
+                        }
+
+//                        hintNoTasks.setVisibility((mAdapter.getItemCount()== 0 ? View.VISIBLE : View.GONE));
+//                        Log.v("TaskFragment", "rv height: " + mAdapter.getItemCount());
                         loadingIndicator.setVisibility(View.GONE);
                     }
 
@@ -299,6 +353,12 @@ public class NormalCategory extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mAdapter.stopListening();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.startListening();
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation

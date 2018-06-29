@@ -33,8 +33,8 @@ public class NoteDetails extends AppCompatActivity {
     @BindView(R.id.note_details_title) TextView mNoteTitleTextView;
     @BindView(R.id.note_details_content) TextView mNoteContentTextView;
 
-    private String mNoteTitle = "note_title";
-    private String mNoteContent = "note_content";
+    private String mNoteTitle = "title";
+    private String mNoteContent = "content";
 
     private Animation rotate_forward,rotate_backward;
 

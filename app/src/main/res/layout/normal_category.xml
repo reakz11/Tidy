@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/hint_no_tasks"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginTop="20dp"
         android:text="You don't have any tasks for..."
         android:layout_gravity="center"

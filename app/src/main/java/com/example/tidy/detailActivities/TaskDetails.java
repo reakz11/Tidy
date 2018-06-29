@@ -80,6 +80,8 @@ public class TaskDetails extends AppCompatActivity {
     private String mTaskDate = "date";
     private String mTaskId = "taskId";
     private String mTaskKey = "taskKey";
+    private String mProjectId = "projectId";
+    private String taskProjectId;
 
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
             .getReference();
@@ -193,6 +195,22 @@ public class TaskDetails extends AppCompatActivity {
                         @Override
                         public void renderChild(View view, final Project project, int parentPosition, int childPosition) {
                             ((TextView)view.findViewById(R.id.tv_child_name)).setText(project.getTitle());
+
+                            RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
+
+                            if (intent.hasExtra(mProjectId)) {
+                                taskProjectId = intent.getStringExtra(mProjectId);
+                            }
+
+                            String projectId = String.valueOf(project.getId());
+
+                            Log.v("TaskDetails", "taskProjectId is: " + taskProjectId);
+
+                            if (taskProjectId != null && taskProjectId.equals(projectId) ) {
+                                Log.v("TaskDetails", "taskProjectId and projectId are: " + taskProjectId + projectId);
+                                radioButton.setChecked(true);
+                            }
+
                             ((RadioButton)view.findViewById(R.id.radio_button)).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -200,6 +218,7 @@ public class TaskDetails extends AppCompatActivity {
                                     RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
 
                                     String projectId = String.valueOf(project.getId());
+
                                     String taskKey = intent.getStringExtra(mTaskKey);
 
                                     if (radioButton.isChecked()) {
