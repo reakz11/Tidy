@@ -148,8 +148,8 @@ public class NotesFragment extends Fragment {
         if (savedInstanceState != null) {
 
             // Used for saving scroll position
-            final int positionIndex = savedInstanceState.getInt("rv_position");
-            final int topView = savedInstanceState.getInt("rv_top_view");
+            final int positionIndex = savedInstanceState.getInt("rv_position_notes");
+            final int topView = savedInstanceState.getInt("rv_top_view_notes");
 
             mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
@@ -169,16 +169,16 @@ public class NotesFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int positionIndex;
-        int topView;
+        int positionIndexNotes;
+        int topViewNotes;
 
-        positionIndex = llm.findFirstVisibleItemPosition();
+        positionIndexNotes = llm.findFirstVisibleItemPosition();
         View startView = recyclerView.getChildAt(0);
 
-        topView = (startView == null) ? 0 : (startView.getTop() - recyclerView.getPaddingTop());
+        topViewNotes = (startView == null) ? 0 : (startView.getTop() - recyclerView.getPaddingTop());
 
-        outState.putInt("rv_position", positionIndex);
-        outState.putInt("rv_top_view", topView);
+        outState.putInt("rv_position_notes", positionIndexNotes);
+        outState.putInt("rv_top_view_notes", topViewNotes);
     }
 
     public static class NoteHolder extends RecyclerView.ViewHolder {

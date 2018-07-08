@@ -48,6 +48,7 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.hint_no_projects) TextView hintNoProjects;
 
     private Query query;
+    private LinearLayoutManager llm;
     private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -128,7 +129,7 @@ public class TasksFragment extends Fragment {
 
         mAdapter.notifyDataSetChanged();
 
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setFocusable(false);
@@ -149,6 +150,26 @@ public class TasksFragment extends Fragment {
 
                     }
                 });
+
+        if (savedInstanceState != null) {
+
+            // Used for saving scroll position
+            final int positionIndex = savedInstanceState.getInt("rv_position_tasks");
+            final int topView = savedInstanceState.getInt("rv_top_view_tasks");
+
+            mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onItemRangeInserted(int positionStart, int itemCount) {
+                    super.onItemRangeInserted(positionStart, itemCount);
+
+                    try {
+                        llm.scrollToPositionWithOffset(positionIndex, topView);
+                    } catch (NullPointerException e) {
+                        Log.v("NotesFragment", "NullPointerException");
+                    }
+                }
+            });
+        }
 
         // Sets onClickListener on CardViews
         todayCard.setOnClickListener(new View.OnClickListener() {
@@ -185,6 +206,21 @@ public class TasksFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int positionIndexTasks;
+        int topViewTask;
+
+        positionIndexTasks = llm.findFirstVisibleItemPosition();
+        View startView = recyclerView.getChildAt(0);
+
+        topViewTask = (startView == null) ? 0 : (startView.getTop() - recyclerView.getPaddingTop());
+
+        outState.putInt("rv_position_tasks", positionIndexTasks);
+        outState.putInt("rv_top_view_tasks", topViewTask);
     }
 
     public static class ProjectHolder extends RecyclerView.ViewHolder {
