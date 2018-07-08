@@ -10,4 +10,7 @@
     <string name="new_task">New Task</string>
     <string name="new_note">New Note</string>
     <string name="new_project">New Project</string>
+
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

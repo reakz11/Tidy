@@ -1,6 +1,8 @@
 package com.example.tidy;
 
 import android.animation.Animator;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +25,7 @@ import com.example.tidy.adapters.ViewPagerAdapter;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
+import com.example.tidy.widget.WidgetProvider;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -70,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Gets FirebaseDatabase and sets offline persistence to true
         getDatabase();
+
+        Context context = getApplicationContext();
+        ComponentName name = new ComponentName(context, WidgetProvider.class);
+        int [] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
+        AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(ids, R.id.listViewWidget);
 
         // Binding views
         ButterKnife.bind(this);

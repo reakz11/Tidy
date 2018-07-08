@@ -8,46 +8,46 @@ import java.util.HashMap;
 
 public class Task {
 
-    private String mTitle;
-    private String mContent;
-    private String mDate;
-    private String mState;
-    private String mProjectId;
-    private String mTaskId;
+    private String title;
+    private String content;
+    private String date;
+    private String state;
+    private String projectId;
+    private String taskId;
 
     public Task() {}
 
     public Task(String title, String content, String date, String state, String projectId, String taskId) {
-        this.mTitle = title;
-        this.mContent = content;
-        this.mDate = date;
-        this.mState = state;
-        this.mProjectId = projectId;
-        this.mTaskId = taskId;
+        this.title = title;
+        this.content = content;
+        this.date = date;
+        this.state = state;
+        this.projectId = projectId;
+        this.taskId = taskId;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public String getContent() {
-        return mContent;
+        return content;
     }
 
     public void setContent(String content) {
-        mContent = content;
+        this.content = content;
     }
 
     public String getDate() {
-        return mDate;
+        return date;
     }
 
     public void setDate(String date) {
-        mDate = date;
+        this.date = date;
     }
 
     public String getFormattedDate() {
@@ -57,7 +57,7 @@ public class Task {
         Date date;
 
         try {
-            date = originalFormat.parse(mDate);
+            date = originalFormat.parse(this.date);
         } catch (ParseException e){
             return null;
         }
@@ -66,38 +66,38 @@ public class Task {
     }
 
     public String getState() {
-        return mState;
+        return state;
     }
 
     public void setState(String state) {
-        mState = state;
+        this.state = state;
     }
 
     public String getProjectId() {
-        return mProjectId;
+        return projectId;
     }
 
     public void setProjectId(String projectId) {
-        mProjectId = projectId;
+        this.projectId = projectId;
     }
 
     public String getTaskId(){
-        return mTaskId;
+        return taskId;
     }
 
     public void setTaskId(String taskId) {
-        mTaskId = taskId;
+        this.taskId = taskId;
     }
 
 
     public HashMap<String,String> toFirebaseObject() {
         HashMap<String,String> todo =  new HashMap<String,String>();
-        todo.put("title", mTitle);
-        todo.put("content", mContent);
-        todo.put("date", mDate);
-        todo.put("state", mState);
-        todo.put("projectId", mProjectId);
-        todo.put("taskId", mTaskId);
+        todo.put("title", title);
+        todo.put("content", content);
+        todo.put("date", date);
+        todo.put("state", state);
+        todo.put("projectId", projectId);
+        todo.put("taskId", taskId);
 
         return todo;
     }
