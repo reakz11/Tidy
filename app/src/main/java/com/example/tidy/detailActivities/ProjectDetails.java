@@ -178,7 +178,7 @@ public class ProjectDetails extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
-                final TaskHolder viewHolder = (TaskHolder) holder;
+                final TaskHolder viewHolder = holder;
                 // Sets task title if its not null
                 if (task.getTitle() != null){
                     viewHolder.taskTitle.setText(task.getTitle());
@@ -259,6 +259,18 @@ public class ProjectDetails extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.startListening();
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation

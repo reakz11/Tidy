@@ -186,7 +186,7 @@ public class TaskDetails extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
 
-                    layout = (ExpandableLayout) findViewById(R.id.el);
+                    layout = findViewById(R.id.el);
 
                     layout.setRenderer(new ExpandableLayout.Renderer<ProjectCategory,Project>(){
 
@@ -201,7 +201,7 @@ public class TaskDetails extends AppCompatActivity {
                         public void renderChild(View view, final Project project, int parentPosition, int childPosition) {
                             ((TextView)view.findViewById(R.id.tv_child_name)).setText(project.getTitle());
 
-                            RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
+                            RadioButton radioButton = view.findViewById(R.id.radio_button);
 
                             if (intent.hasExtra(mProjectId)) {
                                 taskProjectId = intent.getStringExtra(mProjectId);
@@ -216,11 +216,11 @@ public class TaskDetails extends AppCompatActivity {
                                 radioButton.setChecked(true);
                             }
 
-                            ((RadioButton)view.findViewById(R.id.radio_button)).setOnClickListener(new View.OnClickListener() {
+                            view.findViewById(R.id.radio_button).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
 
-                                    RadioButton radioButton = ((RadioButton)view.findViewById(R.id.radio_button));
+                                    RadioButton radioButton = view.findViewById(R.id.radio_button);
 
                                     String projectId = String.valueOf(project.getId());
 

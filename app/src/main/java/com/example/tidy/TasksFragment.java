@@ -43,14 +43,13 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.card_today) CardView todayCard;
     @BindView(R.id.card_tomorrow) CardView tomorrowCard;
     @BindView(R.id.card_other_time) CardView otherTimeCard;
-    @BindView(R.id.card_finished_tasks) CardView finishedTasksCard;
+    @BindView(R.id.card_completed_tasks) CardView completedTasksCard;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
     @BindView(R.id.hint_no_projects) TextView hintNoProjects;
 
     private Query query;
     private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
-
 
     public static Fragment getInstance() {
         return new TasksFragment();
@@ -97,7 +96,7 @@ public class TasksFragment extends Fragment {
 
             @Override
             public void onBindViewHolder(ProjectHolder holder, final int position, final Project project) {
-                final ProjectHolder viewHolder = (ProjectHolder) holder;
+                final ProjectHolder viewHolder = holder;
                 // Sets project title
                 if (project.getTitle() != null) {
                     viewHolder.projectNameTv.setText(project.getTitle());
@@ -179,7 +178,7 @@ public class TasksFragment extends Fragment {
             }
         });
 
-        finishedTasksCard.setOnClickListener(new View.OnClickListener() {
+        completedTasksCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), CompletedTasksCategory.class);

@@ -92,7 +92,7 @@ public class NotesFragment extends Fragment {
 
             @Override
             public void onBindViewHolder(NoteHolder holder, final int position, final Note note) {
-                final NoteHolder viewHolder = (NoteHolder) holder;
+                final NoteHolder viewHolder = holder;
                 // Sets note title if its not null
                 if (note.getTitle() != null) {
                     viewHolder.noteTitleTv.setText(note.getTitle());

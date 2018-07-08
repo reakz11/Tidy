@@ -175,7 +175,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
-                final TaskHolder viewHolder = (TaskHolder) holder;
+                final TaskHolder viewHolder = holder;
                 // Sets task title if its not null
                 if (task.getTitle() != null){
                     viewHolder.taskTitle.setText(task.getTitle());
