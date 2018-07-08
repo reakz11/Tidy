@@ -60,8 +60,11 @@ public class TasksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_tasks, container, false);
 
-        ButterKnife.bind(this,rootView);
+        // Gets FirebaseDatabase and sets offline persistence to true
         getDatabase();
+
+        // Binding views
+        ButterKnife.bind(this,rootView);
 
         return rootView;
     }
@@ -70,6 +73,7 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Sets details of query
         query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
@@ -80,11 +84,11 @@ public class TasksFragment extends Fragment {
                         .setQuery(query, Project.class)
                         .build();
 
+        // Creating new FirebaseRecyclerAdapter for projects
         mAdapter = new FirebaseRecyclerAdapter<Project, ProjectHolder>(options) {
             @Override
             final public ProjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
+                // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.project_item, parent, false);
 
@@ -94,7 +98,14 @@ public class TasksFragment extends Fragment {
             @Override
             public void onBindViewHolder(ProjectHolder holder, final int position, final Project project) {
                 final ProjectHolder viewHolder = (ProjectHolder) holder;
-                viewHolder.projectNameTv.setText(project.getTitle());
+                // Sets project title
+                if (project.getTitle() != null) {
+                    viewHolder.projectNameTv.setText(project.getTitle());
+                }
+
+                // onClickListener used for opening details of clicked project
+                // First it gets data of clicked project, puts them inside the intent
+                // and then starts ProjectDetails activity
                 viewHolder.projectNameTv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -104,6 +115,8 @@ public class TasksFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+
+                // onClickListener used for removing project from DB
                 viewHolder.deleteProjectBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

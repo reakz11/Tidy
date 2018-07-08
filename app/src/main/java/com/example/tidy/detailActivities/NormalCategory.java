@@ -49,6 +49,9 @@ import static com.example.tidy.Utils.getCurrentDate;
 
 public class NormalCategory extends AppCompatActivity {
 
+    // NormalCategory is used to display content of all standard task categories
+    // this means: Today, Tomorrow, Other time
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
     @BindView(R.id.fab_project) FloatingActionButton fabProject;
@@ -62,23 +65,25 @@ public class NormalCategory extends AppCompatActivity {
     @BindView(R.id.hint_no_tasks) TextView hintNoTasks;
     @Nullable @BindView(R.id.delete_btn) Button deleteButton;
 
-
     private Animation rotate_forward,rotate_backward;
 
     private FirebaseRecyclerAdapter<Task, NormalCategory.TaskHolder> mAdapter;
 
     boolean isFABOpen=false;
-    Query query;
 
-    String supportActionBarTitle;
+    private Query query;
+
+    private String supportActionBarTitle;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.normal_category);
 
+        // Gets FirebaseDatabase and sets offline persistence to true
         getDatabase();
 
+        // Binding views
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -86,13 +91,15 @@ public class NormalCategory extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Intent contains string name of task category that user clicked on
+        // here app retrieves this string and sets it as title of action bar
         Intent intent = getIntent();
-
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
+        // Getting animations for FAB
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 
@@ -140,6 +147,7 @@ public class NormalCategory extends AppCompatActivity {
         });
     }
 
+    // Creating custom ViewHolder for tasks
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.task_name) TextView taskTitle;
@@ -162,6 +170,8 @@ public class NormalCategory extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // Checks what string is used as title of actionbar (Today, Tomorrow or Other Time)
+        // and based on this, sets content of query
         switch (supportActionBarTitle) {
             case "Today":
                 query = mFirebaseDatabase
@@ -196,11 +206,11 @@ public class NormalCategory extends AppCompatActivity {
                         .setQuery(query, Task.class)
                         .build();
 
+        // Creating custom FirebaseRecyclerAdapter
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
             @Override
             final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
+                // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.task_item, parent, false);
 
@@ -210,12 +220,20 @@ public class NormalCategory extends AppCompatActivity {
             @Override
             public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
                 final TaskHolder viewHolder = (TaskHolder) holder;
-                viewHolder.taskTitle.setText(task.getTitle());
-                viewHolder.taskContent.setText(task.getContent());
+                // Sets task title if its not null
+                if (task.getTitle() != null){
+                    viewHolder.taskTitle.setText(task.getTitle());
+                }
+                // Sets task content if its not null
+                if (task.getContent() != null) {
+                    viewHolder.taskContent.setText(task.getContent());
+                }
+                // Sets formatted deadline date if its not null
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                 }
 
+                // onClickListener used for setting task state to 1 (completed)
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -224,6 +242,9 @@ public class NormalCategory extends AppCompatActivity {
                     }
                 });
 
+                // onClickListener used for opening details of clicked task
+                // First it gets data of clicked task, puts them inside the intent
+                // and then starts TaskDetails activity
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -240,6 +261,7 @@ public class NormalCategory extends AppCompatActivity {
                     }
                 });
 
+                // onClickListener used for removing task from DB
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -247,6 +269,7 @@ public class NormalCategory extends AppCompatActivity {
                     }
                 });
 
+                // Filtering tasks that should display in each task category
                 if (supportActionBarTitle.equals("Today") || supportActionBarTitle.equals("Tomorrow")) {
                     if (String.valueOf(task.getState()).equals("1")) {
                         viewHolder.itemView.setVisibility(View.GONE);
@@ -275,7 +298,7 @@ public class NormalCategory extends AppCompatActivity {
 //            }
 //        });
 
-        LinearLayoutManager llm = new LinearLayoutManager(this);
+        final LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
 
@@ -295,25 +318,21 @@ public class NormalCategory extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                loadingIndicator.setVisibility(View.GONE);
-                if (deleteButton == null) {
+                int lastVisiblePos = llm.findLastCompletelyVisibleItemPosition();
+                int firstVisiblePosition = llm.findFirstVisibleItemPosition();
+
+                if (firstVisiblePosition == -1) {
                     hintNoTasks.setVisibility(View.VISIBLE);
-                    Log.v("NormalCategory", "onChildChanged triggered");
+                    Log.v("NormalCategory", "lastVisiblePosition - firstVisiblePosition = 0");
                 } else {
-                    if (deleteButton.getVisibility() == View.VISIBLE) {
-                        hintNoTasks.setVisibility(View.GONE);
-                    }
+                    hintNoTasks.setVisibility(View.GONE);
+                    Log.v("NormalCategory", "lastVisiblePosition - firstVisiblePosition = " + (String.valueOf(lastVisiblePos - firstVisiblePosition)));
                 }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                if (deleteButton == null) {
-                    hintNoTasks.setVisibility(View.VISIBLE);
-                    Log.v("NormalCategory", "onChildRemoved triggered");
-                } else {
-                    hintNoTasks.setVisibility(View.GONE);
-                }
+
             }
 
             @Override
@@ -332,10 +351,26 @@ public class NormalCategory extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (deleteButton != null) {
+
+                        int lastVisiblePos = llm.findLastCompletelyVisibleItemPosition();
+                        int firstVisiblePosition = llm.findFirstVisibleItemPosition();
+
+                        Log.v("NormalCategory", "lastVisiblePosition = " + lastVisiblePos);
+                        Log.v("NormalCategory", "firstVisiblePosition = " + firstVisiblePosition);
+
+                        if (firstVisiblePosition == -1) {
+                            hintNoTasks.setVisibility(View.VISIBLE);
+                            Log.v("NormalCategory", "lastVisiblePosition - firstVisiblePosition = 0");
+                        } else {
                             hintNoTasks.setVisibility(View.GONE);
-                            Log.v("NormalCategory", "onDataChange deleteBtn != null");
+                            Log.v("NormalCategory", "lastVisiblePosition - firstVisiblePosition = " + (String.valueOf(lastVisiblePos - firstVisiblePosition)));
                         }
+
+
+//                        if (deleteButton != null) {
+//                            hintNoTasks.setVisibility(View.GONE);
+//                            Log.v("NormalCategory", "onDataChange deleteBtn != null");
+//                        }
 
 //                        hintNoTasks.setVisibility((mAdapter.getItemCount()== 0 ? View.VISIBLE : View.GONE));
 //                        Log.v("TaskFragment", "rv height: " + mAdapter.getItemCount());

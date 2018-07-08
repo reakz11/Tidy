@@ -34,9 +34,10 @@ import static com.example.tidy.Utils.getDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
+    // MainActivity is used to display two main screen fragments - Tasks and Notes
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tabs) TabLayout tabLayout;
-    public static ViewPager viewPager;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
     @BindView(R.id.fab_project) FloatingActionButton fabProject;
     @BindView(R.id.fab_note) FloatingActionButton fabNote;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
+
+    public static ViewPager viewPager;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -65,8 +68,11 @@ public class MainActivity extends AppCompatActivity {
         pref = getSharedPreferences(myPreference,
                 Context.MODE_PRIVATE);
 
-        ButterKnife.bind(this);
+        // Gets FirebaseDatabase and sets offline persistence to true
         getDatabase();
+
+        // Binding views
+        ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
 

@@ -1,6 +1,5 @@
 package com.example.tidy;
 
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +27,7 @@ public class Utils {
 
     private static int mYear, mMonth, mDay;
 
+    // Gets FirebaseDatabase with offline data persistence
     public static FirebaseDatabase getDatabase() {
         if (mDatabase == null) {
             mDatabase = FirebaseDatabase.getInstance();
@@ -36,12 +36,15 @@ public class Utils {
         return mDatabase;
     }
 
+    // Returns ID of logged in user
     public static String getUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mUserId = user.getUid();
         return mUserId;
     }
 
+    // Returns current date
+    // Used to filter tasks
     public static int getCurrentDate() {
         if (mCurrentDate == 0) {
             final Calendar c = Calendar.getInstance();
@@ -57,6 +60,8 @@ public class Utils {
         return mCurrentDate;
     }
 
+    // Returns current date and time
+    // Used to create unique IDs for tasks
     public static String getCurrentDateAndTime() {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             mCurrentDateAndTime = sdf.format(new Date());
@@ -69,11 +74,13 @@ public class Utils {
         {
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
-            cal.add(Calendar.DATE, days); //minus number would decrement the days
+            cal.add(Calendar.DATE, days);
             return cal.getTime();
         }
     }
 
+    // Returns tomorrow date
+    // Used to filter tasks
     public static int getTomorrowDate() {
         String sourceDate = String.valueOf(getCurrentDate());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -92,6 +99,8 @@ public class Utils {
         return mTomorrowDate;
     }
 
+    // Returns current date + 2 days
+    // Used to filter tasks
     public static int getOtherTimeValue() {
         String sourceDate = String.valueOf(getCurrentDate());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -104,7 +113,7 @@ public class Utils {
             mOtherTimeValue = Integer.parseInt(dateString);
 
         } catch (ParseException e){
-            Log.v("DATE", "getTomorrowDate parsing error");
+            Log.v("DATE", "getOtherTimeValue parsing error");
         }
         return mOtherTimeValue;
     }

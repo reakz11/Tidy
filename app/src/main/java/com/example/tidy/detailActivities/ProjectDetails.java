@@ -70,8 +70,10 @@ public class ProjectDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_details);
 
+        // Gets FirebaseDatabase and sets offline persistence to true
         getDatabase();
 
+        // Binding views
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -81,6 +83,8 @@ public class ProjectDetails extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        // Getting project title and ID from intent
+        //TODO: This should use cutom tag not just EXTRA_TEXT
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
@@ -96,6 +100,7 @@ public class ProjectDetails extends AppCompatActivity {
             Log.v("ProjectDetails", "Intent projectId is: " + projectId);
         }
 
+        // Loading FAB animations
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 
@@ -147,26 +152,24 @@ public class ProjectDetails extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-                query = mFirebaseDatabase
-                        .child("users")
-                        .child(getUserId())
-                        .child("tasks")
-                        .orderByChild("projectId")
-                        .equalTo(projectId);
-
-                Log.v("ProjectDetails", "OnStart projectId is: " + projectId);
-
+        // Setting up query details
+        query = mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("tasks")
+                .orderByChild("projectId")
+                .equalTo(projectId);
 
         FirebaseRecyclerOptions<Task> options =
                 new FirebaseRecyclerOptions.Builder<Task>()
                         .setQuery(query, Task.class)
                         .build();
 
+        // Creating new FirebaseRecyclerAdapter for displaying tasks in selected project
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
             @Override
             final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
+                // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.task_item, parent, false);
 
@@ -176,12 +179,20 @@ public class ProjectDetails extends AppCompatActivity {
             @Override
             public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
                 final TaskHolder viewHolder = (TaskHolder) holder;
-                viewHolder.taskTitle.setText(task.getTitle());
-                viewHolder.taskContent.setText(task.getContent());
+                // Sets task title if its not null
+                if (task.getTitle() != null){
+                    viewHolder.taskTitle.setText(task.getTitle());
+                }
+                // Sets task content if its not null
+                if (task.getContent() != null) {
+                    viewHolder.taskContent.setText(task.getContent());
+                }
+                // Sets formatted deadline date if its not null
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                 }
 
+                // onClickListener used for setting task state to 1 (completed)
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -190,6 +201,9 @@ public class ProjectDetails extends AppCompatActivity {
                     }
                 });
 
+                // onClickListener used for opening details of clicked task
+                // First it gets data of clicked task, puts them inside the intent
+                // and then starts TaskDetails activity
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -206,6 +220,7 @@ public class ProjectDetails extends AppCompatActivity {
                     }
                 });
 
+                // onClickListener used for removing task from DB
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

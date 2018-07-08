@@ -30,10 +30,10 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
 
 public class NotesFragment extends Fragment {
-
 
     public NotesFragment() {
     }
@@ -56,17 +56,20 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        ButterKnife.bind(this, rootView);
+        // Gets FirebaseDatabase and sets offline persistence to true
+        getDatabase();
+
+        // Binding views
+        ButterKnife.bind(this,rootView);
 
         return rootView;
-
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        // Sets details of query
         query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
@@ -77,12 +80,10 @@ public class NotesFragment extends Fragment {
                         .setQuery(query, Note.class)
                         .build();
 
-
         mAdapter = new FirebaseRecyclerAdapter<Note, NoteHolder>(options) {
             @Override
             final public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
+                // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.note_item, parent, false);
 
@@ -92,9 +93,18 @@ public class NotesFragment extends Fragment {
             @Override
             public void onBindViewHolder(NoteHolder holder, final int position, final Note note) {
                 final NoteHolder viewHolder = (NoteHolder) holder;
-                viewHolder.noteTitleTv.setText(note.getTitle());
-                viewHolder.noteContentTv.setText(note.getContent());
+                // Sets note title if its not null
+                if (note.getTitle() != null) {
+                    viewHolder.noteTitleTv.setText(note.getTitle());
+                }
+                // Sets note content if its not null
+                if (note.getContent() != null) {
+                    viewHolder.noteContentTv.setText(note.getContent());
+                }
 
+                // onClickListener used for opening details of clicked note
+                // First it gets data of clicked note, puts them inside the intent
+                // and then starts NoteDetails activity
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -105,6 +115,7 @@ public class NotesFragment extends Fragment {
                     }
                 });
 
+                // onClickListener used for removing note from DB
                 viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -116,6 +127,7 @@ public class NotesFragment extends Fragment {
 
         mAdapter.notifyDataSetChanged();
 
+        // Used to hide loading indicator after getting data
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -135,9 +147,9 @@ public class NotesFragment extends Fragment {
 
         if (savedInstanceState != null) {
 
+            // Used for saving scroll position
             final int positionIndex = savedInstanceState.getInt("rv_position");
             final int topView = savedInstanceState.getInt("rv_top_view");
-            Log.v("NotesFragment", "bundle contents: " + savedInstanceState);
 
             mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
@@ -146,9 +158,6 @@ public class NotesFragment extends Fragment {
 
                     try {
                         llm.scrollToPositionWithOffset(positionIndex, topView);
-
-                        Log.v("NotesFragment", "positionIndex is: " + positionIndex);
-                        Log.v("NotesFragment", "topView is: " + topView);
                     } catch (NullPointerException e) {
                         Log.v("NotesFragment", "NullPointerException");
                     }
@@ -169,9 +178,7 @@ public class NotesFragment extends Fragment {
         topView = (startView == null) ? 0 : (startView.getTop() - recyclerView.getPaddingTop());
 
         outState.putInt("rv_position", positionIndex);
-        Log.v("NotesFragment", "rv_position is: " + positionIndex);
         outState.putInt("rv_top_view", topView);
-        Log.v("NotesFragment", "rv_top_view is: " + topView);
     }
 
     public static class NoteHolder extends RecyclerView.ViewHolder {

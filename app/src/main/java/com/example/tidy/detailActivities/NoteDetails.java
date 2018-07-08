@@ -44,16 +44,19 @@ public class NoteDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.note_details);
 
+        // Binding views
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //TODO: Maybe task title should be used for this?
         getSupportActionBar().setTitle("Note Details");
 
         Intent intent = getIntent();
 
+        // Getting note title and content from intent
         if (intent.hasExtra(mNoteTitle)) {
             String noteTitle = intent.getStringExtra(mNoteTitle);
 
@@ -65,6 +68,7 @@ public class NoteDetails extends AppCompatActivity {
             mNoteContentTextView.setText(noteContent);
         }
 
+        // Loading FAB animations
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 

@@ -106,8 +106,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    // get the note data to save in our firebase db
     void saveTodo() {
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String id = user.getUid();
 

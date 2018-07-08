@@ -78,9 +78,13 @@ public class TaskDetails extends AppCompatActivity {
     private String mTaskTitle = "title";
     private String mTaskContent = "content";
     private String mTaskDate = "date";
-    private String mTaskId = "taskId";
+
+    // Firebase DB key associated with selected task
     private String mTaskKey = "taskKey";
+
     private String mProjectId = "projectId";
+
+    // ID of project that selected task is part of
     private String taskProjectId;
 
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
@@ -104,9 +108,9 @@ public class TaskDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Task Details");
 
-        // Getting data from intent list and displaying them
         final Intent intent = getIntent();
 
+        // Getting task data from intent
         if (intent.hasExtra(mTaskTitle)) {
             String taskTitle = intent.getStringExtra(mTaskTitle);
 
@@ -125,6 +129,7 @@ public class TaskDetails extends AppCompatActivity {
             taskDateTextView.setText(taskDate);
         }
 
+        // Loading FAB animations
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 

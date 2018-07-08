@@ -56,22 +56,11 @@ public class CreateProjectActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-
+    // get the project data to save in our firebase db
     void saveProject() {
-
-// Assuming the user is already logged in.
-//        DatabaseReference userRef = rootRef.getReference("users").;
-//        userRef.child("message1").setValue("Hello World");
-
-        // first section
-        // get the data to save in our firebase db
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String id = user.getUid();
 
-        //make the modal object and convert it into hashmap
-
-        //second section
-        //save it to the firebase db
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String key = database.getReference("taskList").push().getKey();
         String projectId = getCurrentDateAndTime();

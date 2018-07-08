@@ -43,6 +43,9 @@ import static com.example.tidy.Utils.getUserId;
 
 public class CompletedTasksCategory extends AppCompatActivity {
 
+    // CompletedTasksCategory is used for displaying completed/archived tasks
+    // User can set already completed tasks as not completed or permanently delete them from DB
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;
     @BindView(R.id.fab_project) FloatingActionButton fabProject;
@@ -60,15 +63,17 @@ public class CompletedTasksCategory extends AppCompatActivity {
     boolean isFABOpen=false;
 
     private FirebaseRecyclerAdapter<Task, CompletedTasksCategory.TaskHolder> mAdapter;
-    Query query;
+    private Query query;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.completed_tasks_category);
 
+        // Gets FirebaseDatabase and sets offline persistence to true
         getDatabase();
 
+        // Binding views
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -76,6 +81,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Completed Tasks");
 
+        // Loading FAB animations
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
 
@@ -160,8 +166,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
             @Override
             final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
+                // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.completed_task_item, parent, false);
 
@@ -171,12 +176,20 @@ public class CompletedTasksCategory extends AppCompatActivity {
             @Override
             public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
                 final TaskHolder viewHolder = (TaskHolder) holder;
-                viewHolder.taskTitle.setText(task.getTitle());
-                viewHolder.taskContent.setText(task.getContent());
+                // Sets task title if its not null
+                if (task.getTitle() != null){
+                    viewHolder.taskTitle.setText(task.getTitle());
+                }
+                // Sets task content if its not null
+                if (task.getContent() != null) {
+                    viewHolder.taskContent.setText(task.getContent());
+                }
+                // Sets formatted deadline date if its not null
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                 }
 
+                // onClickListener used for setting task state to 0 (not completed)
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -185,6 +198,9 @@ public class CompletedTasksCategory extends AppCompatActivity {
                     }
                 });
 
+                // onClickListener used for opening details of clicked task
+                // First it gets data of clicked task, puts them inside the intent
+                // and then starts TaskDetails activity
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -194,10 +210,14 @@ public class CompletedTasksCategory extends AppCompatActivity {
                         if (task.getDate() != null) {
                             intent.putExtra("date", task.getFormattedDate());
                         }
+                        intent.putExtra("projectId", task.getProjectId());
+                        intent.putExtra("taskId",task.getTaskId());
+                        intent.putExtra("taskKey", mAdapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         startActivity(intent);
                     }
                 });
 
+                // onClickListener used for removing task from DB
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
