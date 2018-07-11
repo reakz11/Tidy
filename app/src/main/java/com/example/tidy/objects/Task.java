@@ -91,7 +91,7 @@ public class Task {
 
 
     public HashMap<String,String> toFirebaseObject() {
-        HashMap<String,String> todo =  new HashMap<String,String>();
+        HashMap<String,String> todo =  new HashMap<>();
         todo.put("title", title);
         todo.put("content", content);
         todo.put("date", date);

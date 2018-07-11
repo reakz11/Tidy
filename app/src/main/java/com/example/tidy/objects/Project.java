@@ -32,7 +32,7 @@ public class Project {
 
 
     public HashMap<String,String> toFirebaseObject() {
-        HashMap<String,String> project =  new HashMap<String,String>();
+        HashMap<String,String> project =  new HashMap<>();
         project.put("title", title);
         project.put("id", id);
 

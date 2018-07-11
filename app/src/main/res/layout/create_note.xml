@@ -27,6 +27,7 @@
     <EditText
         android:id="@+id/et_note_title"
         android:hint="Title"
+        android:inputType="textPersonName"
         android:layout_below="@id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

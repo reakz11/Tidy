@@ -31,7 +31,7 @@ public class Note {
     }
 
     public HashMap<String,String> toFirebaseObject() {
-        HashMap<String,String> note =  new HashMap<String,String>();
+        HashMap<String,String> note =  new HashMap<>();
         note.put("title", mTitle);
         note.put("content", mContent);
 

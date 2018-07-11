@@ -249,7 +249,7 @@ public class TaskDetails extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(values);
                                 String jsonArrayStr = jsonArray.toString();
 
-                                List<Project> projects = new ArrayList<Project>();
+                                List<Project> projects;
                                 Type listType = new TypeToken<List<Project>>(){}.getType();
                                 projects = new Gson().fromJson(jsonArrayStr, listType);
 
