@@ -33,7 +33,7 @@ import static com.example.tidy.Utils.getUserId;
 
 public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
     private List<Task> taskItemList = new ArrayList<>();
-    private Context context = null;
+    private Context context;
 
     private Context mContext;
     private int appWidgetId;
@@ -75,7 +75,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
                     String jsonArrayStr = jsonArray.toString();
 
                     Type listType = new TypeToken<List<Task>>(){}.getType();
-                    List<Task> taskList = new ArrayList<>();
+                    List<Task> taskList;
                     taskList = new Gson().fromJson(jsonArrayStr, listType);
                     taskItemList.clear();
 
