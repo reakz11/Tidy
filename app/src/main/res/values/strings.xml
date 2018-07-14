@@ -28,6 +28,7 @@
     <string name="title">Title</string>
     <string name="details">Details</string>
     <string name="pick_date">Pick Date</string>
+    <string name="pick_project">Pick Project</string>
     <string name="hint_write">Write Something</string>
     <string name="project_title">Project Title</string>
     <string name="assigned_to_project">Assigned to project:</string>

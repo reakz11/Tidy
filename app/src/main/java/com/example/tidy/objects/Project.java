@@ -30,7 +30,6 @@ public class Project {
         return id;
     }
 
-
     public HashMap<String,String> toFirebaseObject() {
         HashMap<String,String> project =  new HashMap<>();
         project.put("title", title);

@@ -66,6 +66,15 @@
         android:layout_below="@id/deadline_tv"
         android:text="@string/pick_date" />
 
+    <Button
+        android:id="@+id/pick_project_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/pick_date_button"
+        android:text="@string/pick_project" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_save_task"
         android:layout_width="wrap_content"

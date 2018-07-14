@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -129,7 +130,8 @@ public class TasksFragment extends Fragment {
 
         mAdapter.notifyDataSetChanged();
 
-        llm = new LinearLayoutManager(getContext());
+        llm = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setFocusable(false);
@@ -206,6 +208,18 @@ public class TasksFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.startListening();
     }
 
     @Override
