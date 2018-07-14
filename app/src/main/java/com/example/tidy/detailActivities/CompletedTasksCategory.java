@@ -35,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -77,7 +79,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Completed Tasks");
 
@@ -164,8 +166,9 @@ public class CompletedTasksCategory extends AppCompatActivity {
                         .build();
 
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @NonNull
             @Override
-            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.completed_task_item, parent, false);
@@ -174,7 +177,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
+            public void onBindViewHolder(@NonNull TaskHolder holder, final int position, @NonNull final Task task) {
                 final TaskHolder viewHolder = holder;
                 // Sets task title if its not null
                 if (task.getTitle() != null){

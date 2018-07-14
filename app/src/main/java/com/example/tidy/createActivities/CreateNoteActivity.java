@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -15,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +27,7 @@ public class CreateNoteActivity extends AppCompatActivity implements View.OnClic
     @BindView(R.id.fab_save_note) FloatingActionButton fabSaveNote;
     @BindView(R.id.et_note_title) EditText noteTitleEditText;
     @BindView(R.id.et_note_content) EditText noteContentEditText;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class CreateNoteActivity extends AppCompatActivity implements View.OnClic
 
         fabSaveNote.setOnClickListener(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Create New Note");
     }
@@ -53,7 +56,11 @@ public class CreateNoteActivity extends AppCompatActivity implements View.OnClic
     // get the note data to save in our firebase db
     void saveNote() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String id = user.getUid();
+
+        if (user != null) {
+            id = user.getUid();
+        }
+
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String key = database.getReference("taskList").push().getKey();

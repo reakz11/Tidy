@@ -57,7 +57,7 @@ public class TasksFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_tasks, container, false);
 
         // Gets FirebaseDatabase and sets offline persistence to true
@@ -86,8 +86,9 @@ public class TasksFragment extends Fragment {
 
         // Creating new FirebaseRecyclerAdapter for projects
         mAdapter = new FirebaseRecyclerAdapter<Project, ProjectHolder>(options) {
+            @NonNull
             @Override
-            final public ProjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final public ProjectHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.project_item, parent, false);
@@ -96,7 +97,7 @@ public class TasksFragment extends Fragment {
             }
 
             @Override
-            public void onBindViewHolder(ProjectHolder holder, final int position, final Project project) {
+            public void onBindViewHolder(@NonNull ProjectHolder holder, final int position, @NonNull final Project project) {
                 final ProjectHolder viewHolder = holder;
                 // Sets project title
                 if (project.getTitle() != null) {
@@ -209,7 +210,7 @@ public class TasksFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         int positionIndexTasks;
         int topViewTask;

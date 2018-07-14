@@ -66,7 +66,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
                 .endAt(String.valueOf(getCurrentDate()))
                 .addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
                     Map<String, String> td = (HashMap<String, String>) dataSnapshot.getValue();

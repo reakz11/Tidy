@@ -80,8 +80,9 @@ public class NotesFragment extends Fragment {
                         .build();
 
         mAdapter = new FirebaseRecyclerAdapter<Note, NoteHolder>(options) {
+            @NonNull
             @Override
-            final public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.note_item, parent, false);
@@ -90,7 +91,7 @@ public class NotesFragment extends Fragment {
             }
 
             @Override
-            public void onBindViewHolder(NoteHolder holder, final int position, final Note note) {
+            public void onBindViewHolder(@NonNull NoteHolder holder, final int position, @NonNull final Note note) {
                 final NoteHolder viewHolder = holder;
                 // Sets note title if its not null
                 if (note.getTitle() != null) {
@@ -166,7 +167,7 @@ public class NotesFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         int positionIndexNotes;
         int topViewNotes;

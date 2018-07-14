@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,7 +75,7 @@ public class ProjectDetails extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent intent = getIntent();
@@ -161,8 +164,9 @@ public class ProjectDetails extends AppCompatActivity {
 
         // Creating new FirebaseRecyclerAdapter for displaying tasks in selected project
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @NonNull
             @Override
-            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.task_item, parent, false);
@@ -171,7 +175,7 @@ public class ProjectDetails extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
+            public void onBindViewHolder(@NonNull TaskHolder holder, final int position, @NonNull final Task task) {
                 final TaskHolder viewHolder = holder;
                 // Sets task title if its not null
                 if (task.getTitle() != null){

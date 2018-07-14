@@ -38,6 +38,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -88,7 +90,7 @@ public class NormalCategory extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // Intent contains string name of task category that user clicked on
@@ -208,8 +210,9 @@ public class NormalCategory extends AppCompatActivity {
 
         // Creating custom FirebaseRecyclerAdapter
         mAdapter = new FirebaseRecyclerAdapter<Task, TaskHolder>(options) {
+            @NonNull
             @Override
-            final public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.task_item, parent, false);
@@ -218,7 +221,7 @@ public class NormalCategory extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(TaskHolder holder, final int position,final Task task) {
+            public void onBindViewHolder(@NonNull TaskHolder holder, final int position, @NonNull final Task task) {
                 final TaskHolder viewHolder = holder;
                 // Sets task title if its not null
                 if (task.getTitle() != null){
