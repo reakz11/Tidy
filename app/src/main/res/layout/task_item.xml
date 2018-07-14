@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="65dp"
     android:orientation="horizontal">
 
     <CheckBox
@@ -28,17 +28,9 @@
         android:id="@+id/task_name"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignBottom="@+id/delete_btn"
         android:layout_toEndOf="@+id/task_check_box"
         tools:text="Very important task" />
-
-    <TextView
-        android:id="@+id/task_content"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/task_name"
-        android:layout_toEndOf="@+id/task_check_box"
-        tools:text="Content" />
 
     <Button
         android:id="@+id/delete_btn"
