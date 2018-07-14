@@ -13,4 +13,26 @@
 
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <string name="today_icon_description">Icon for Today</string>
+    <string name="tomorrow_icon_description">Icon for Tomorrow</string>
+    <string name="other_time_icon_description">Icon for Other Time</string>
+    <string name="completed_tasks_icon_description">Icon for Completed Tasks</string>
+
+    <string name="login">Login</string>
+    <string name="anon_login">Anon Login</string>
+    <string name="log_out">Log out</string>
+    <string name="delete">Delete</string>
+    <string name="deadline">Deadline: </string>
+    <string name="no_deadline">No deadline</string>
+    <string name="title">Title</string>
+    <string name="details">Details</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="hint_write">Write Something</string>
+    <string name="project_title">Project Title</string>
+    <string name="assigned_to_project">Assigned to project:</string>
+    <string name="no_project">No project</string>
+    <string name="no_tasks">No tasks to display</string>
+
+
 </resources>

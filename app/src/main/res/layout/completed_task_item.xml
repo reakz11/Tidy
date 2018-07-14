@@ -47,6 +47,6 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="12dp"
-        android:text="DELETE" />
+        android:text="@string/delete" />
 
 </RelativeLayout>

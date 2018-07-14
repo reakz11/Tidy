@@ -30,6 +30,7 @@
 
                 <ImageView
                     android:id="@+id/today_icon"
+                    android:contentDescription="@string/today_icon_description"
                     android:layout_width="@dimen/card_icon_width"
                     android:layout_height="@dimen/card_icon_height"
                     android:layout_marginBottom="@dimen/card_icon_margin_bottom"
@@ -60,6 +61,7 @@
 
                 <ImageView
                     android:id="@+id/tomorrow_icon"
+                    android:contentDescription="@string/tomorrow_icon_description"
                     android:layout_width="@dimen/card_icon_width"
                     android:layout_height="@dimen/card_icon_height"
                     android:layout_marginBottom="@dimen/card_icon_margin_bottom"
@@ -90,6 +92,7 @@
 
                 <ImageView
                     android:id="@+id/other_time_icon"
+                    android:contentDescription="@string/other_time_icon_description"
                     android:layout_width="@dimen/card_icon_width"
                     android:layout_height="@dimen/card_icon_height"
                     android:layout_marginBottom="@dimen/card_icon_margin_bottom"
@@ -123,6 +126,7 @@
 
                 <ImageView
                     android:id="@+id/finished_tasks_icon"
+                    android:contentDescription="@string/completed_tasks_icon_description"
                     android:layout_width="@dimen/card_icon_width"
                     android:layout_height="@dimen/card_icon_height"
                     android:layout_marginBottom="@dimen/card_icon_margin_bottom"
