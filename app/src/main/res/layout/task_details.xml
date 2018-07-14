@@ -55,11 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/task_content_tv"
         android:layout_marginStart="10dp"
-        android:text="Deadline: "/>
+        android:text="@string/deadline"/>
 
     <TextView
         android:id="@+id/task_date"
-        android:hint="No Deadline"
+        android:hint="@string/no_deadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/deadline_text"
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_below="@id/task_date"
-        android:text="Assigned to project: "/>
+        android:text="@string/assigned_to_project"/>
 
     <TextView
         android:id="@+id/task_project"
@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/deadline_text"
         android:layout_toEndOf="@+id/project_text"
-        android:hint="No project" />
+        android:hint="@string/no_project"/>
 
 
 <!--    <Button

@@ -27,7 +27,7 @@
 
     <EditText
         android:id="@+id/et_task_title"
-        android:hint="Title"
+        android:hint="@string/title"
         android:inputType="textPersonName"
         android:layout_below="@id/appBarLayout"
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
 
     <EditText
         android:id="@+id/et_task_details"
-        android:hint="Details"
+        android:hint="@string/details"
         android:layout_below="@id/et_task_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -47,7 +47,7 @@
         android:layout_marginStart="5dp"
         android:layout_below="@id/et_task_details"
         android:layout_marginTop="10dp"
-        android:text="Deadline: " />
+        android:text="@string/deadline" />
 
     <TextView
         android:id="@+id/due_date_tv"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/deadline_tv"
         android:layout_toEndOf="@+id/deadline_tv"
-        android:hint="No Deadline" />
+        android:hint="@string/no_deadline" />
 
     <Button
         android:id="@+id/pick_date_button"
@@ -64,7 +64,7 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="20dp"
         android:layout_below="@id/deadline_tv"
-        android:text="Pick Date" />
+        android:text="@string/pick_date" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_save_task"

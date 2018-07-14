@@ -32,7 +32,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
         android:layout_below="@+id/appBarLayout"
-        android:hint="Project Name" />
+        android:hint="@string/project_title"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_save_project"

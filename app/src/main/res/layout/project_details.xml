@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="65dp"
         android:layout_marginStart="15dp"
-        android:hint="Project Title" />
+        android:hint="@string/project_title" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollview_tasks"
