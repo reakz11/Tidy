@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private Animation rotate_forward,rotate_backward;
 
     private String currentFragmentIndex = "current_fragment";
-    private String scrollPositionString = "scroll_position";
 
     boolean isFABOpen=false;
 
@@ -166,7 +165,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle outState){
         super.onRestoreInstanceState(outState);
             viewPager.setCurrentItem(outState.getInt(currentFragmentIndex));
-            tabLayout.setScrollY(outState.getInt(scrollPositionString));
+        String scrollPositionString = "scroll_position";
+        tabLayout.setScrollY(outState.getInt(scrollPositionString));
             Log.v("MainActivity", "last saved fragment is: " + outState.getInt(currentFragmentIndex));
     }
 

@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     SharedPreferences pref;
-    private String currentFragmentIndex = "current_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             // User is signed in (getCurrentUser() will be null if not signed in)
             SharedPreferences.Editor editor = pref.edit();
+            String currentFragmentIndex = "current_fragment";
             editor.putInt(currentFragmentIndex,0);
             editor.apply();
             startActivity(new Intent(this, MainActivity.class));

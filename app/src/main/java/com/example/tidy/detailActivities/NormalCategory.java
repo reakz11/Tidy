@@ -73,8 +73,6 @@ public class NormalCategory extends AppCompatActivity {
 
     boolean isFABOpen=false;
 
-    private Query query;
-
     private String supportActionBarTitle;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -174,6 +172,7 @@ public class NormalCategory extends AppCompatActivity {
 
         // Checks what string is used as title of actionbar (Today, Tomorrow or Other Time)
         // and based on this, sets content of query
+        Query query;
         switch (supportActionBarTitle) {
             case "Today":
                 query = mFirebaseDatabase

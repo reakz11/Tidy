@@ -42,7 +42,6 @@ public class NotesFragment extends Fragment {
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
 
-    private Query query;
     private FirebaseRecyclerAdapter<Note, NoteHolder> mAdapter;
     private LinearLayoutManager llm;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
@@ -69,7 +68,7 @@ public class NotesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Sets details of query
-        query = mFirebaseDatabase
+        Query query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
                 .child("notes");

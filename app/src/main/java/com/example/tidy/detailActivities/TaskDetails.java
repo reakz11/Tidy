@@ -64,10 +64,6 @@ public class TaskDetails extends AppCompatActivity {
 
     boolean isFABOpen=false;
 
-    private String mTaskTitle = "title";
-    private String mTaskContent = "content";
-    private String mTaskDate = "date";
-
     // Firebase DB key associated with selected task
     private String mTaskKey = "taskKey";
 
@@ -100,18 +96,21 @@ public class TaskDetails extends AppCompatActivity {
         final Intent intent = getIntent();
 
         // Getting task data from intent
+        String mTaskTitle = "title";
         if (intent.hasExtra(mTaskTitle)) {
             String taskTitle = intent.getStringExtra(mTaskTitle);
 
             taskTitleTextView.setText(taskTitle);
         }
 
+        String mTaskContent = "content";
         if (intent.hasExtra(mTaskContent)) {
             String taskContent = intent.getStringExtra(mTaskContent);
 
             taskContentTextView.setText(taskContent);
         }
 
+        String mTaskDate = "date";
         if (intent.hasExtra(mTaskDate)) {
             String taskDate = intent.getStringExtra(mTaskDate);
 

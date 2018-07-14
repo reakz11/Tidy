@@ -47,7 +47,6 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
     @BindView(R.id.hint_no_projects) TextView hintNoProjects;
 
-    private Query query;
     private LinearLayoutManager llm;
     private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
@@ -74,7 +73,7 @@ public class TasksFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Sets details of query
-        query = mFirebaseDatabase
+        Query query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
                 .child("projects");

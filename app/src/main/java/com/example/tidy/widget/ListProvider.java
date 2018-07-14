@@ -36,14 +36,13 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
     private Context context;
 
     private Context mContext;
-    private int appWidgetId;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
             .getReference();
 
 
     public ListProvider(Context context, Intent intent) {
         this.context = context;
-        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+        int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
 
         populateListItem(context, appWidgetId);
@@ -81,8 +80,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
 
                     final int N = taskList.size();
                     for (int i = 0; i < N; i++) {
-                        int position = i;
-                        Task taskItem = taskList.get(position);
+                        Task taskItem = taskList.get(i);
                         if (taskItem.getState().equals("0")) {
                             taskItemList.add(taskItem);
                         }

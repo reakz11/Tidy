@@ -46,7 +46,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     EditText taskDetailsEditText;
 
     private String dateDb;
-    private int mYear, mMonth, mDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +72,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         if (view == pickDate) {
             // Get Current Date
             final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            int mYear = c.get(Calendar.YEAR);
+            int mMonth = c.get(Calendar.MONTH);
+            int mDay = c.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(CreateTaskActivity.this,
                     new DatePickerDialog.OnDateSetListener() {

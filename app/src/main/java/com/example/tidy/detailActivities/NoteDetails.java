@@ -35,9 +35,6 @@ public class NoteDetails extends AppCompatActivity {
     @BindView(R.id.note_details_title) TextView mNoteTitleTextView;
     @BindView(R.id.note_details_content) TextView mNoteContentTextView;
 
-    private String mNoteTitle = "title";
-    private String mNoteContent = "content";
-
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
@@ -59,12 +56,14 @@ public class NoteDetails extends AppCompatActivity {
         Intent intent = getIntent();
 
         // Getting note title and content from intent
+        String mNoteTitle = "title";
         if (intent.hasExtra(mNoteTitle)) {
             String noteTitle = intent.getStringExtra(mNoteTitle);
 
             mNoteTitleTextView.setText(noteTitle);
         }
 
+        String mNoteContent = "content";
         if (intent.hasExtra(mNoteContent)) {
             String noteContent = intent.getStringExtra(mNoteContent);
             mNoteContentTextView.setText(noteContent);

@@ -19,26 +19,19 @@ public class Utils {
 
     private static FirebaseDatabase mDatabase;
 
-    private static String mUserId;
-
     private static int mCurrentDate;
-
-    private static String mCurrentDateAndTime;
 
     private static int mTomorrowDate;
 
     private static int mOtherTimeValue;
 
-    private static int mYear, mMonth, mDay;
-
 
     // Gets FirebaseDatabase with offline data persistence
-    public static FirebaseDatabase getDatabase() {
+    public static void getDatabase() {
         if (mDatabase == null) {
             mDatabase = FirebaseDatabase.getInstance();
             mDatabase.setPersistenceEnabled(true);
         }
-        return mDatabase;
     }
 
     public static void updateWidget(Context context) {
@@ -50,7 +43,7 @@ public class Utils {
     // Returns ID of logged in user
     public static String getUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        mUserId = user.getUid();
+        String mUserId = user.getUid();
         return mUserId;
     }
 
@@ -59,9 +52,9 @@ public class Utils {
     public static int getCurrentDate() {
         if (mCurrentDate == 0) {
             final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            int mYear = c.get(Calendar.YEAR);
+            int mMonth = c.get(Calendar.MONTH);
+            int mDay = c.get(Calendar.DAY_OF_MONTH);
             Date dateRepresentation = c.getTime();
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -75,7 +68,7 @@ public class Utils {
     // Used to create unique IDs for tasks
     public static String getCurrentDateAndTime() {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            mCurrentDateAndTime = sdf.format(new Date());
+        String mCurrentDateAndTime = sdf.format(new Date());
             return mCurrentDateAndTime;
     }
 

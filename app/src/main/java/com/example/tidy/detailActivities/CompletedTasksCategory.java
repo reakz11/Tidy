@@ -65,7 +65,6 @@ public class CompletedTasksCategory extends AppCompatActivity {
     boolean isFABOpen=false;
 
     private FirebaseRecyclerAdapter<Task, CompletedTasksCategory.TaskHolder> mAdapter;
-    private Query query;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +152,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        query = mFirebaseDatabase
+        Query query = mFirebaseDatabase
                 .child("users")
                 .child(getUserId())
                 .child("tasks")

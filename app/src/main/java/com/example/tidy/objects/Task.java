@@ -61,8 +61,7 @@ public class Task {
         } catch (ParseException e){
             return null;
         }
-        String formattedDate = targetFormat.format(date);
-        return formattedDate;
+        return targetFormat.format(date);
     }
 
     public String getState() {
