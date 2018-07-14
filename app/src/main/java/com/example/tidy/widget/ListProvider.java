@@ -41,6 +41,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
 
 
     public ListProvider(Context context, Intent intent) {
+        getDatabase();
         this.context = context;
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -52,8 +53,6 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
     private void populateListItem(Context context, final int appWidgetId) {
 
         mContext = context;
-
-        getDatabase();
 
         //Gets data from DB and listens for changes in DB
         mFirebaseDatabase
