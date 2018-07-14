@@ -1,7 +1,11 @@
 package com.example.tidy;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.util.Log;
 
+import com.example.tidy.widget.WidgetProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,6 +31,7 @@ public class Utils {
 
     private static int mYear, mMonth, mDay;
 
+
     // Gets FirebaseDatabase with offline data persistence
     public static FirebaseDatabase getDatabase() {
         if (mDatabase == null) {
@@ -34,6 +39,12 @@ public class Utils {
             mDatabase.setPersistenceEnabled(true);
         }
         return mDatabase;
+    }
+
+    public static void updateWidget(Context context) {
+        ComponentName name = new ComponentName(context, WidgetProvider.class);
+        int [] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
+        AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(ids, R.id.listViewWidget);
     }
 
     // Returns ID of logged in user

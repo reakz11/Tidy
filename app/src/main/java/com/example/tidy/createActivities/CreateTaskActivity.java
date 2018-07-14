@@ -1,6 +1,7 @@
 package com.example.tidy.createActivities;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getCurrentDateAndTime;
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.updateWidget;
 
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -126,5 +128,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());
         database.getReference("users").child(id).child("tasks").updateChildren(childUpdates);
+        updateWidget(getApplicationContext());
     }
 }

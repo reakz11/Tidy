@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.updateWidget;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,9 +76,7 @@ public class MainActivity extends AppCompatActivity {
         getDatabase();
 
         Context context = getApplicationContext();
-        ComponentName name = new ComponentName(context, WidgetProvider.class);
-        int [] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
-        AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(ids, R.id.listViewWidget);
+        updateWidget(context);
 
         // Binding views
         ButterKnife.bind(this);
