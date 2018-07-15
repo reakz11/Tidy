@@ -220,6 +220,9 @@ public class NormalCategory extends AppCompatActivity {
                 // Sets formatted deadline date if its not null
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
+                    if (Integer.valueOf(task.getDate()) < getCurrentDate()) {
+                        viewHolder.taskDate.setTextColor(getResources().getColor(R.color.late));
+                    }
                 }
 
                 // onClickListener used for setting task state to 1 (completed)

@@ -131,7 +131,6 @@ public class CompletedTasksCategory extends AppCompatActivity {
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.task_name) TextView taskTitle;
-        @BindView(R.id.task_content) TextView taskContent;
         @BindView(R.id.task_due_date) TextView taskDate;
         @BindView(R.id.delete_btn) Button deleteButton;
         @BindView(R.id.task_check_box) CheckBox taskCheckbox;
@@ -168,7 +167,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
             final public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.completed_task_item, parent, false);
+                        .inflate(R.layout.task_item, parent, false);
 
                 return new TaskHolder(view);
             }
@@ -180,14 +179,13 @@ public class CompletedTasksCategory extends AppCompatActivity {
                 if (task.getTitle() != null){
                     viewHolder.taskTitle.setText(task.getTitle());
                 }
-                // Sets task content if its not null
-                if (task.getContent() != null) {
-                    viewHolder.taskContent.setText(task.getContent());
-                }
+
                 // Sets formatted deadline date if its not null
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                 }
+
+                viewHolder.taskCheckbox.setChecked(true);
 
                 // onClickListener used for setting task state to 0 (not completed)
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
