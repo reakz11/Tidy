@@ -117,6 +117,8 @@ public class NotesFragment extends Fragment {
                         Intent intent = new Intent(getContext(), NoteDetails.class);
                         intent.putExtra("title", note.getTitle());
                         intent.putExtra("content", note.getContent());
+                        intent.putExtra("id", note.getId());
+                        intent.putExtra("noteKey", mAdapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         startActivity(intent);
                     }
                 });

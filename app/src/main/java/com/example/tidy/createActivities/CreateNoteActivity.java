@@ -1,6 +1,8 @@
 package com.example.tidy.createActivities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +15,10 @@ import com.example.tidy.R;
 import com.example.tidy.objects.Note;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +27,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.getCurrentDateAndTime;
 import static com.example.tidy.Utils.isEmpty;
 
 public class CreateNoteActivity extends AppCompatActivity {
@@ -30,7 +36,15 @@ public class CreateNoteActivity extends AppCompatActivity {
     @BindView(R.id.fab_save_note) FloatingActionButton fabSaveNote;
     @BindView(R.id.et_note_title) EditText noteTitleEditText;
     @BindView(R.id.et_note_content) EditText noteContentEditText;
+    private String uId;
+    private String edit = "edit";
+    private int isEdit = 0;
+    private String title = "title";
+    private String content = "content";
+    private String noteKey = "key";
+    private String noteId = "id";
     private String id;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +54,31 @@ public class CreateNoteActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
+        Intent intent = getIntent();
+
+        // Checking if user is editing existing task
+        if (intent.hasExtra(edit)){
+            isEdit = 1;
+
+            if (intent.hasExtra(title)) {
+                String noteTitle = intent.getStringExtra(title);
+                noteTitleEditText.setText(noteTitle);
+            }
+
+            if (intent.hasExtra(content)){
+                String noteContent = intent.getStringExtra(content);
+                noteContentEditText.setText(noteContent);
+            }
+
+            if (intent.hasExtra(noteId)){
+                id = intent.getStringExtra(noteId);
+            }
+
+            if (intent.hasExtra(noteKey)){
+                key = intent.getStringExtra(noteKey);
+            }
+        }
 
         fabSaveNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,21 +105,40 @@ public class CreateNoteActivity extends AppCompatActivity {
     // get the note data to save in our firebase db
     void saveNote() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         if (user != null) {
-            id = user.getUid();
+            uId = user.getUid();
         } else {
             Log.v("Auth", "User ID is null");
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String key = database.getReference("taskList").push().getKey();
+        if (isEdit == 1) {
+            if (key != null) {
+                final Note note = new Note();
+                note.setTitle(noteTitleEditText.getText().toString());
+                note.setContent(noteContentEditText.getText().toString());
+                note.setId(id);
 
-        final Note note = new Note();
-        note.setTitle(noteTitleEditText.getText().toString());
-        note.setContent(noteContentEditText.getText().toString());
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put( key, note.toFirebaseObject());
+                database.getReference("users").child(uId).child("notes").updateChildren(childUpdates);
+            } else {
+                Log.v("CreateProjectActivity", "Project DB key is null");
+            }
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put( key, note.toFirebaseObject());
-        database.getReference("users").child(id).child("notes").updateChildren(childUpdates);
+        } else {
+            String key = database.getReference("taskList").push().getKey();
+            String noteId = getCurrentDateAndTime();
+
+            final Note note = new Note();
+            note.setTitle(noteTitleEditText.getText().toString());
+            note.setContent(noteContentEditText.getText().toString());
+            note.setId(noteId);
+
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put( key, note.toFirebaseObject());
+            database.getReference("users").child(uId).child("notes").updateChildren(childUpdates);
+        }
     }
 }

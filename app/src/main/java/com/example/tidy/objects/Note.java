@@ -6,12 +6,14 @@ public class Note {
 
     private String mTitle;
     private String mContent;
+    private String mId;
 
     public Note() {}
 
-    public Note(String title, String content) {
+    public Note(String title, String content, String id) {
         this.mTitle = title;
         this.mContent = content;
+        this.mId = id;
     }
 
     public String getTitle() {
@@ -30,11 +32,19 @@ public class Note {
         mContent = content;
     }
 
+    public void setId(String id) {
+        this.mId = id;
+    }
+
+    public String getId() {
+        return mId;
+    }
+
     public HashMap<String,String> toFirebaseObject() {
         HashMap<String,String> note =  new HashMap<>();
         note.put("title", mTitle);
         note.put("content", mContent);
-
+        note.put("id", mId);
         return note;
     }
 }

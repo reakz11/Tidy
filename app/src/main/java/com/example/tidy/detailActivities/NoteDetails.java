@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -38,8 +40,13 @@ public class NoteDetails extends AppCompatActivity {
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
-    String mNoteTitle = "title";
-    String mNoteContent = "content";
+    private String mNoteTitle = "title";
+    private String mNoteContent = "content";
+    private String mNoteKey = "noteKey";
+    private String mNoteId = "id";
+
+    private String noteKey;
+    private String noteId;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +67,20 @@ public class NoteDetails extends AppCompatActivity {
 
         if (intent.hasExtra(mNoteTitle)) {
             String noteTitle = intent.getStringExtra(mNoteTitle);
-
             mNoteTitleTextView.setText(noteTitle);
         }
 
         if (intent.hasExtra(mNoteContent)) {
             String noteContent = intent.getStringExtra(mNoteContent);
             mNoteContentTextView.setText(noteContent);
+        }
+
+        if (intent.hasExtra(mNoteKey)){
+            noteKey = intent.getStringExtra(mNoteKey);
+        }
+
+        if (intent.hasExtra(mNoteId)){
+            noteId = intent.getStringExtra(mNoteId);
         }
 
         // Loading FAB animations
@@ -163,5 +177,27 @@ public class NoteDetails extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemThatWasClickedId = item.getItemId();
+
+        if (itemThatWasClickedId == R.id.edit_option) {
+            Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+            intent.putExtra("title",mNoteTitleTextView.getText());
+            intent.putExtra("content", mNoteContentTextView.getText());
+            intent.putExtra("id", noteId);
+            intent.putExtra("key", noteKey);
+            intent.putExtra("edit", "1");
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
