@@ -23,12 +23,13 @@
     </android.support.design.widget.AppBarLayout>
 
     <TextView
-        android:id="@+id/project_title"
+        android:id="@+id/project_tasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:layout_marginTop="65dp"
-        android:layout_marginStart="15dp"
-        android:hint="@string/project_title" />
+        android:layout_marginStart="10dp"
+        android:hint="@string/project_tasks" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollview_tasks"

@@ -39,6 +39,10 @@
     <string name="cancel">Cancel</string>
     <string name="project">Project: </string>
     <string name="hint_no_project">Task is not part of any project</string>
+    <string name="project_tasks">Tasks for this project:</string>
+    <string name="create_new_project">Create New Project</string>
+    <string name="create_new_note">Create New Note</string>
+    <string name="create_new_task">Create New Task</string>
 
 
 </resources>

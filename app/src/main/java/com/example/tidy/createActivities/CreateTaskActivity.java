@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,9 +91,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         pickProject.setOnClickListener(this);
         fabSave.setOnClickListener(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Create New Task");
+        getSupportActionBar().setTitle(R.string.create_new_task);
     }
 
     @Override

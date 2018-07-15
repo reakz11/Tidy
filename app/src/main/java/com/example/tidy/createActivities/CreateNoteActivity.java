@@ -41,7 +41,7 @@ public class CreateNoteActivity extends AppCompatActivity implements View.OnClic
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Create New Note");
+        getSupportActionBar().setTitle(R.string.create_new_note);
     }
 
     @Override

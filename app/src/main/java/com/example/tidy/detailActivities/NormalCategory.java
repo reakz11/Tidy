@@ -64,7 +64,6 @@ public class NormalCategory extends AppCompatActivity {
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
     @BindView(R.id.rv_tasks) RecyclerView recyclerView;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
-    @BindView(R.id.hint_no_tasks) TextView hintNoTasks;
     @Nullable @BindView(R.id.delete_btn) Button deleteButton;
 
     private Animation rotate_forward,rotate_backward;
@@ -302,74 +301,11 @@ public class NormalCategory extends AppCompatActivity {
 
         mAdapter.startListening();
 
-
-        //TODO: FIX HINT DISPLAY CHILD
-        mFirebaseDatabase.child("users").child(getUserId()).child("tasks").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (deleteButton != null) {
-                    hintNoTasks.setVisibility(View.VISIBLE);
-                } else {
-                    hintNoTasks.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                int lastVisiblePos = llm.findLastCompletelyVisibleItemPosition();
-                int firstVisiblePosition = llm.findFirstVisibleItemPosition();
-
-                if (firstVisiblePosition == -1) {
-                    hintNoTasks.setVisibility(View.VISIBLE);
-                } else {
-                    hintNoTasks.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        //TODO: Fix hint displaying in categories
         mFirebaseDatabase.child("users").child(getUserId()).child("tasks")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        int lastVisiblePos = llm.findLastCompletelyVisibleItemPosition();
-                        int firstVisiblePosition = llm.findFirstVisibleItemPosition();
-
-                        Log.v("NormalCategory", "lastVisiblePosition = " + lastVisiblePos);
-                        Log.v("NormalCategory", "firstVisiblePosition = " + firstVisiblePosition);
-
-                        if (firstVisiblePosition == -1) {
-                            hintNoTasks.setVisibility(View.VISIBLE);
-                            Log.v("NormalCategory", "lastVisiblePosition - firstVisiblePosition = 0");
-                        } else {
-                            hintNoTasks.setVisibility(View.GONE);
-                            Log.v("NormalCategory", "lastVisiblePosition - firstVisiblePosition = " + (String.valueOf(lastVisiblePos - firstVisiblePosition)));
-                        }
-
-
-//                        if (deleteButton != null) {
-//                            hintNoTasks.setVisibility(View.GONE);
-//                            Log.v("NormalCategory", "onDataChange deleteBtn != null");
-//                        }
-
-//                        hintNoTasks.setVisibility((mAdapter.getItemCount()== 0 ? View.VISIBLE : View.GONE));
-//                        Log.v("TaskFragment", "rv height: " + mAdapter.getItemCount());
                         loadingIndicator.setVisibility(View.GONE);
                     }
 

@@ -49,7 +49,6 @@ public class ProjectDetails extends AppCompatActivity {
     @BindView(R.id.layout_fab_project) LinearLayout layoutFabProject;
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
-    @BindView(R.id.project_title) TextView projectTitleTv;
     @BindView(R.id.rv_tasks) RecyclerView recyclerView;
 
     private Animation rotate_forward,rotate_backward;
@@ -81,15 +80,9 @@ public class ProjectDetails extends AppCompatActivity {
         Intent intent = getIntent();
 
         // Getting project title and ID from intent
-        //TODO: This should use cutom tag not just EXTRA_TEXT
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             String supportActionBarTitle = intent.getStringExtra(Intent.EXTRA_TEXT);
             getSupportActionBar().setTitle(supportActionBarTitle);
-        }
-
-        if (intent.hasExtra("title")) {
-            String projectTitle = intent.getStringExtra("title");
-            projectTitleTv.setText(projectTitle);
         }
 
         if (intent.hasExtra("id")) {

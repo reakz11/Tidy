@@ -50,7 +50,6 @@ public class NoteDetails extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //TODO: Maybe task title should be used for this?
         getSupportActionBar().setTitle("Note Details");
 
         Intent intent = getIntent();
