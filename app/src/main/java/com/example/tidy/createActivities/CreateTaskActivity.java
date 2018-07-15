@@ -1,6 +1,8 @@
 package com.example.tidy.createActivities;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -79,12 +81,32 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String projectId = "0";
     private String id;
 
+    private SharedPreferences pref;
+    private String savedTitle = "saved_title";
+    private String savedContent = "saved_content";
+    private String savedDate = "saved_date";
+    private String savedProject = "saved_project";
+    private String savedId = "saved_id";
+    private String nothing = "nothing";
+    private String savedTitleStr;
+    private String savedContentStr;
+    private String savedDateStr;
+    private String savedProjectStr;
+    private String savedIdStr;
+    public static final String myPreference = "myPref";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task);
 
         getDatabase();
+
+        pref = getSharedPreferences(myPreference,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.apply();
 
         ButterKnife.bind(this);
 
@@ -103,6 +125,27 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     protected void onResume(){
         super.onResume();
 
+        if (pref.contains(savedTitle)){
+            taskTitleEditText.setText(pref.getString(savedTitle, nothing));
+        }
+
+        if (pref.contains(savedContent)){
+            taskDetailsEditText.setText(pref.getString(savedContent, nothing));
+        }
+
+        if (pref.contains(savedDate)){
+            dueDate.setText(pref.getString(savedDate, nothing));
+        }
+
+        if (pref.contains(savedProject)){
+            selectedProjectTv.setText(pref.getString(savedProject, nothing));
+        }
+
+        if (pref.contains(savedId)){
+            projectId = pref.getString(savedId, nothing);
+        }
+
+
         mFirebaseDatabase.child("users").child(getUserId())
                 .child("projects").addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,6 +157,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                     if (td != null) {
                         values = new ArrayList<>(td.values());
+                        projectTitleList.clear();
 
                         JSONArray jsonArray = new JSONArray(values);
                         String jsonArrayStr = jsonArray.toString();
@@ -135,6 +179,87 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        String dateStr = "";
+        String projectTitleStr = "";
+        String idStr ="";
+
+        SharedPreferences.Editor editor = pref.edit();
+
+        if (!isEmpty(taskTitleEditText)){
+            savedTitleStr = taskTitleEditText.getText().toString();
+            editor.putString(savedTitle,savedTitleStr);
+        }
+
+        if (!isEmpty(taskDetailsEditText)){
+            savedContentStr = taskDetailsEditText.getText().toString();
+            editor.putString(savedContent, savedContentStr);
+        }
+
+        if (dueDate.getText() != null){
+            savedDateStr = dueDate.getText().toString();
+            dateStr = savedDateStr;
+            editor.putString(savedDate, savedDateStr);
+        }
+
+        if (selectedProjectTv.getText() != null){
+            savedProjectStr = selectedProjectTv.getText().toString();
+            projectTitleStr = savedProjectStr;
+            editor.putString(savedProject, savedProjectStr);
+        }
+
+        if (!projectId.equals("0")){
+            savedIdStr = projectId;
+            idStr = savedIdStr;
+            editor.putString(savedId, savedIdStr);
+        }
+
+        if (!dateStr.equals("")){
+            outState.putString(savedDate, dateStr);
+        }
+
+        if (!projectTitleStr.equals("")){
+            outState.putString(savedProject, projectTitleStr);
+        }
+
+        if (!idStr.equals("")){
+            outState.putString(savedId, idStr);
+        }
+
+        editor.apply();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle outState){
+        super.onRestoreInstanceState(outState);
+
+        if (outState.containsKey(savedDate)) {
+            dueDate.setText(outState.getString(savedDate, nothing));
+        }
+
+        if (outState.containsKey(savedDate)) {
+            selectedProjectTv.setText(outState.getString(savedProject, nothing));
+        }
+
+        if (outState.containsKey(savedId)){
+            projectId = outState.getString(savedId, nothing);
+        }
+
+        if (pref.contains(savedContent)){
+            taskDetailsEditText.setText(pref.getString(savedContent, nothing));
+        }
+
+        if (pref.contains(savedProject)){
+            selectedProjectTv.setText(pref.getString(savedProject, nothing));
+        }
+
+        if (pref.contains(savedId)){
+            projectId = pref.getString(savedId, nothing);
+        }
     }
 
 

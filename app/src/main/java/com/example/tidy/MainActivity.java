@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean isFABOpen=false;
 
-    SharedPreferences pref;
+    private SharedPreferences pref;
     public static final String myPreference = "mypref";
 
     @Override
