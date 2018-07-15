@@ -27,6 +27,8 @@
     <string name="no_deadline">No deadline</string>
     <string name="title">Title</string>
     <string name="details">Details</string>
+    <string name="note_details">Note Details</string>
+    <string name="task_details">Task Details</string>
     <string name="pick_date">Pick Date</string>
     <string name="pick_project">Pick Project</string>
     <string name="hint_write">Write Something</string>

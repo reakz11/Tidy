@@ -55,6 +55,7 @@ public class ProjectDetails extends AppCompatActivity {
 
     boolean isFABOpen=false;
     private String projectId;
+    private String id = "id";
 
     Query query;
 
@@ -85,9 +86,8 @@ public class ProjectDetails extends AppCompatActivity {
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
-        if (intent.hasExtra("id")) {
-            projectId = intent.getStringExtra("id");
-            Log.v("ProjectDetails", "Intent projectId is: " + projectId);
+        if (intent.hasExtra(id)) {
+            projectId = intent.getStringExtra(id);
         }
 
         // Loading FAB animations

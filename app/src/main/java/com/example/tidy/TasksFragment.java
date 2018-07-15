@@ -157,7 +157,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), NormalCategory.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Today");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.today));
                 startActivity(intent);
             }
         });
@@ -166,7 +166,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), NormalCategory.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Tomorrow");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.tomorrow));
                 startActivity(intent);
             }
         });
@@ -175,7 +175,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), NormalCategory.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Other Time");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.other_time));
                 startActivity(intent);
             }
         });

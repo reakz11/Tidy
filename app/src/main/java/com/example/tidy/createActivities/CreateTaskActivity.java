@@ -181,7 +181,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View view, int index, CharSequence text) {
-
                             selectedProject = projects.get(index);
                             projectId = selectedProject.getId();
                             selectedProjectTv.setText(selectedProject.getTitle());
@@ -194,12 +193,14 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     .show();
         }
     }
-    
+
     // get the note data to save in our firebase db
     void saveTodo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             id = user.getUid();
+        } else {
+            Log.v("Auth", "User ID is null");
         }
 
         String dateString = dateDb;

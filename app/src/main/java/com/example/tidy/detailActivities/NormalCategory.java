@@ -168,37 +168,31 @@ public class NormalCategory extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        // Checks what string is used as title of actionbar (Today, Tomorrow or Other Time)
-        // and based on this, sets content of query
+        // Checks what string is used as title of actionbar and sets query
         Query query;
-        switch (supportActionBarTitle) {
-            case "Today":
-                query = mFirebaseDatabase
-                        .child("users")
-                        .child(getUserId())
-                        .child("tasks")
-                        .orderByChild("date")
-                        .startAt("!")
-                        .endAt(String.valueOf(getCurrentDate()));
 
-                break;
-            case "Tomorrow":
-                query = mFirebaseDatabase
-                        .child("users")
-                        .child(getUserId())
-                        .child("tasks")
-                        .orderByChild("date")
-                        .equalTo(String.valueOf(getTomorrowDate()));
-                break;
-            default:
-                query = mFirebaseDatabase
-                        .child("users")
-                        .child(getUserId())
-                        .child("tasks")
-                        .orderByChild("date");
-                break;
+        if (supportActionBarTitle.equals(getString(R.string.today))) {
+            query = mFirebaseDatabase
+                    .child("users")
+                    .child(getUserId())
+                    .child("tasks")
+                    .orderByChild("date")
+                    .startAt("!")
+                    .endAt(String.valueOf(getCurrentDate()));
+        } else if(supportActionBarTitle.equals(getString(R.string.tomorrow))) {
+            query = mFirebaseDatabase
+                    .child("users")
+                    .child(getUserId())
+                    .child("tasks")
+                    .orderByChild("date")
+                    .equalTo(String.valueOf(getTomorrowDate()));
+        } else {
+            query = mFirebaseDatabase
+                    .child("users")
+                    .child(getUserId())
+                    .child("tasks")
+                    .orderByChild("date");
         }
-
 
         FirebaseRecyclerOptions<Task> options =
                 new FirebaseRecyclerOptions.Builder<Task>()
@@ -267,7 +261,7 @@ public class NormalCategory extends AppCompatActivity {
                 });
 
                 // Filtering tasks that should display in each task category
-                if (supportActionBarTitle.equals("Today") || supportActionBarTitle.equals("Tomorrow")) {
+                if (supportActionBarTitle.equals(getString(R.string.today)) || supportActionBarTitle.equals(getString(R.string.tomorrow))) {
                     if (String.valueOf(task.getState()).equals("1")) {
                         viewHolder.itemView.setVisibility(View.GONE);
                         viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
@@ -282,18 +276,6 @@ public class NormalCategory extends AppCompatActivity {
         };
 
         mAdapter.notifyDataSetChanged();
-
-//        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                loadingIndicator.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
 
         final LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);

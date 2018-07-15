@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -44,7 +45,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isEmpty(noteTitleEditText) || isEmpty(noteContentEditText)) {
-                    Toast toast = Toast.makeText(getApplicationContext(), R.string.no_note_data, Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            R.string.no_note_data, Toast.LENGTH_LONG);
                     toast.show();
                 } else {
                     saveNote();
@@ -63,6 +65,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             id = user.getUid();
+        } else {
+            Log.v("Auth", "User ID is null");
         }
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();

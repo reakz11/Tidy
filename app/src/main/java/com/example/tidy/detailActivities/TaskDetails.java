@@ -40,8 +40,6 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import iammert.com.expandablelib.ExpandableLayout;
-import iammert.com.expandablelib.Section;
 
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
@@ -75,10 +73,6 @@ public class TaskDetails extends AppCompatActivity {
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
             .getReference();
 
-    Section<ProjectCategory,String> section;
-    ExpandableLayout layout;
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_details);
@@ -91,7 +85,7 @@ public class TaskDetails extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Task Details");
+        getSupportActionBar().setTitle(getString(R.string.task_details));
 
         final Intent intent = getIntent();
 
@@ -169,109 +163,7 @@ public class TaskDetails extends AppCompatActivity {
                 .child(getUserId())
                 .child("projects");
 
-        projectsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-
-                    layout = findViewById(R.id.el);
-
-                    layout.setRenderer(new ExpandableLayout.Renderer<ProjectCategory,Project>(){
-
-                        @Override
-                        public void renderParent(View view, ProjectCategory projectCategory, boolean isExpanded, int parentPosition) {
-                            ((TextView)view.findViewById(R.id.tv_parent_name)).setText(projectCategory.name);
-                            view.findViewById(R.id.arrow).setBackgroundResource(isExpanded?
-                                    R.mipmap.baseline_expand_less_black_24dp:R.mipmap.baseline_expand_more_black_24dp);
-                        }
-
-                        @Override
-                        public void renderChild(View view, final Project project, int parentPosition, int childPosition) {
-                            ((TextView)view.findViewById(R.id.tv_child_name)).setText(project.getTitle());
-
-                            RadioButton radioButton = view.findViewById(R.id.radio_button);
-
-                            if (intent.hasExtra(mProjectId)) {
-                                taskProjectId = intent.getStringExtra(mProjectId);
-                            }
-
-                            String projectId = String.valueOf(project.getId());
-
-                            Log.v("TaskDetails", "taskProjectId is: " + taskProjectId);
-
-                            if (taskProjectId != null && taskProjectId.equals(projectId) ) {
-                                Log.v("TaskDetails", "taskProjectId and projectId are: " + taskProjectId + projectId);
-                                radioButton.setChecked(true);
-                            }
-
-                            view.findViewById(R.id.radio_button).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    RadioButton radioButton = view.findViewById(R.id.radio_button);
-
-                                    String projectId = String.valueOf(project.getId());
-
-                                    String taskKey = intent.getStringExtra(mTaskKey);
-
-                                    if (radioButton.isChecked()) {
-                                        mFirebaseDatabase.child("users").child(getUserId())
-                                                .child("tasks").child(taskKey).child("projectId").setValue(projectId);
-                                    }
-
-                                    Log.v("TaskDetails", "RenderChild onClick projectId is: " + projectId);
-
-                                }
-                            });
-                        }
-                    });
-
-                    mFirebaseDatabase.child("users").child(getUserId())
-                            .child("projects").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                Map<String, String> td = (HashMap<String,String>) dataSnapshot.getValue();
-
-                                List<String> values = new ArrayList<>(td.values());
-                                JSONArray jsonArray = new JSONArray(values);
-                                String jsonArrayStr = jsonArray.toString();
-
-                                List<Project> projects;
-                                Type listType = new TypeToken<List<Project>>(){}.getType();
-                                projects = new Gson().fromJson(jsonArrayStr, listType);
-
-                                layout.addSection(getSection(projects));
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                } else {
-                    Log.v("TaskDetails", "No projects exist in database");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
-
-    private Section<ProjectCategory,Project> getSection(List<Project> values) {
-        Section<ProjectCategory, Project> section = new Section<>();
-        ProjectCategory projectCategory = new ProjectCategory("Projects");
-
-        values.add(new Project("None","0"));
-
-        section.parent = projectCategory;
-        section.children.addAll(values);
-        return section;
-    }
-
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation
     private void showFABMenu(){

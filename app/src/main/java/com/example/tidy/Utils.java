@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Utils {
 
@@ -32,6 +33,8 @@ public class Utils {
         if (mDatabase == null) {
             mDatabase = FirebaseDatabase.getInstance();
             mDatabase.setPersistenceEnabled(true);
+        } else {
+            Log.v("Firebase", "Firebase DB is null");
         }
     }
 
@@ -43,8 +46,13 @@ public class Utils {
 
     // Returns ID of logged in user
     public static String getUserId() {
+        String mUserId = "0";
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String mUserId = user.getUid();
+        if (user != null) {
+            mUserId = user.getUid();
+        } else {
+            Log.v("Auth", "User ID is null");
+        }
         return mUserId;
     }
 
@@ -58,9 +66,11 @@ public class Utils {
             int mDay = c.get(Calendar.DAY_OF_MONTH);
             Date dateRepresentation = c.getTime();
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
             String dateString = sdf.format(dateRepresentation);
             mCurrentDate = Integer.parseInt(dateString);
+        } else {
+            Log.v("DateUtil", "getCurrentDate is null");
         }
         return mCurrentDate;
     }
@@ -72,7 +82,7 @@ public class Utils {
     // Returns current date and time
     // Used to create unique IDs for tasks
     public static String getCurrentDateAndTime() {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
         String mCurrentDateAndTime = sdf.format(new Date());
             return mCurrentDateAndTime;
     }
@@ -92,7 +102,7 @@ public class Utils {
     // Used to filter tasks
     public static int getTomorrowDate() {
         String sourceDate = String.valueOf(getCurrentDate());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
         Date myDate;
 
         try {
@@ -112,7 +122,7 @@ public class Utils {
     // Used to filter tasks
     public static int getOtherTimeValue() {
         String sourceDate = String.valueOf(getCurrentDate());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
         Date myDate;
 
         try {

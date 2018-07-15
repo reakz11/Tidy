@@ -58,7 +58,6 @@ public class CompletedTasksCategory extends AppCompatActivity {
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
     @BindView(R.id.rv_completed_tasks) RecyclerView recyclerView;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
-    @BindView(R.id.hint_no_completed_tasks) TextView hintNoCompletedTasks;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -80,7 +79,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Completed Tasks");
+        getSupportActionBar().setTitle(getString(R.string.completed_tasks));
 
         // Loading FAB animations
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
@@ -231,18 +230,6 @@ public class CompletedTasksCategory extends AppCompatActivity {
 
         mAdapter.notifyDataSetChanged();
 
-//        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                loadingIndicator.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
         LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(mAdapter);
@@ -253,8 +240,6 @@ public class CompletedTasksCategory extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        hintNoCompletedTasks.setVisibility((mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE));
-                        Log.v("TaskFragment", "mAdapter itemCount: " + mAdapter.getItemCount());
                         loadingIndicator.setVisibility(View.GONE);
                     }
 

@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -69,6 +70,8 @@ public class CreateProjectActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             id = user.getUid();
+        } else {
+            Log.v("Auth", "User ID is null");
         }
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();

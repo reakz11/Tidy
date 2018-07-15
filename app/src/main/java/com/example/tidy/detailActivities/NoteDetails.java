@@ -38,6 +38,8 @@ public class NoteDetails extends AppCompatActivity {
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
+    String mNoteTitle = "title";
+    String mNoteContent = "content";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,19 +52,18 @@ public class NoteDetails extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Note Details");
+        getSupportActionBar().setTitle(getString(R.string.note_details));
 
         Intent intent = getIntent();
 
         // Getting note title and content from intent
-        String mNoteTitle = "title";
+
         if (intent.hasExtra(mNoteTitle)) {
             String noteTitle = intent.getStringExtra(mNoteTitle);
 
             mNoteTitleTextView.setText(noteTitle);
         }
 
-        String mNoteContent = "content";
         if (intent.hasExtra(mNoteContent)) {
             String noteContent = intent.getStringExtra(mNoteContent);
             mNoteContentTextView.setText(noteContent);

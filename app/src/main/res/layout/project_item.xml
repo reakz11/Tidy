@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/project_name"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="23dp"
         android:layout_centerVertical="true"
         android:layout_marginBottom="8dp"
