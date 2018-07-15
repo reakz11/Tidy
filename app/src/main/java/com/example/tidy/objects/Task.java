@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class Task {
 
@@ -52,8 +53,8 @@ public class Task {
 
     public String getFormattedDate() {
 
-        DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd");
-        DateFormat targetFormat = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        DateFormat targetFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         Date date;
 
         try {

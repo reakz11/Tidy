@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting up fragments
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(TasksFragment.getInstance(), "Tasks");
-        adapter.addFragment(NotesFragment.getInstance(), "Notes");
+        adapter.addFragment(TasksFragment.getInstance(), getString(R.string.tasks));
+        adapter.addFragment(NotesFragment.getInstance(), getString(R.string.notes));
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -153,10 +153,8 @@ public class MainActivity extends AppCompatActivity {
 
         int currentFragmentInt = tabLayout.getSelectedTabPosition();
         SharedPreferences.Editor editor = pref.edit();
-
         editor.putInt(currentFragmentIndex,currentFragmentInt);
-
-        editor.commit();
+        editor.apply();
 
         Log.v("MainActivity", "current fragment is " + currentFragmentInt);
     }
@@ -175,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         int currentFragment = viewPager.getCurrentItem();
 
         if (currentFragment > 0) {
-            // the code for whatever behaviour you want goes here
             viewPager.setCurrentItem(0);
         } else {
             this.moveTaskToBack(true);
