@@ -69,8 +69,6 @@ public class CreateProjectActivity extends AppCompatActivity {
             }
         }
 
-
-
         // If clicked and project title is not empty, save project
         fabSaveProject.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -37,7 +37,7 @@
     <string name="deadline">Deadline:  </string>
     <string name="no_deadline">No deadline</string>
     <string name="title">Title</string>
-    <string name="details">Details</string>
+    <string name="details">Details:</string>
     <string name="note_details">Note Details</string>
     <string name="task_details">Task Details</string>
     <string name="pick_date">Pick Date</string>
@@ -51,6 +51,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="project">Project: </string>
+    <string name="no_info">No additional information</string>
     <string name="hint_no_project">Task is not part of any project</string>
     <string name="project_tasks">Tasks for this project:</string>
 
