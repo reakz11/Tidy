@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.R;
 import com.example.tidy.objects.Project;
@@ -110,22 +109,25 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     projectItemList.clear();
-                    Map<String, String> td = (HashMap<String,String>) dataSnapshot.getValue();
+                    List<String> values;
+                    @SuppressWarnings("unchecked") Map<String, String> td = (HashMap<String,String>) dataSnapshot.getValue();
 
-                    List<String> values = new ArrayList<>(td.values());
-                    JSONArray jsonArray = new JSONArray(values);
-                    String jsonArrayStr = jsonArray.toString();
+                    if (td != null) {
+                        values = new ArrayList<>(td.values());
 
-                    Type listType = new TypeToken<List<Project>>(){}.getType();
-                    projects = new Gson().fromJson(jsonArrayStr, listType);
+                        JSONArray jsonArray = new JSONArray(values);
+                        String jsonArrayStr = jsonArray.toString();
 
-                    final int N = projects.size();
-                    for (int i = 0; i < N; i++) {
-                        Project projectItem = projects.get(i);
-                        String projectStr = projectItem.getTitle();
-                        projectTitleList.add(projectStr);
+                        Type listType = new TypeToken<List<Project>>(){}.getType();
+                        projects = new Gson().fromJson(jsonArrayStr, listType);
+
+                        final int N = projects.size();
+                        for (int i = 0; i < N; i++) {
+                            Project projectItem = projects.get(i);
+                            String projectStr = projectItem.getTitle();
+                            projectTitleList.add(projectStr);
+                        }
                     }
-
                 }
             }
             @Override

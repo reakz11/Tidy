@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,7 @@ import static com.example.tidy.Utils.getUserId;
 public class CompletedTasksCategory extends AppCompatActivity {
 
     // CompletedTasksCategory is used for displaying completed/archived tasks
-    // User can set already completed tasks as not completed or permanently delete them from DB
+    // User can set already completed tasks as not completed or permanently delete
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_main) FloatingActionButton fabMain;

@@ -37,6 +37,7 @@
         android:id="@+id/et_task_details"
         android:hint="@string/details"
         android:layout_below="@id/et_task_title"
+        android:inputType="textMultiLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

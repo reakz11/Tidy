@@ -1,6 +1,7 @@
 package com.example.tidy;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.layout_fab_note) LinearLayout layoutFabNote;
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
 
+    @SuppressLint("StaticFieldLeak")
     public static ViewPager viewPager;
 
     private Animation rotate_forward,rotate_backward;

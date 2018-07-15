@@ -67,25 +67,30 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
-                    Map<String, String> td = (HashMap<String, String>) dataSnapshot.getValue();
-                    List<String> values = new ArrayList<>(td.values());
-                    JSONArray jsonArray = new JSONArray(values);
-                    String jsonArrayStr = jsonArray.toString();
+                    @SuppressWarnings("unchecked") Map<String, String> td = (HashMap<String, String>) dataSnapshot.getValue();
+                    List<String> values = null;
+                    if (td != null) {
+                        values = new ArrayList<>(td.values());
 
-                    Type listType = new TypeToken<List<Task>>(){}.getType();
-                    List<Task> taskList;
-                    taskList = new Gson().fromJson(jsonArrayStr, listType);
-                    taskItemList.clear();
+                        JSONArray jsonArray = new JSONArray(values);
+                        String jsonArrayStr = jsonArray.toString();
 
-                    final int N = taskList.size();
-                    for (int i = 0; i < N; i++) {
-                        Task taskItem = taskList.get(i);
-                        if (taskItem.getState().equals("0")) {
-                            taskItemList.add(taskItem);
+                        Type listType = new TypeToken<List<Task>>(){}.getType();
+                        List<Task> taskList;
+                        taskList = new Gson().fromJson(jsonArrayStr, listType);
+                        taskItemList.clear();
+
+                        final int N = taskList.size();
+                        for (int i = 0; i < N; i++) {
+                            Task taskItem = taskList.get(i);
+                            if (taskItem.getState().equals("0")) {
+                                taskItemList.add(taskItem);
+                            }
                         }
-                    }
 
-                    AppWidgetManager.getInstance(mContext).notifyAppWidgetViewDataChanged(appWidgetId, R.id.listViewWidget);
+                        AppWidgetManager.getInstance(mContext)
+                                .notifyAppWidgetViewDataChanged(appWidgetId, R.id.listViewWidget);
+                    }
                 }
             }
             @Override

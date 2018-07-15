@@ -181,7 +181,7 @@
             android:id="@+id/hint_no_projects"
             android:visibility="gone"
             android:layout_marginTop="20dp"
-            android:text="You don't have any projects"
+            android:text="@string/project_list_empty"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
