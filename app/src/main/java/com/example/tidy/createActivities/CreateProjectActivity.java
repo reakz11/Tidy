@@ -47,10 +47,14 @@ public class CreateProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isEmpty(projectTitleEditText)){
-                    Toast toast = Toast.makeText(getApplicationContext(), R.string.no_project_title, Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            R.string.no_project_title, Toast.LENGTH_LONG);
                     toast.show();
                 } else {
                     saveProject();
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            R.string.project_created, Toast.LENGTH_SHORT);
+                    toast.show();
                     finish();
                 }
             }

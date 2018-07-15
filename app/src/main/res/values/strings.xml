@@ -48,9 +48,11 @@
     <string name="create_new_note">Create New Note</string>
     <string name="create_new_task">Create New Task</string>
     <string name="no_project_title">Please enter project title</string>
-    <string name="project_list_empty">You don't have any projects</string>
+    <string name="project_list_empty">You don\'t have any projects</string>
     <string name="no_note_data">Please make sure that all fields are filled</string>
     <string name="no_task_title">Please enter task title</string>
-
+    <string name="task_created">Task created</string>
+    <string name="note_created">Note created</string>
+    <string name="project_created">Project created</string>
 
 </resources>

@@ -170,10 +170,14 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             datePickerDialog.show();
         } else if(view == fabSave) {
             if (isEmpty(taskTitleEditText)) {
-                Toast toast = Toast.makeText(getApplicationContext(), R.string.no_task_title, Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        R.string.no_task_title, Toast.LENGTH_LONG);
                 toast.show();
             } else {
                 saveTodo();
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        R.string.task_created, Toast.LENGTH_SHORT);
+                toast.show();
                 finish();
             }
         } else if(view == pickProject) {

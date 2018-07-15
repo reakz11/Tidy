@@ -50,6 +50,9 @@ public class CreateNoteActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     saveNote();
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            R.string.note_created, Toast.LENGTH_SHORT);
+                    toast.show();
                     finish();
                 }
             }
