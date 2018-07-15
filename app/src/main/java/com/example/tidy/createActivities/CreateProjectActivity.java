@@ -1,6 +1,8 @@
 package com.example.tidy.createActivities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +15,10 @@ import com.example.tidy.R;
 import com.example.tidy.objects.Project;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +36,13 @@ public class CreateProjectActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_save_project) FloatingActionButton fabSaveProject;
     @BindView(R.id.et_project_title) EditText projectTitleEditText;
-    private String id;
+    private String uId;
+    private String id = "id";
+    private String edit = "edit";
+    private String projectId;
+    private String projectKey;
+    private int isEdit = 0;
+    private String title = "title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,24 @@ public class CreateProjectActivity extends AppCompatActivity {
         getDatabase();
 
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+
+        // Checking if user is editing existing task
+        if (intent.hasExtra(edit)){
+            isEdit = 1;
+
+            if (intent.hasExtra(title)) {
+                String projectTitle = intent.getStringExtra(title);
+                projectTitleEditText.setText(projectTitle);
+            }
+
+            if (intent.hasExtra(id)){
+                projectId = intent.getStringExtra(id);
+            }
+        }
+
+
 
         // If clicked and project title is not empty, save project
         fabSaveProject.setOnClickListener(new View.OnClickListener() {
@@ -52,9 +81,6 @@ public class CreateProjectActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     saveProject();
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            R.string.project_created, Toast.LENGTH_SHORT);
-                    toast.show();
                     finish();
                 }
             }
@@ -64,29 +90,78 @@ public class CreateProjectActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(R.string.create_new_project);
+        if (isEdit == 0) {
+            getSupportActionBar().setTitle(getString(R.string.create_new_project));
+        } else {
+            getSupportActionBar().setTitle(getString(R.string.edit_project));
+        }
     }
+
 
     // get the project data to save in our firebase db
     void saveProject() {
-
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if (user != null) {
-            id = user.getUid();
+            uId = user.getUid();
         } else {
             Log.v("Auth", "User ID is null");
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String key = database.getReference("taskList").push().getKey();
-        String projectId = getCurrentDateAndTime();
+        if (isEdit == 1) {
+            database.getReference("users")
+                    .child(uId)
+                    .child("projects")
+                    .orderByChild("id")
+                    .equalTo(projectId)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                                projectKey = childSnapshot.getKey();
+                                Log.v("CreateProjectActivity", "Project key is: " + projectKey);
 
-        final Project project = new Project();
-        project.setTitle(projectTitleEditText.getText().toString());
-        project.setId(projectId);
+                                if (projectKey != null) {
+                                    database.getReference("users")
+                                            .child(uId)
+                                            .child("projects")
+                                            .child(projectKey)
+                                            .child("title")
+                                            .setValue(projectTitleEditText.getText().toString());
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put( key, project.toFirebaseObject());
-        database.getReference("users").child(id).child("projects").updateChildren(childUpdates);
+                                    Toast toast = Toast.makeText(getApplicationContext(),
+                                            R.string.project_edit_confirmation, Toast.LENGTH_SHORT);
+                                    toast.show();
+
+                                } else {
+                                    Log.v("CreateProjectActivity", "Project DB key is null");
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+        } else {
+
+            String key = database.getReference("taskList").push().getKey();
+            String projectId = getCurrentDateAndTime();
+
+            final Project project = new Project();
+            project.setTitle(projectTitleEditText.getText().toString());
+            project.setId(projectId);
+
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put( key, project.toFirebaseObject());
+            database.getReference("users").child(uId).child("projects").updateChildren(childUpdates);
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    R.string.project_created, Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }

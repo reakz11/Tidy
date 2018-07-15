@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,7 +47,6 @@ import static com.example.tidy.Utils.getOtherTimeValue;
 import static com.example.tidy.Utils.getTomorrowDate;
 import static com.example.tidy.Utils.getUserId;
 import static com.example.tidy.Utils.getCurrentDate;
-import static java.security.AccessController.getContext;
 
 public class NormalCategory extends AppCompatActivity {
 
@@ -223,7 +221,7 @@ public class NormalCategory extends AppCompatActivity {
                 if (task.getDate() != null) {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                     if (Integer.valueOf(task.getDate()) < getCurrentDate()) {
-                        viewHolder.taskDate.setTextColor(getResources().getColor(R.color.late));
+                        viewHolder.taskDate.setTextColor(getResources().getColor(R.color.red));
                     }
                 }
 

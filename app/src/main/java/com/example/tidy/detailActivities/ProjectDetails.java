@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -54,11 +56,12 @@ public class ProjectDetails extends AppCompatActivity {
 
     boolean isFABOpen=false;
     private String projectId;
+    private String projectTitle;
     private String id = "id";
+    private String title = "title";
 
     Query query;
 
-    String supportActionBarTitle;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
     private FirebaseRecyclerAdapter<Task, ProjectDetails.TaskHolder> mAdapter;
 
@@ -87,6 +90,10 @@ public class ProjectDetails extends AppCompatActivity {
 
         if (intent.hasExtra(id)) {
             projectId = intent.getStringExtra(id);
+        }
+
+        if (intent.hasExtra(title)) {
+            projectTitle = intent.getStringExtra(title);
         }
 
         // Loading FAB animations
@@ -307,4 +314,25 @@ public class ProjectDetails extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemThatWasClickedId = item.getItemId();
+
+        if (itemThatWasClickedId == R.id.edit_option) {
+            Intent intent = new Intent(getApplicationContext(), CreateProjectActivity.class);
+            intent.putExtra("id", projectId);
+            intent.putExtra("title",projectTitle);
+            intent.putExtra("edit", "1");
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
