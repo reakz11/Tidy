@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.example.tidy.widget.WidgetProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,6 +63,10 @@ public class Utils {
             mCurrentDate = Integer.parseInt(dateString);
         }
         return mCurrentDate;
+    }
+
+    public static boolean isEmpty(EditText myeditText) {
+        return myeditText.getText().toString().trim().length() == 0;
     }
 
     // Returns current date and time

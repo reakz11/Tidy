@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,12 +24,14 @@ import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getCurrentDateAndTime;
 import static com.example.tidy.Utils.getDatabase;
+import static com.example.tidy.Utils.isEmpty;
 
-public class CreateProjectActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateProjectActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_save_project) FloatingActionButton fabSaveProject;
     @BindView(R.id.et_project_title) EditText projectTitleEditText;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,19 @@ public class CreateProjectActivity extends AppCompatActivity implements View.OnC
 
         ButterKnife.bind(this);
 
-        fabSaveProject.setOnClickListener(this);
+        // If clicked and project title is not empty, save project
+        fabSaveProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isEmpty(projectTitleEditText)){
+                    Toast toast = Toast.makeText(getApplicationContext(), R.string.no_project_title, Toast.LENGTH_LONG);
+                    toast.show();
+                } else {
+                    saveProject();
+                    finish();
+                }
+            }
+        });
 
         setSupportActionBar(toolbar);
 
@@ -48,37 +63,24 @@ public class CreateProjectActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setTitle(R.string.create_new_project);
     }
 
-    @Override
-    public void onClick(View view) {
-
-        if (view == fabSaveProject)
-        {
-            saveProject();
-            finish();
-        }
-    }
-
     // get the project data to save in our firebase db
     void saveProject() {
 
-        if (projectTitleEditText.getText() != null) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            String id = user.getUid();
-
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            String key = database.getReference("taskList").push().getKey();
-            String projectId = getCurrentDateAndTime();
-
-            final Project project = new Project();
-            project.setTitle(projectTitleEditText.getText().toString());
-            project.setId(projectId);
-
-            Map<String, Object> childUpdates = new HashMap<>();
-            childUpdates.put( key, project.toFirebaseObject());
-            database.getReference("users").child(id).child("projects").updateChildren(childUpdates);
-        } else {
-            Toast toast = Toast.makeText(this, "Please enter project title", Toast.LENGTH_LONG);
-            toast.show();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            id = user.getUid();
         }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        String key = database.getReference("taskList").push().getKey();
+        String projectId = getCurrentDateAndTime();
+
+        final Project project = new Project();
+        project.setTitle(projectTitleEditText.getText().toString());
+        project.setId(projectId);
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put( key, project.toFirebaseObject());
+        database.getReference("users").child(id).child("projects").updateChildren(childUpdates);
     }
 }

@@ -30,12 +30,12 @@
     <string name="pick_date">Pick Date</string>
     <string name="pick_project">Pick Project</string>
     <string name="hint_write">Write Something</string>
-    <string name="project_title">Project Title</string>
+    <string name="hint_project_title">Project Title</string>
     <string name="assigned_to_project">Assigned to project:</string>
     <string name="no_project">No project</string>
     <string name="no_tasks">No tasks to display</string>
     <string name="select_project">Choose Project</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="project">Project: </string>
     <string name="hint_no_project">Task is not part of any project</string>
@@ -43,6 +43,9 @@
     <string name="create_new_project">Create New Project</string>
     <string name="create_new_note">Create New Note</string>
     <string name="create_new_task">Create New Task</string>
+    <string name="no_project_title">Please enter project title</string>
+    <string name="no_note_data">Please make sure that all fields are filled</string>
+    <string name="no_task_title">Please enter task title</string>
 
 
 </resources>

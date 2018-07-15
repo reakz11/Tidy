@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.tidy.R;
 import com.example.tidy.objects.Note;
@@ -20,7 +21,9 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateNoteActivity extends AppCompatActivity implements View.OnClickListener {
+import static com.example.tidy.Utils.isEmpty;
+
+public class CreateNoteActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_save_note) FloatingActionButton fabSaveNote;
@@ -37,29 +40,30 @@ public class CreateNoteActivity extends AppCompatActivity implements View.OnClic
 
         setSupportActionBar(toolbar);
 
-        fabSaveNote.setOnClickListener(this);
+        fabSaveNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isEmpty(noteTitleEditText) || isEmpty(noteContentEditText)) {
+                    Toast toast = Toast.makeText(getApplicationContext(), R.string.no_note_data, Toast.LENGTH_LONG);
+                    toast.show();
+                } else {
+                    saveNote();
+                    finish();
+                }
+            }
+        });
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(R.string.create_new_note);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == fabSaveNote){
-            saveNote();
-            finish();
-        }
-    }
-
     // get the note data to save in our firebase db
     void saveNote() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         if (user != null) {
             id = user.getUid();
         }
-
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String key = database.getReference("taskList").push().getKey();

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,6 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -46,6 +48,7 @@ import butterknife.ButterKnife;
 import static com.example.tidy.Utils.getCurrentDateAndTime;
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
+import static com.example.tidy.Utils.isEmpty;
 import static com.example.tidy.Utils.updateWidget;
 
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener {
@@ -75,6 +78,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             .getReference();
     private Project selectedProject;
     private String projectId = "0";
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,15 +160,20 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                             Date dateRepresentation = cal.getTime();
 
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
                             dateDb = sdf.format(dateRepresentation);
                             dueDate.setText(selectedDate);
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
         } else if(view == fabSave) {
-            saveTodo();
-            finish();
+            if (isEmpty(taskTitleEditText)) {
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.no_task_title, Toast.LENGTH_LONG);
+                toast.show();
+            } else {
+                saveTodo();
+                finish();
+            }
         } else if(view == pickProject) {
             new MaterialDialog.Builder(this)
                     .title(R.string.select_project)
@@ -185,13 +194,13 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     .show();
         }
     }
-
-
-
+    
     // get the note data to save in our firebase db
     void saveTodo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String id = user.getUid();
+        if (user != null) {
+            id = user.getUid();
+        }
 
         String dateString = dateDb;
 
