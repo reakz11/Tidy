@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.detailActivities.CompletedTasksCategory;
 import com.example.tidy.detailActivities.NormalCategory;
 import com.example.tidy.detailActivities.ProjectDetails;
@@ -28,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -120,8 +124,20 @@ public class TasksFragment extends Fragment {
                 viewHolder.deleteProjectBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
-                        mAdapter.notifyDataSetChanged();
+
+                        new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                                .title(viewHolder.projectNameTv.getText())
+                                .content(getString(R.string.delete_project_confirmation))
+                                .positiveText(getString(R.string.yes))
+                                .negativeText(getString(R.string.no))
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .show();
                     }
                 });
             }

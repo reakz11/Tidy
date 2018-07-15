@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.R;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
@@ -46,6 +48,7 @@ import static com.example.tidy.Utils.getOtherTimeValue;
 import static com.example.tidy.Utils.getTomorrowDate;
 import static com.example.tidy.Utils.getUserId;
 import static com.example.tidy.Utils.getCurrentDate;
+import static java.security.AccessController.getContext;
 
 public class NormalCategory extends AppCompatActivity {
 
@@ -62,7 +65,6 @@ public class NormalCategory extends AppCompatActivity {
     @BindView(R.id.layout_fab_task) LinearLayout layoutFabTask;
     @BindView(R.id.rv_tasks) RecyclerView recyclerView;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
-    @Nullable @BindView(R.id.delete_btn) Button deleteButton;
 
     private Animation rotate_forward,rotate_backward;
 
@@ -257,7 +259,19 @@ public class NormalCategory extends AppCompatActivity {
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                        new MaterialDialog.Builder(NormalCategory.this)
+                                .title(viewHolder.taskTitle.getText())
+                                .content(getString(R.string.delete_task_confirmation))
+                                .positiveText(getString(R.string.yes))
+                                .negativeText(getString(R.string.no))
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .show();
                     }
                 });
 

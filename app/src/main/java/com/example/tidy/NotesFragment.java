@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.detailActivities.NoteDetails;
 import com.example.tidy.objects.Note;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,11 +30,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class NotesFragment extends Fragment {
 
@@ -119,7 +125,19 @@ public class NotesFragment extends Fragment {
                 viewHolder.deleteNoteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                        new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                                .title(viewHolder.noteTitleTv.getText())
+                                .content(getString(R.string.delete_note_confirmation))
+                                .positiveText(getString(R.string.yes))
+                                .negativeText(getString(R.string.no))
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                        mAdapter.getRef(viewHolder.getAdapterPosition()).removeValue();
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .show();
                     }
                 });
             }
