@@ -23,7 +23,7 @@
     <string name="anon_login">Anon Login</string>
     <string name="log_out">Log out</string>
     <string name="delete">Delete</string>
-    <string name="deadline">Deadline: </string>
+    <string name="deadline">Deadline:  </string>
     <string name="no_deadline">No deadline</string>
     <string name="title">Title</string>
     <string name="details">Details</string>
@@ -34,6 +34,11 @@
     <string name="assigned_to_project">Assigned to project:</string>
     <string name="no_project">No project</string>
     <string name="no_tasks">No tasks to display</string>
+    <string name="select_project">Choose Project</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="project">Project: </string>
+    <string name="hint_no_project">Task is not part of any project</string>
 
 
 </resources>

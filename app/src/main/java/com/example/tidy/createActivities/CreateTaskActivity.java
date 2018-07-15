@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.R;
 import com.example.tidy.objects.Project;
@@ -62,14 +63,17 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     EditText taskDetailsEditText;
     @BindView(R.id.pick_project_button)
     Button pickProject;
+    @BindView(R.id.selected_project_tv)
+    TextView selectedProjectTv;
 
     private String dateDb;
     private List<Project> projectItemList = new ArrayList<>();
     private List<String> projectTitleList = new ArrayList<>();
-    private ArrayList<Integer> projectIdList = new ArrayList<>();
-    private int[] projectIntArray = {0,1,2,3,4,5};
+    private List<Project> projects;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
             .getReference();
+    private Project selectedProject;
+    private String projectId = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +111,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     JSONArray jsonArray = new JSONArray(values);
                     String jsonArrayStr = jsonArray.toString();
 
-                    List<Project> projects;
                     Type listType = new TypeToken<List<Project>>(){}.getType();
                     projects = new Gson().fromJson(jsonArrayStr, listType);
 
@@ -115,9 +118,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     for (int i = 0; i < N; i++) {
                         Project projectItem = projects.get(i);
                         String projectStr = projectItem.getTitle();
-//                        int projectId = Integer.parseInt(projectItem.getId());
                         projectTitleList.add(projectStr);
-//                        projectIdList.add(projectId);
                     }
 
                 }
@@ -156,7 +157,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                             dateDb = sdf.format(dateRepresentation);
-
                             dueDate.setText(selectedDate);
                         }
                     }, mYear, mMonth, mDay);
@@ -166,28 +166,24 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             finish();
         } else if(view == pickProject) {
             new MaterialDialog.Builder(this)
-                    .title("Title")
+                    .title(R.string.select_project)
                     .items(projectTitleList)
-//                    .itemsIds(projectIdList.toArray(new Integer[][projectTitleList.size()]))
-                    .itemsIds(projectIntArray)
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            //TODO: https://github.com/afollestad/material-dialogs#assigning-ids-to-list-item-views
-                            String projectId = String.valueOf(view.getId());
-                            Log.v("CreateTaskActivity", "project id is: " + projectId);
+                        public boolean onSelection(MaterialDialog dialog, View view, int index, CharSequence text) {
+
+                            selectedProject = projects.get(index);
+                            projectId = selectedProject.getId();
+                            selectedProjectTv.setText(selectedProject.getTitle());
 
                             return true;
                         }
                     })
-                    .positiveText("Select")
+                    .negativeText(R.string.cancel)
+                    .positiveText(R.string.ok)
                     .show();
         }
     }
-
-
-
-
 
 
 
@@ -207,7 +203,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         task.setContent(taskDetailsEditText.getText().toString());
         task.setDate(dateString);
         task.setState("0");
-        task.setProjectId("0");
+        if (projectId.equals("0")) {
+            task.setProjectId("0");
+        } else {
+            task.setProjectId(projectId);
+        }
         task.setTaskId(taskID);
 
         Map<String, Object> childUpdates = new HashMap<>();

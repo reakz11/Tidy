@@ -175,15 +175,11 @@ public class ProjectDetails extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(@NonNull TaskHolder holder, final int position, @NonNull final Task task) {
+            public void onBindViewHolder(TaskHolder holder, final int position, final Task task) {
                 final TaskHolder viewHolder = holder;
                 // Sets task title if its not null
                 if (task.getTitle() != null){
                     viewHolder.taskTitle.setText(task.getTitle());
-                }
-                // Sets task content if its not null
-                if (task.getContent() != null) {
-                    viewHolder.taskContent.setText(task.getContent());
                 }
                 // Sets formatted deadline date if its not null
                 if (task.getDate() != null) {
@@ -241,9 +237,10 @@ public class ProjectDetails extends AppCompatActivity {
 
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.task_name) TextView taskTitle;
-        @BindView(R.id.task_content) TextView taskContent;
-        @BindView(R.id.task_due_date) TextView taskDate;
+        @BindView(R.id.task_name)
+        TextView taskTitle;
+        @BindView(R.id.task_due_date)
+        TextView taskDate;
         @BindView(R.id.delete_btn)
         Button deleteButton;
         @BindView(R.id.task_check_box)

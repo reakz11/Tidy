@@ -53,9 +53,26 @@
         android:id="@+id/due_date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/deadline_tv"
-        android:layout_toEndOf="@+id/deadline_tv"
+        android:layout_marginStart="68dp"
         android:hint="@string/no_deadline" />
+
+    <TextView
+        android:id="@+id/project_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/deadline_tv"
+        android:text="@string/project" />
+
+    <TextView
+        android:id="@+id/selected_project_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/deadline_tv"
+        android:layout_toEndOf="@+id/deadline_tv"
+        android:hint="@string/hint_no_project" />
 
     <Button
         android:id="@+id/pick_date_button"
