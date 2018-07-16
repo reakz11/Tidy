@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -40,18 +42,17 @@ public class TaskDetails extends AppCompatActivity {
     @BindView(R.id.task_title_tv) TextView taskTitleTextView;
     @BindView(R.id.task_content_tv) TextView taskContentTextView;
     @BindView(R.id.task_date) TextView taskDateTextView;
+    @BindView(R.id.task_project) TextView taskProjectTextView;
 
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
-
-    // Firebase DB key associated with selected task
-    private String mTaskKey = "taskKey";
-
-    private String mProjectId = "projectId";
-
-    // ID of project that selected task is part of
-    private String taskProjectId;
+    private String taskTitle;
+    private String taskDate;
+    private String taskProject;
+    private String taskContent;
+    private String taskKey;
+    private String projectKey;
 
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
             .getReference();
@@ -75,23 +76,30 @@ public class TaskDetails extends AppCompatActivity {
         // Getting task data from intent
         String mTaskTitle = "title";
         if (intent.hasExtra(mTaskTitle)) {
-            String taskTitle = intent.getStringExtra(mTaskTitle);
-
+            taskTitle = intent.getStringExtra(mTaskTitle);
             taskTitleTextView.setText(taskTitle);
         }
 
         String mTaskContent = "content";
         if (intent.hasExtra(mTaskContent)) {
-            String taskContent = intent.getStringExtra(mTaskContent);
-
+            taskContent = intent.getStringExtra(mTaskContent);
             taskContentTextView.setText(taskContent);
         }
 
         String mTaskDate = "date";
         if (intent.hasExtra(mTaskDate)) {
-            String taskDate = intent.getStringExtra(mTaskDate);
-
+            taskDate = intent.getStringExtra(mTaskDate);
             taskDateTextView.setText(taskDate);
+        }
+
+        String mTaskProjectKey = "projectKey";
+        if (intent.hasExtra(mTaskProjectKey)) {
+            projectKey = intent.getStringExtra(mTaskProjectKey);
+        }
+
+        String mTaskKey = "taskKey";
+        if (intent.hasExtra(mTaskKey)) {
+            taskKey = intent.getStringExtra(mTaskKey);
         }
 
         // Loading FAB animations
@@ -196,4 +204,26 @@ public class TaskDetails extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemThatWasClickedId = item.getItemId();
+
+        if (itemThatWasClickedId == R.id.edit_option) {
+            Intent intent = new Intent(getApplicationContext(), CreateTaskActivity.class);
+            intent.putExtra("title", taskTitle);
+            intent.putExtra("date", taskDate);
+            intent.putExtra("project", taskProject);
+            intent.putExtra("content", taskContent);
+            intent.putExtra("key", taskKey);
+            intent.putExtra("edit", "1");
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

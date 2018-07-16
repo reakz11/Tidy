@@ -208,7 +208,7 @@ public class CompletedTasksCategory extends AppCompatActivity {
                         if (task.getDate() != null) {
                             intent.putExtra("date", task.getFormattedDate());
                         }
-                        intent.putExtra("projectId", task.getProjectId());
+                        intent.putExtra("projectKey", task.getProjectKey());
                         intent.putExtra("taskId",task.getTaskId());
                         intent.putExtra("taskKey", mAdapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         startActivity(intent);

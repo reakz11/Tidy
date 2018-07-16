@@ -2,6 +2,7 @@ package com.example.tidy.createActivities;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -79,13 +80,15 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             .getReference();
     private Project selectedProject;
     private String projectId = "0";
-    private String id;
+    private String uId =getUserId();
 
     private SharedPreferences pref;
     private String savedTitle = "saved_title";
     private String savedContent = "saved_content";
     private String savedDate = "saved_date";
     private String savedProject = "saved_project";
+    private String savedProjectTitle = "saved_project_title";
+    private String savedProjectKey = "saved_project_key";
     private String savedId = "saved_id";
     private String nothing = "nothing";
     private String savedTitleStr;
@@ -93,7 +96,23 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String savedDateStr;
     private String savedProjectStr;
     private String savedIdStr;
+    private String savedProjectKeyStr;
     public static final String myPreference = "myPref";
+    private String edit = "edit";
+    private int isEdit = 0;
+    private String title = "title";
+    private String date = "date";
+    private String projectTitle;
+    private String content = "content";
+    private String key = "key";
+    private String projectKey = "projecKey";
+    private String selectedProjectKey;
+
+
+    private String taskTitle;
+    private String taskContent;
+    private String taskDate;
+    private String taskKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +120,19 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.create_task);
 
         getDatabase();
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String projectTitle = dataSnapshot.child("title").getValue(String.class);
+                selectedProjectTv.setText(projectTitle);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
 
         pref = getSharedPreferences(myPreference,
                 Context.MODE_PRIVATE);
@@ -116,9 +148,49 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         pickProject.setOnClickListener(this);
         fabSave.setOnClickListener(this);
 
+        Intent intent = getIntent();
+
+        // Checking if user is editing existing task
+        if (intent.hasExtra(edit)){
+            isEdit = 1;
+
+            if (intent.hasExtra(title)) {
+                taskTitle = intent.getStringExtra(title);
+                taskTitleEditText.setText(taskTitle);
+            }
+
+            if (intent.hasExtra(date)) {
+                taskDate = intent.getStringExtra(date);
+                dueDate.setText(taskDate);
+            }
+
+            if (intent.hasExtra(projectKey)) {
+                selectedProjectKey = intent.getStringExtra(projectKey);
+                mFirebaseDatabase
+                        .child("users")
+                        .child(uId)
+                        .child("projects")
+                        .child(selectedProjectKey).addValueEventListener(valueEventListener);
+            }
+
+            if (intent.hasExtra(content)) {
+                taskContent = intent.getStringExtra(content);
+                taskDetailsEditText.setText(taskContent);
+            }
+
+            if (intent.hasExtra(key)) {
+                taskKey = intent.getStringExtra(key);
+            }
+        }
+
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(R.string.create_new_task);
+
+        if (isEdit == 0) {
+            getSupportActionBar().setTitle(R.string.create_new_task);
+        } else {
+            getSupportActionBar().setTitle(R.string.edit_task);
+        }
     }
 
     @Override
@@ -143,6 +215,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (pref.contains(savedId)){
             projectId = pref.getString(savedId, nothing);
+        }
+
+        if (pref.contains(savedProjectKey)){
+            selectedProjectKey = pref.getString(savedProjectKey, nothing);
         }
 
 
@@ -187,6 +263,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         String dateStr = "";
         String projectTitleStr = "";
         String idStr ="";
+        String projectKeyStr ="";
 
         SharedPreferences.Editor editor = pref.edit();
 
@@ -210,6 +287,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             savedProjectStr = selectedProjectTv.getText().toString();
             projectTitleStr = savedProjectStr;
             editor.putString(savedProject, savedProjectStr);
+
+            savedProjectKeyStr = selectedProjectKey;
+            projectKeyStr = savedProjectKeyStr;
+            Log.v("CreateTaskActivity", "SaveInstace projectKeyStr: "+projectKeyStr);
+            editor.putString(savedProjectKey, savedProjectKeyStr);
         }
 
         if (!projectId.equals("0")){
@@ -224,6 +306,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (!projectTitleStr.equals("")){
             outState.putString(savedProject, projectTitleStr);
+            outState.putString(savedProjectKey, projectKeyStr);
         }
 
         if (!idStr.equals("")){
@@ -255,6 +338,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (pref.contains(savedProject)){
             selectedProjectTv.setText(pref.getString(savedProject, nothing));
+        }
+
+        if (pref.contains(savedProjectKey)){
+            selectedProjectKey = pref.getString(savedProjectKey, nothing);
+            Log.v("CreateTaskActivity", "RestoreInstance projectKey: "+selectedProjectKey);
         }
 
         if (pref.contains(savedId)){
@@ -312,10 +400,33 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View view, int index, CharSequence text) {
-                            selectedProject = projects.get(index);
-                            projectId = selectedProject.getId();
-                            selectedProjectTv.setText(selectedProject.getTitle());
+                            if (index!=-1) {
+                                selectedProject = projects.get(index);
+                                projectId = selectedProject.getId();
 
+                                mFirebaseDatabase
+                                        .child("users")
+                                        .child(uId)
+                                        .child("projects")
+                                        .orderByChild("id")
+                                        .equalTo(projectId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                                            selectedProjectKey = childSnapshot.getKey();
+                                            Log.v("CreateTaskActivity","onSelection key: " + selectedProjectKey);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                projectTitle = selectedProject.getTitle();
+                                selectedProjectTv.setText(projectTitle);
+                            }
                             return true;
                         }
                     })
@@ -329,7 +440,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     void saveTodo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            id = user.getUid();
+            uId = user.getUid();
         } else {
             Log.v("Auth", "User ID is null");
         }
@@ -345,16 +456,12 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         task.setContent(taskDetailsEditText.getText().toString());
         task.setDate(dateString);
         task.setState("0");
-        if (projectId.equals("0")) {
-            task.setProjectId("0");
-        } else {
-            task.setProjectId(projectId);
-        }
+        task.setProjectKey(selectedProjectKey);
         task.setTaskId(taskID);
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put( key, task.toFirebaseObject());
-        database.getReference("users").child(id).child("tasks").updateChildren(childUpdates);
+        database.getReference("users").child(uId).child("tasks").updateChildren(childUpdates);
         updateWidget(getApplicationContext());
     }
 }

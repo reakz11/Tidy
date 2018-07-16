@@ -13,18 +13,18 @@ public class Task {
     private String content;
     private String date;
     private String state;
-    private String projectId;
     private String taskId;
+    private String projectKey;
 
     public Task() {}
 
-    public Task(String title, String content, String date, String state, String projectId, String taskId) {
+    public Task(String title, String content, String date, String state, String taskId, String projectKey) {
         this.title = title;
         this.content = content;
         this.date = date;
         this.state = state;
-        this.projectId = projectId;
         this.taskId = taskId;
+        this.projectKey = projectKey;
     }
 
     public String getTitle() {
@@ -73,20 +73,20 @@ public class Task {
         this.state = state;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
     public String getTaskId(){
         return taskId;
     }
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
     }
 
 
@@ -96,8 +96,8 @@ public class Task {
         todo.put("content", content);
         todo.put("date", date);
         todo.put("state", state);
-        todo.put("projectId", projectId);
         todo.put("taskId", taskId);
+        todo.put("projectKey", projectKey);
 
         return todo;
     }
