@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +19,18 @@ import com.example.tidy.R;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.tidy.Utils.getUserId;
 
 public class NoteDetails extends AppCompatActivity {
 
@@ -45,8 +53,13 @@ public class NoteDetails extends AppCompatActivity {
     private String mNoteKey = "noteKey";
     private String mNoteId = "id";
 
+    private String noteTitleTvStr;
+    private String noteContentTvStr;
     private String noteKey;
     private String noteId;
+
+    ValueEventListener valueEventListener;
+    private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +70,21 @@ public class NoteDetails extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                noteTitleTvStr = dataSnapshot.child("title").getValue(String.class);
+                mNoteTitleTextView.setText(noteTitleTvStr);
+                noteContentTvStr = dataSnapshot.child("content").getValue(String.class);
+                mNoteContentTextView.setText(noteContentTvStr);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.note_details));
@@ -66,13 +94,13 @@ public class NoteDetails extends AppCompatActivity {
         // Getting note title and content from intent
 
         if (intent.hasExtra(mNoteTitle)) {
-            String noteTitle = intent.getStringExtra(mNoteTitle);
-            mNoteTitleTextView.setText(noteTitle);
+            noteTitleTvStr = intent.getStringExtra(mNoteTitle);
+            mNoteTitleTextView.setText(noteTitleTvStr);
         }
 
         if (intent.hasExtra(mNoteContent)) {
-            String noteContent = intent.getStringExtra(mNoteContent);
-            mNoteContentTextView.setText(noteContent);
+            noteContentTvStr = intent.getStringExtra(mNoteContent);
+            mNoteContentTextView.setText(noteContentTvStr);
         }
 
         if (intent.hasExtra(mNoteKey)){
@@ -130,6 +158,24 @@ public class NoteDetails extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        mFirebaseDatabase
+                .child("users")
+                .child(getUserId())
+                .child("notes")
+                .child(noteKey).addValueEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mFirebaseDatabase.removeEventListener(valueEventListener);
+    }
+
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation
     private void showFABMenu(){

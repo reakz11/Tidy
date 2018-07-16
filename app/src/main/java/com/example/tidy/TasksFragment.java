@@ -154,7 +154,7 @@ public class TasksFragment extends Fragment {
         mAdapter.startListening();
 
         mFirebaseDatabase.child("users").child(getUserId()).child("projects")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         hintNoProjects.setVisibility((mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE));

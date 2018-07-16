@@ -99,7 +99,13 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(R.string.create_new_note);
+
+        if (isEdit == 0) {
+            getSupportActionBar().setTitle(R.string.create_new_note);
+        } else {
+            getSupportActionBar().setTitle(R.string.edit_note);
+        }
+
     }
 
     // get the note data to save in our firebase db

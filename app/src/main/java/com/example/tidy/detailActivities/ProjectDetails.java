@@ -28,9 +28,12 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -60,7 +63,7 @@ public class ProjectDetails extends AppCompatActivity {
     private String id = "id";
     private String title = "title";
 
-    Query query;
+    private Query query;
 
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
     private FirebaseRecyclerAdapter<Task, ProjectDetails.TaskHolder> mAdapter;
@@ -185,12 +188,23 @@ public class ProjectDetails extends AppCompatActivity {
                     viewHolder.taskDate.setText(task.getFormattedDate());
                 }
 
+                if (task.getState().equals("1")) {
+                    viewHolder.taskCheckbox.setChecked(true);
+                } else {
+                    viewHolder.taskCheckbox.setChecked(false);
+                }
+
                 // onClickListener used for setting task state to 1 (completed)
                 viewHolder.taskCheckbox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
-                        mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+
+                        if (task.getState().equals("1")) {
+                            mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("0");
+                        } else {
+                            mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
+                        }
+
                     }
                 });
 
