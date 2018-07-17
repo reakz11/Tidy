@@ -295,17 +295,16 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             savedDateDbStr = dateDb;
             dateDbStr = savedDateDbStr;
             editor.putString(savedDateDb, savedDateDbStr);
-            Log.v("CreateTaskActivity", "SaveInstace savedDateDbStr: "+savedDateDbStr);
         }
 
         if (selectedProjectTv.getText() != null){
-            savedProjectStr = selectedProjectTv.getText().toString();
+            savedProjectStr = projectTitle;
+            Log.v("CreateTaskActivity", "onSave projectTitle: " + projectTitle);
             projectTitleStr = savedProjectStr;
             editor.putString(savedProject, savedProjectStr);
 
             savedProjectKeyStr = selectedProjectKey;
             projectKeyStr = savedProjectKeyStr;
-            Log.v("CreateTaskActivity", "SaveInstace projectKeyStr: "+projectKeyStr);
             editor.putString(savedProjectKey, savedProjectKeyStr);
         }
 
@@ -341,23 +340,24 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             dateDb = outState.getString(savedDateDb, nothing);
         }
 
-        if (outState.containsKey(savedProject)) {
-            selectedProjectTv.setText(outState.getString(savedProject, nothing));
-        }
-
         if (outState.containsKey(savedId)){
             projectId = outState.getString(savedId, nothing);
         }
 
         if (outState.containsKey(savedProjectKey)) {
-            Log.v("CreateTaskActivtiy","before onRestore selectedProjectKey: " + selectedProjectKey);
             selectedProjectKey = outState.getString(savedProjectKey, nothing);
-            Log.v("CreateTaskActivtiy","onRestore savedProjectKey: " + savedProjectKey);
-
+            projectTitle = outState.getString(savedProject, nothing);
+            selectedProjectTv.setText(projectTitle);
+            Log.v("CreateTaskActivity", "onRestore projectTitle: " + projectTitle);
         }
 
         if (pref.contains(savedContent)){
             taskDetailsEditText.setText(pref.getString(savedContent, nothing));
+        }
+
+        if (pref.contains(savedDate)){
+            dueDate.setText(pref.getString(savedDate, nothing));
+            dateDb = pref.getString(savedDateDb, nothing);
         }
 
         if (pref.contains(savedProject)){
@@ -366,14 +366,12 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (pref.contains(savedProjectKey)){
             selectedProjectKey = pref.getString(savedProjectKey, nothing);
-            Log.v("CreateTaskActivity", "RestoreInstance projectKey: "+selectedProjectKey);
         }
 
         if (pref.contains(savedId)){
             projectId = pref.getString(savedId, nothing);
         }
     }
-
 
     @Override
     public void onClick(View view) {
@@ -470,9 +468,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         } else {
             Log.v("Auth", "User ID is null");
         }
-
-        Log.v("CreateTaskActivtiy","saveTodo selectedProjectKey: " + selectedProjectKey);
-        Log.v("CreateTaskActivtiy","saveTodo taskKey: " + taskKey);
 
         if (isEdit == 1) {
             database.getReference("users")
