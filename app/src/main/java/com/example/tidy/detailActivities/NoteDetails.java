@@ -160,8 +160,8 @@ public class NoteDetails extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
-        super.onStart();
+    protected void onResume(){
+        super.onResume();
 
         mFirebaseDatabase
                 .child("users")

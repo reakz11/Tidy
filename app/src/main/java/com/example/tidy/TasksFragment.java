@@ -49,7 +49,6 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.card_other_time) CardView otherTimeCard;
     @BindView(R.id.card_completed_tasks) CardView completedTasksCard;
     @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
-    @BindView(R.id.hint_no_projects) TextView hintNoProjects;
 
     private LinearLayoutManager llm;
     private FirebaseRecyclerAdapter<Project, ProjectHolder> mAdapter;
@@ -157,7 +156,6 @@ public class TasksFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        hintNoProjects.setVisibility((mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE));
                         loadingIndicator.setVisibility(View.GONE);
                     }
 

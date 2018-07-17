@@ -169,7 +169,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             }
 
             if (intent.getStringExtra(dateDb)!=null) {
-                taskDateDb = dateDb;
+                taskDateDb = intent.getStringExtra(dateDb);
             }
 
             if (intent.getStringExtra(projectKey)!=null) {
@@ -292,14 +292,13 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             dateStr = savedDateStr;
             editor.putString(savedDate, savedDateStr);
 
-            savedDateDbStr = dateDb;
+            savedDateDbStr = taskDateDb;
             dateDbStr = savedDateDbStr;
             editor.putString(savedDateDb, savedDateDbStr);
         }
 
         if (selectedProjectTv.getText() != null){
             savedProjectStr = projectTitle;
-            Log.v("CreateTaskActivity", "onSave projectTitle: " + projectTitle);
             projectTitleStr = savedProjectStr;
             editor.putString(savedProject, savedProjectStr);
 
@@ -337,7 +336,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (outState.containsKey(savedDate)) {
             dueDate.setText(outState.getString(savedDate, nothing));
-            dateDb = outState.getString(savedDateDb, nothing);
+            taskDateDb = outState.getString(savedDateDb, nothing);
         }
 
         if (outState.containsKey(savedId)){
@@ -357,7 +356,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (pref.contains(savedDate)){
             dueDate.setText(pref.getString(savedDate, nothing));
-            dateDb = pref.getString(savedDateDb, nothing);
+            taskDateDb = pref.getString(savedDateDb, nothing);
         }
 
         if (pref.contains(savedProject)){
@@ -398,7 +397,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                             Date dateRepresentation = cal.getTime();
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
-                            dateDb = sdf.format(dateRepresentation);
+                            taskDateDb = sdf.format(dateRepresentation);
                             dueDate.setText(selectedDate);
                         }
                     }, mYear, mMonth, mDay);
@@ -478,6 +477,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                            Log.v("CreateTaskActivity", "saveTodo edit mode isEdit value = " + isEdit);
+
                             dataSnapshot.getRef().child("title")
                                     .setValue(taskTitleEditText.getText().toString());
 
@@ -487,7 +488,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                             dataSnapshot.getRef().child("projectKey").setValue(selectedProjectKey);
 
                             dataSnapshot.getRef().child("date")
-                                    .setValue(dateDb);
+                                    .setValue(taskDateDb);
 
                             Toast toast = Toast.makeText(getApplicationContext(),
                                     R.string.task_edit_confirmation, Toast.LENGTH_SHORT);
@@ -499,8 +500,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                         }
                     });
-        } else {
-            String dateString = dateDb;
+        } else if (isEdit == 0){
+            Log.v("CreateTaskActivity", "saveTodo create mode isEdit value = " + isEdit);
+            String dateString = taskDateDb;
             String key = database.getReference("taskList").push().getKey();
             String taskID = getCurrentDateAndTime();
 

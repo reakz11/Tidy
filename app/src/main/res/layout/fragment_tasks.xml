@@ -177,15 +177,6 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginBottom="40dp"/>
 
-        <TextView
-            android:id="@+id/hint_no_projects"
-            android:visibility="gone"
-            android:layout_marginTop="20dp"
-            android:text="@string/project_list_empty"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
         <ProgressBar
             android:id="@+id/loading_indicator"
             android:layout_gravity="center"

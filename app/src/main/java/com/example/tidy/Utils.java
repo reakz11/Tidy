@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,6 +55,21 @@ public class Utils {
             Log.v("Auth", "User ID is null");
         }
         return mUserId;
+    }
+
+    public static String formatDate(String dbDate) {
+
+        DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        DateFormat targetFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+        Date date;
+
+        try {
+            date = originalFormat.parse(dbDate);
+        } catch (ParseException e){
+            return null;
+        }
+        String dateString = targetFormat.format(date);
+        return dateString;
     }
 
     // Returns current date

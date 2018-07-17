@@ -3,6 +3,7 @@ package com.example.tidy.detailActivities;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,14 +20,18 @@ import com.example.tidy.R;
 import com.example.tidy.createActivities.CreateNoteActivity;
 import com.example.tidy.createActivities.CreateProjectActivity;
 import com.example.tidy.createActivities.CreateTaskActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.tidy.Utils.formatDate;
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
 
@@ -51,11 +56,14 @@ public class TaskDetails extends AppCompatActivity {
     private String taskTitle;
     private String taskDate;
     private String dateDb;
+    private String uId =getUserId();
     private String taskProject;
     private String taskContent;
     private String taskKey;
     private String projectKey;
 
+    private ValueEventListener valueEventListener;
+    private ValueEventListener projectValueEventListener;
     private DatabaseReference mFirebaseDatabase = FirebaseDatabase.getInstance()
             .getReference();
 
@@ -74,6 +82,47 @@ public class TaskDetails extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.task_details));
 
         final Intent intent = getIntent();
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                taskTitle =  dataSnapshot.child("title").getValue(String.class);
+                if (taskTitle != null) {
+                    taskTitleTextView.setText(taskTitle);
+                }
+                dateDb = dataSnapshot.child("date").getValue(String.class);
+                if (dateDb != null) {
+                    taskDateTextView.setText(formatDate(dateDb));
+                }
+                taskContent = dataSnapshot.child("content").getValue(String.class);
+                if (taskContent != null) {
+                    taskContentTextView.setText(taskContent);
+                }
+                projectKey = dataSnapshot.child("projectKey").getValue(String.class);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        projectValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String taskProjectTitle = dataSnapshot.child("title").getValue(String.class);
+                taskProject = taskProjectTitle;
+                taskProjectTextView.setText(taskProject);
+
+                 Log.v("TaskDetails", "ProjectValueEventListener triggered. taskProject: " + taskProject);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
 
         // Getting task data from intent
         String mTaskTitle = "title";
@@ -102,6 +151,23 @@ public class TaskDetails extends AppCompatActivity {
         String mTaskProjectKey = "projectKey";
         if (intent.getStringExtra(mTaskProjectKey)!=null) {
             projectKey = intent.getStringExtra(mTaskProjectKey);
+
+            mFirebaseDatabase
+                    .child("users")
+                    .child(uId)
+                    .child("projects")
+                    .child(projectKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    taskProject = dataSnapshot.child("title").getValue(String.class);
+                    taskProjectTextView.setText(taskProject);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
         String mTaskKey = "taskKey";
@@ -161,6 +227,33 @@ public class TaskDetails extends AppCompatActivity {
                 .child(getUserId())
                 .child("projects");
 
+    }
+
+    protected void onResume(){
+        super.onResume();
+
+        Log.v("TaskDetails", "onResume triggered. Project key: " + projectKey + "Task key:" + taskKey);
+
+        mFirebaseDatabase
+                .child("users")
+                .child(uId)
+                .child("tasks")
+                .child(taskKey).addValueEventListener(valueEventListener);
+
+        if (projectKey != null){
+            mFirebaseDatabase
+                    .child("users")
+                    .child(uId)
+                    .child("projects")
+                    .child(projectKey).addValueEventListener(projectValueEventListener);
+        }
+    }
+
+    protected void onStop(){
+        super.onStop();
+
+        mFirebaseDatabase.removeEventListener(valueEventListener);
+        mFirebaseDatabase.removeEventListener(projectValueEventListener);
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation
