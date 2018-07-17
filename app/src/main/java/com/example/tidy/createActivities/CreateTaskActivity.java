@@ -105,7 +105,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String projectTitle;
     private String content = "content";
     private String key = "key";
-    private String projectKey = "projecKey";
+    private String projectKey = "projectKey";
     private String selectedProjectKey;
 
 
@@ -125,6 +125,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String projectTitle = dataSnapshot.child("title").getValue(String.class);
+                Log.v("CreateTaskActivity", "projectTitle: " + projectTitle);
                 selectedProjectTv.setText(projectTitle);
             }
 
@@ -154,31 +155,32 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         if (intent.hasExtra(edit)){
             isEdit = 1;
 
-            if (intent.hasExtra(title)) {
+            if (intent.getStringExtra(title)!=null) {
                 taskTitle = intent.getStringExtra(title);
                 taskTitleEditText.setText(taskTitle);
             }
 
-            if (intent.hasExtra(date)) {
+            if (intent.getStringExtra(date)!=null) {
                 taskDate = intent.getStringExtra(date);
                 dueDate.setText(taskDate);
             }
 
-            if (intent.hasExtra(projectKey)) {
+            if (intent.getStringExtra(projectKey)!=null) {
                 selectedProjectKey = intent.getStringExtra(projectKey);
                 mFirebaseDatabase
                         .child("users")
                         .child(uId)
                         .child("projects")
                         .child(selectedProjectKey).addValueEventListener(valueEventListener);
+                Log.v("CreateTaskActivity", "selectedProjectKey: " + selectedProjectKey);
             }
 
-            if (intent.hasExtra(content)) {
+            if (intent.getStringExtra(content)!=null) {
                 taskContent = intent.getStringExtra(content);
                 taskDetailsEditText.setText(taskContent);
             }
 
-            if (intent.hasExtra(key)) {
+            if (intent.getStringExtra(key)!=null) {
                 taskKey = intent.getStringExtra(key);
             }
         }
@@ -332,6 +334,13 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             projectId = outState.getString(savedId, nothing);
         }
 
+        if (outState.containsKey(savedProjectKey)) {
+            Log.v("CreateTaskActivtiy","before onRestore selectedProjectKey: " + selectedProjectKey);
+            selectedProjectKey = outState.getString(savedProjectKey, nothing);
+            Log.v("CreateTaskActivtiy","onRestore savedProjectKey: " + savedProjectKey);
+
+        }
+
         if (pref.contains(savedContent)){
             taskDetailsEditText.setText(pref.getString(savedContent, nothing));
         }
@@ -439,29 +448,68 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     // get the note data to save in our firebase db
     void saveTodo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         if (user != null) {
             uId = user.getUid();
         } else {
             Log.v("Auth", "User ID is null");
         }
 
-        String dateString = dateDb;
+        Log.v("CreateTaskActivtiy","saveTodo selectedProjectKey: " + selectedProjectKey);
+        Log.v("CreateTaskActivtiy","saveTodo taskKey: " + taskKey);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String key = database.getReference("taskList").push().getKey();
-        String taskID = getCurrentDateAndTime();
+        if (isEdit == 1) {
+            database.getReference("users")
+                    .child(uId)
+                    .child("tasks")
+                    .child(taskKey)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-        Task task = new Task();
-        task.setTitle(taskTitleEditText.getText().toString());
-        task.setContent(taskDetailsEditText.getText().toString());
-        task.setDate(dateString);
-        task.setState("0");
-        task.setProjectKey(selectedProjectKey);
-        task.setTaskId(taskID);
+                            dataSnapshot.getRef().child("title")
+                                    .setValue(taskTitleEditText.getText().toString());
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put( key, task.toFirebaseObject());
-        database.getReference("users").child(uId).child("tasks").updateChildren(childUpdates);
+                            dataSnapshot.getRef().child("content")
+                                    .setValue(taskDetailsEditText.getText().toString());
+
+                            dataSnapshot.getRef().child("projectKey").setValue(selectedProjectKey);
+
+                            dataSnapshot.getRef().child("date")
+                                    .setValue(dateDb);
+
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    R.string.task_edit_confirmation, Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+        } else {
+            String dateString = dateDb;
+            String key = database.getReference("taskList").push().getKey();
+            String taskID = getCurrentDateAndTime();
+
+            Task task = new Task();
+            task.setTitle(taskTitleEditText.getText().toString());
+            task.setContent(taskDetailsEditText.getText().toString());
+            task.setDate(dateString);
+            task.setState("0");
+            task.setProjectKey(selectedProjectKey);
+            task.setTaskId(taskID);
+
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put( key, task.toFirebaseObject());
+            database.getReference("users").child(uId).child("tasks").updateChildren(childUpdates);
+
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    R.string.task_created, Toast.LENGTH_SHORT);
+            toast.show();
+        }
         updateWidget(getApplicationContext());
     }
 }

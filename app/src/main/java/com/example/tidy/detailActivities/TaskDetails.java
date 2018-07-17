@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -220,6 +221,7 @@ public class TaskDetails extends AppCompatActivity {
             intent.putExtra("date", taskDate);
             intent.putExtra("project", taskProject);
             intent.putExtra("content", taskContent);
+            intent.putExtra("projectKey", projectKey);
             intent.putExtra("key", taskKey);
             intent.putExtra("edit", "1");
             startActivity(intent);
