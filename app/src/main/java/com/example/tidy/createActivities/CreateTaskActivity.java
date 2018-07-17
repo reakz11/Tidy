@@ -72,7 +72,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     @BindView(R.id.selected_project_tv)
     TextView selectedProjectTv;
 
-    private String dateDb;
     private List<Project> projectItemList = new ArrayList<>();
     private List<String> projectTitleList = new ArrayList<>();
     private List<Project> projects;
@@ -86,6 +85,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String savedTitle = "saved_title";
     private String savedContent = "saved_content";
     private String savedDate = "saved_date";
+    private String savedDateDb = "saved_date_db";
     private String savedProject = "saved_project";
     private String savedProjectTitle = "saved_project_title";
     private String savedProjectKey = "saved_project_key";
@@ -94,6 +94,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String savedTitleStr;
     private String savedContentStr;
     private String savedDateStr;
+    private String savedDateDbStr;
     private String savedProjectStr;
     private String savedIdStr;
     private String savedProjectKeyStr;
@@ -103,6 +104,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String title = "title";
     private String date = "date";
     private String projectTitle;
+    private String dateDb = "dateDb";
     private String content = "content";
     private String key = "key";
     private String projectKey = "projectKey";
@@ -112,6 +114,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private String taskTitle;
     private String taskContent;
     private String taskDate;
+    private String taskDateDb;
     private String taskKey;
 
     @Override
@@ -163,6 +166,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             if (intent.getStringExtra(date)!=null) {
                 taskDate = intent.getStringExtra(date);
                 dueDate.setText(taskDate);
+            }
+
+            if (intent.getStringExtra(dateDb)!=null) {
+                taskDateDb = dateDb;
             }
 
             if (intent.getStringExtra(projectKey)!=null) {
@@ -263,6 +270,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         String dateStr = "";
+        String dateDbStr = "";
         String projectTitleStr = "";
         String idStr ="";
         String projectKeyStr ="";
@@ -283,6 +291,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             savedDateStr = dueDate.getText().toString();
             dateStr = savedDateStr;
             editor.putString(savedDate, savedDateStr);
+
+            savedDateDbStr = dateDb;
+            dateDbStr = savedDateDbStr;
+            editor.putString(savedDateDb, savedDateDbStr);
+            Log.v("CreateTaskActivity", "SaveInstace savedDateDbStr: "+savedDateDbStr);
         }
 
         if (selectedProjectTv.getText() != null){
@@ -304,6 +317,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (!dateStr.equals("")){
             outState.putString(savedDate, dateStr);
+            outState.putString(savedDateDb, dateDbStr);
         }
 
         if (!projectTitleStr.equals("")){
@@ -324,9 +338,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         if (outState.containsKey(savedDate)) {
             dueDate.setText(outState.getString(savedDate, nothing));
+            dateDb = outState.getString(savedDateDb, nothing);
         }
 
-        if (outState.containsKey(savedDate)) {
+        if (outState.containsKey(savedProject)) {
             selectedProjectTv.setText(outState.getString(savedProject, nothing));
         }
 

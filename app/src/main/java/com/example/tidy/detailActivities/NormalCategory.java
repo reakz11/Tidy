@@ -248,6 +248,7 @@ public class NormalCategory extends AppCompatActivity {
                         }
                         intent.putExtra("projectKey", task.getProjectKey());
                         intent.putExtra("taskId",task.getTaskId());
+                        intent.putExtra("dateDb", task.getDate());
                         intent.putExtra("taskKey", mAdapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         startActivity(intent);
                     }

@@ -50,6 +50,7 @@ public class TaskDetails extends AppCompatActivity {
     boolean isFABOpen=false;
     private String taskTitle;
     private String taskDate;
+    private String dateDb;
     private String taskProject;
     private String taskContent;
     private String taskKey;
@@ -76,30 +77,35 @@ public class TaskDetails extends AppCompatActivity {
 
         // Getting task data from intent
         String mTaskTitle = "title";
-        if (intent.hasExtra(mTaskTitle)) {
+        if (intent.getStringExtra(mTaskTitle)!=null) {
             taskTitle = intent.getStringExtra(mTaskTitle);
             taskTitleTextView.setText(taskTitle);
         }
 
         String mTaskContent = "content";
-        if (intent.hasExtra(mTaskContent)) {
+        if (intent.getStringExtra(mTaskContent)!=null) {
             taskContent = intent.getStringExtra(mTaskContent);
             taskContentTextView.setText(taskContent);
         }
 
         String mTaskDate = "date";
-        if (intent.hasExtra(mTaskDate)) {
+        if (intent.getStringExtra(mTaskDate)!=null) {
             taskDate = intent.getStringExtra(mTaskDate);
             taskDateTextView.setText(taskDate);
         }
 
+        String mTaskDateDb = "dateDb";
+        if (intent.getStringExtra(mTaskDateDb)!=null){
+            dateDb = intent.getStringExtra(mTaskDateDb);
+        }
+
         String mTaskProjectKey = "projectKey";
-        if (intent.hasExtra(mTaskProjectKey)) {
+        if (intent.getStringExtra(mTaskProjectKey)!=null) {
             projectKey = intent.getStringExtra(mTaskProjectKey);
         }
 
         String mTaskKey = "taskKey";
-        if (intent.hasExtra(mTaskKey)) {
+        if (intent.getStringExtra(mTaskKey)!=null) {
             taskKey = intent.getStringExtra(mTaskKey);
         }
 
@@ -219,6 +225,7 @@ public class TaskDetails extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), CreateTaskActivity.class);
             intent.putExtra("title", taskTitle);
             intent.putExtra("date", taskDate);
+            intent.putExtra("dateDb", dateDb);
             intent.putExtra("project", taskProject);
             intent.putExtra("content", taskContent);
             intent.putExtra("projectKey", projectKey);
