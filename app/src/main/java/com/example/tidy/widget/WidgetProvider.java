@@ -1,5 +1,6 @@
 package com.example.tidy.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -7,7 +8,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
+import com.example.tidy.MainActivity;
 import com.example.tidy.R;
+
+import static com.example.tidy.Utils.getDatabase;
 
 public class WidgetProvider extends AppWidgetProvider {
 
@@ -20,6 +24,8 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager
             appWidgetManager, int[] appWidgetIds) {
 
+        getDatabase();
+
         /*int[] appWidgetIds holds ids of multiple instance
          * of your widget
          * meaning you are placing more than one widgets on
@@ -30,6 +36,13 @@ public class WidgetProvider extends AppWidgetProvider {
                     appWidgetIds[i]);
             appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }
+
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        views.setOnClickPendingIntent(R.id.listViewWidget, pendingIntent);
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 

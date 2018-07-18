@@ -9,6 +9,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,10 +113,34 @@ public class TasksFragment extends Fragment {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), ProjectDetails.class);
+                        final Intent intent = new Intent(getContext(), ProjectDetails.class);
                         intent.putExtra("title", project.getTitle());
-                        intent.putExtra("id", project.getId());
-                        startActivity(intent);
+
+                        mFirebaseDatabase
+                                .child("users")
+                                .child(getUserId())
+                                .child("projects")
+                                .orderByChild("id")
+                                .equalTo(project.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                                    String projectKey = childSnapshot.getKey();
+                                    intent.putExtra("projectKey", projectKey);
+
+                                    intent.putExtra("id", project.getId());
+                                    startActivity(intent);
+
+                                    Log.v("TasksFragment", "clicked projectKey is: " + projectKey);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
                 });
 

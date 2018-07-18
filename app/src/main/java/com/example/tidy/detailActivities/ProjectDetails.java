@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +29,9 @@ import com.example.tidy.createActivities.CreateTaskActivity;
 import com.example.tidy.objects.Task;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -58,9 +56,10 @@ public class ProjectDetails extends AppCompatActivity {
     private Animation rotate_forward,rotate_backward;
 
     boolean isFABOpen=false;
-    private String projectId;
+    private String projectKey;
     private String projectTitle;
     private String id = "id";
+    private String projectKeyStr = "projectKey";
     private String title = "title";
 
     private Query query;
@@ -91,8 +90,9 @@ public class ProjectDetails extends AppCompatActivity {
             getSupportActionBar().setTitle(supportActionBarTitle);
         }
 
-        if (intent.hasExtra(id)) {
-            projectId = intent.getStringExtra(id);
+        if (intent.hasExtra(projectKeyStr)) {
+            projectKey = intent.getStringExtra(projectKeyStr);
+            Log.v("ProjectDetails", "intent project key is " + projectKey);
         }
 
         if (intent.hasExtra(title)) {
@@ -156,8 +156,10 @@ public class ProjectDetails extends AppCompatActivity {
                 .child("users")
                 .child(getUserId())
                 .child("tasks")
-                .orderByChild("projectId")
-                .equalTo(projectId);
+                .orderByChild("projectKey")
+                .equalTo(projectKey);
+
+        Log.v("ProjectDetails", "projectKey is:" + projectKey);
 
         FirebaseRecyclerOptions<Task> options =
                 new FirebaseRecyclerOptions.Builder<Task>()
@@ -341,7 +343,7 @@ public class ProjectDetails extends AppCompatActivity {
 
         if (itemThatWasClickedId == R.id.edit_option) {
             Intent intent = new Intent(getApplicationContext(), CreateProjectActivity.class);
-            intent.putExtra("id", projectId);
+            intent.putExtra("id", projectKey);
             intent.putExtra("title",projectTitle);
             intent.putExtra("edit", "1");
             startActivity(intent);
