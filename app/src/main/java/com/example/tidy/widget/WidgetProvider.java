@@ -24,7 +24,10 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager
             appWidgetManager, int[] appWidgetIds) {
 
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+
         getDatabase();
+
 
         /*int[] appWidgetIds holds ids of multiple instance
          * of your widget
@@ -34,16 +37,14 @@ public class WidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < N; ++i) {
             RemoteViews remoteViews = updateWidgetListView(context,
                     appWidgetIds[i]);
+
+            Intent configIntent = new Intent(context, MainActivity.class);
+
+            PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.listViewWidget, configPendingIntent);
+
             appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }
-
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        views.setOnClickPendingIntent(R.id.listViewWidget, pendingIntent);
-
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     private static RemoteViews updateWidgetListView(Context context,

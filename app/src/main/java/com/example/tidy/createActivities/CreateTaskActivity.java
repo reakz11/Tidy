@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.R;
+import com.example.tidy.detailActivities.TaskDetails;
 import com.example.tidy.objects.Project;
 import com.example.tidy.objects.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -318,7 +319,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             outState.putString(savedDateDb, dateDbStr);
         }
 
-        if (!projectTitleStr.equals("")){
+        if (projectTitleStr != null){
             outState.putString(savedProject, projectTitleStr);
             outState.putString(savedProjectKey, projectKeyStr);
         }

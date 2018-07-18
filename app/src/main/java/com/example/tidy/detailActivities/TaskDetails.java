@@ -99,23 +99,29 @@ public class TaskDetails extends AppCompatActivity {
                     taskContentTextView.setText(taskContent);
                 }
                 projectKey = dataSnapshot.child("projectKey").getValue(String.class);
+                Log.v("TaskDetails", "valueEventListener onResume triggered. projectKey: " + projectKey);
 
-            }
+                if (projectKey != null) {
+                    mFirebaseDatabase
+                            .child("users")
+                            .child(uId)
+                            .child("projects")
+                            .child(projectKey).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String taskProjectTitle = dataSnapshot.child("title").getValue(String.class);
+                            taskProject = taskProjectTitle;
+                            taskProjectTextView.setText(taskProject);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.v("TaskDetails", "ProjectValueEventListener triggered. taskProject: " + taskProject);
+                        }
 
-            }
-        };
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        projectValueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String taskProjectTitle = dataSnapshot.child("title").getValue(String.class);
-                taskProject = taskProjectTitle;
-                taskProjectTextView.setText(taskProject);
-
-                 Log.v("TaskDetails", "ProjectValueEventListener triggered. taskProject: " + taskProject);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -169,6 +175,8 @@ public class TaskDetails extends AppCompatActivity {
                 }
             });
         }
+
+        taskProject = taskProjectTextView.getText().toString();
 
         String mTaskKey = "taskKey";
         if (intent.getStringExtra(mTaskKey)!=null) {
@@ -239,21 +247,12 @@ public class TaskDetails extends AppCompatActivity {
                 .child(uId)
                 .child("tasks")
                 .child(taskKey).addValueEventListener(valueEventListener);
-
-        if (projectKey != null){
-            mFirebaseDatabase
-                    .child("users")
-                    .child(uId)
-                    .child("projects")
-                    .child(projectKey).addValueEventListener(projectValueEventListener);
-        }
     }
 
     protected void onStop(){
         super.onStop();
 
         mFirebaseDatabase.removeEventListener(valueEventListener);
-        mFirebaseDatabase.removeEventListener(projectValueEventListener);
     }
 
     // Sets isFABOpen to TRUE, views to visible and creates opening animation
