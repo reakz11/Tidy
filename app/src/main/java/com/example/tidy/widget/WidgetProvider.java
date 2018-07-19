@@ -28,22 +28,16 @@ public class WidgetProvider extends AppWidgetProvider {
 
         getDatabase();
 
+        for(int i = 0; i < appWidgetIds.length; i++){
 
-        /*int[] appWidgetIds holds ids of multiple instance
-         * of your widget
-         * meaning you are placing more than one widgets on
-         * your homescreen*/
-        final int N = appWidgetIds.length;
-        for (int i = 0; i < N; ++i) {
-            RemoteViews remoteViews = updateWidgetListView(context,
+            RemoteViews widget = updateWidgetListView(context,
                     appWidgetIds[i]);
 
-            Intent configIntent = new Intent(context, MainActivity.class);
+            Intent startActivityIntent = new Intent(context, MainActivity.class);
+            PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            widget.setPendingIntentTemplate(R.id.listViewWidget, startActivityPendingIntent);
 
-            PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.listViewWidget, configPendingIntent);
-
-            appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
+            appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
         }
     }
 

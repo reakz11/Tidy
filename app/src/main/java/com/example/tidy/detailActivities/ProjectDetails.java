@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,7 +57,6 @@ public class ProjectDetails extends AppCompatActivity {
     boolean isFABOpen=false;
     private String projectKey;
     private String projectTitle;
-    private String id = "id";
     private String projectKeyStr = "projectKey";
     private String title = "title";
 
@@ -92,7 +90,6 @@ public class ProjectDetails extends AppCompatActivity {
 
         if (intent.hasExtra(projectKeyStr)) {
             projectKey = intent.getStringExtra(projectKeyStr);
-            Log.v("ProjectDetails", "intent project key is " + projectKey);
         }
 
         if (intent.hasExtra(title)) {
@@ -159,8 +156,6 @@ public class ProjectDetails extends AppCompatActivity {
                 .orderByChild("projectKey")
                 .equalTo(projectKey);
 
-        Log.v("ProjectDetails", "projectKey is:" + projectKey);
-
         FirebaseRecyclerOptions<Task> options =
                 new FirebaseRecyclerOptions.Builder<Task>()
                         .setQuery(query, Task.class)
@@ -206,7 +201,6 @@ public class ProjectDetails extends AppCompatActivity {
                         } else {
                             mAdapter.getRef(viewHolder.getAdapterPosition()).child("state").setValue("1");
                         }
-
                     }
                 });
 
@@ -246,9 +240,7 @@ public class ProjectDetails extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.startListening();
-
     }
-
 
     public static class TaskHolder extends RecyclerView.ViewHolder {
 
@@ -343,7 +335,7 @@ public class ProjectDetails extends AppCompatActivity {
 
         if (itemThatWasClickedId == R.id.edit_option) {
             Intent intent = new Intent(getApplicationContext(), CreateProjectActivity.class);
-            intent.putExtra("id", projectKey);
+            intent.putExtra("key", projectKey);
             intent.putExtra("title",projectTitle);
             intent.putExtra("edit", "1");
             startActivity(intent);

@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.tidy.R;
-import com.example.tidy.detailActivities.TaskDetails;
 import com.example.tidy.objects.Project;
 import com.example.tidy.objects.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -129,7 +128,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String projectTitle = dataSnapshot.child("title").getValue(String.class);
-                Log.v("CreateTaskActivity", "projectTitle: " + projectTitle);
                 selectedProjectTv.setText(projectTitle);
             }
 
@@ -180,7 +178,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         .child(uId)
                         .child("projects")
                         .child(selectedProjectKey).addValueEventListener(valueEventListener);
-                Log.v("CreateTaskActivity", "selectedProjectKey: " + selectedProjectKey);
             }
 
             if (intent.getStringExtra(content)!=null) {
@@ -348,7 +345,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             selectedProjectKey = outState.getString(savedProjectKey, nothing);
             projectTitle = outState.getString(savedProject, nothing);
             selectedProjectTv.setText(projectTitle);
-            Log.v("CreateTaskActivity", "onRestore projectTitle: " + projectTitle);
         }
 
         if (pref.contains(savedContent)){
@@ -410,9 +406,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 toast.show();
             } else {
                 saveTodo();
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        R.string.task_created, Toast.LENGTH_SHORT);
-                toast.show();
                 finish();
             }
         } else if(view == pickProject) {
@@ -436,7 +429,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                                             selectedProjectKey = childSnapshot.getKey();
-                                            Log.v("CreateTaskActivity","onSelection key: " + selectedProjectKey);
                                         }
                                     }
 
@@ -478,8 +470,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            Log.v("CreateTaskActivity", "saveTodo edit mode isEdit value = " + isEdit);
-
                             dataSnapshot.getRef().child("title")
                                     .setValue(taskTitleEditText.getText().toString());
 
@@ -501,8 +491,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                         }
                     });
-        } else if (isEdit == 0){
-            Log.v("CreateTaskActivity", "saveTodo create mode isEdit value = " + isEdit);
+        } else {
             String dateString = taskDateDb;
             String key = database.getReference("taskList").push().getKey();
             String taskID = getCurrentDateAndTime();

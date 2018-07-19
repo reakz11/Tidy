@@ -37,7 +37,6 @@ import butterknife.ButterKnife;
 
 import static com.example.tidy.Utils.getDatabase;
 import static com.example.tidy.Utils.getUserId;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class NotesFragment extends Fragment {
 

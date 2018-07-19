@@ -1,5 +1,6 @@
 package com.example.tidy.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.example.tidy.MainActivity;
 import com.example.tidy.R;
 import com.example.tidy.objects.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -144,6 +146,9 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
 
         remoteView.setTextViewText(R.id.heading, taskItem.getTitle());
         remoteView.setTextViewText(R.id.content, taskItem.getContent());
+
+        Intent fillInIntent = new Intent();
+        remoteView.setOnClickFillInIntent(R.id.list_row, fillInIntent);
 
         return remoteView;
     }

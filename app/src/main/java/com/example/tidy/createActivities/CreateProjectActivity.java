@@ -37,9 +37,8 @@ public class CreateProjectActivity extends AppCompatActivity {
     @BindView(R.id.fab_save_project) FloatingActionButton fabSaveProject;
     @BindView(R.id.et_project_title) EditText projectTitleEditText;
     private String uId;
-    private String id = "id";
     private String edit = "edit";
-    private String projectId;
+    private String key = "key";
     private String projectKey;
     private int isEdit = 0;
     private String title = "title";
@@ -59,13 +58,13 @@ public class CreateProjectActivity extends AppCompatActivity {
         if (intent.hasExtra(edit)){
             isEdit = 1;
 
-            if (intent.hasExtra(title)) {
+            if (intent.getStringExtra(title)!=null) {
                 String projectTitle = intent.getStringExtra(title);
                 projectTitleEditText.setText(projectTitle);
             }
 
-            if (intent.hasExtra(id)){
-                projectId = intent.getStringExtra(id);
+            if (intent.getStringExtra(key)!=null){
+                projectKey = intent.getStringExtra(key);
             }
         }
 
@@ -111,16 +110,11 @@ public class CreateProjectActivity extends AppCompatActivity {
             database.getReference("users")
                     .child(uId)
                     .child("projects")
-                    .orderByChild("id")
-                    .equalTo(projectId)
+                    .child(projectKey)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                                projectKey = childSnapshot.getKey();
-                                Log.v("CreateProjectActivity", "Project key is: " + projectKey);
 
-                                if (projectKey != null) {
                                     database.getReference("users")
                                             .child(uId)
                                             .child("projects")
@@ -131,20 +125,12 @@ public class CreateProjectActivity extends AppCompatActivity {
                                     Toast toast = Toast.makeText(getApplicationContext(),
                                             R.string.project_edit_confirmation, Toast.LENGTH_SHORT);
                                     toast.show();
-
-                                } else {
-                                    Log.v("CreateProjectActivity", "Project DB key is null");
-                                }
-
-                            }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
-
         } else {
 
             String key = database.getReference("taskList").push().getKey();
